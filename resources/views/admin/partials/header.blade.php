@@ -190,6 +190,21 @@
 
     {{-- Right Icons & Profile --}}
     <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+        @php
+            // Ambil logo institusi jika user adalah school/company/university
+            $institutionLogoUrl = null;
+            if ($headerUserRole === 'school') {
+                $institutionRecord = \App\Models\School::where('user_id', Auth::id())->first();
+                $institutionLogoUrl = $institutionRecord->logo_url ?? null;
+            } elseif ($headerUserRole === 'company') {
+                $institutionRecord = \App\Models\Company::where('user_id', Auth::id())->first();
+                $institutionLogoUrl = $institutionRecord->logo_url ?? null;
+            } elseif ($headerUserRole === 'university') {
+                $institutionRecord = \App\Models\University::where('user_id', Auth::id())->first();
+                $institutionLogoUrl = $institutionRecord->logo_url ?? null;
+            }
+            $headerAvatarUrl = $institutionLogoUrl ?? Auth::user()->avatar_url;
+        @endphp
         {{-- Help / Info --}}
         <button type="button" class="p-2 rounded-full text-slate-500 hover:bg-slate-100 transition" aria-label="Help">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -289,8 +304,8 @@
                         {{ $adminRoleLabels[Auth::user()->role] ?? ucfirst(str_replace(['-', '_'], ' ', Auth::user()->role)) }}
                     </div>
                 </div>
-                @if(Auth::user()->avatar_url)
-                    <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}" class="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-slate-100 group-hover:ring-brand-200 transition-all">
+                @if($headerAvatarUrl)
+                    <img src="{{ $headerAvatarUrl }}" alt="{{ Auth::user()->name }}" class="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-slate-100 group-hover:ring-brand-200 transition-all">
                 @else
                     <div class="w-9 h-9 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-sm group-hover:bg-brand-700 transition-colors">
                         <span class="text-[13px] font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
