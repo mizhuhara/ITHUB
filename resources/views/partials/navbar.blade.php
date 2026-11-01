@@ -104,8 +104,8 @@
                 {{-- User Profile & Dropdown --}}
                 <div id="it-user" class="it-user">
                     <button type="button" id="it-user-btn" aria-haspopup="true" aria-expanded="false">
-                        @if(Auth::user()->avatar_url)
-                            <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover shrink-0">
+                        @if(!empty($navbarLogoUrl))
+                            <img src="{{ $navbarLogoUrl }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover shrink-0">
                         @else
                             <span class="it-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                         @endif
@@ -162,8 +162,8 @@
     <div id="it-mobile-menu">
         @auth
             <div class="it-mobile-user-card">
-                @if(Auth::user()->avatar_url)
-                    <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}" class="w-9 h-9 rounded-full object-cover shrink-0">
+                @if(!empty($navbarLogoUrl))
+                    <img src="{{ $navbarLogoUrl }}" alt="{{ Auth::user()->name }}" class="w-9 h-9 rounded-full object-cover shrink-0">
                 @else
                     <span class="it-avatar" style="width:36px;height:36px;font-size:14px;">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                 @endif

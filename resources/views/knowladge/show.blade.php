@@ -102,13 +102,17 @@
                 @endif
 
             @else
-                {{-- Fallback content if not array --}}
-                <p class="text-base sm:text-lg leading-relaxed text-slate-700">
-                    {{ $article['excerpt'] }}
-                </p>
-                <p class="text-slate-600 leading-relaxed">
-                    Tech adoption across Indonesia is accelerating rapidly. By fostering closer ties between vocational education and global industry standards, we build a future-ready workforce capable of scaling next-generation software products.
-                </p>
+                {{-- Konten HTML dari Summernote atau teks biasa --}}
+                @if(!empty($article['excerpt']))
+                    <p class="text-base sm:text-lg leading-relaxed text-slate-700 font-normal mb-4">
+                        {{ $article['excerpt'] }}
+                    </p>
+                @endif
+                @if(!empty($article['content']))
+                    <div class="prose prose-slate max-w-none text-slate-700">
+                        {!! $article['content'] !!}
+                    </div>
+                @endif
             @endif
         </article>
 
