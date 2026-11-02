@@ -67,6 +67,101 @@
     </section>
 
 
+    {{-- ===== BANNER SLIDER ===== --}}
+    @if($banners->count())
+    <section class="mx-auto max-w-6xl px-6 pb-12">
+        <div class="relative overflow-hidden rounded-xl border border-slate-200/80 shadow-sm" id="banner-slider" onmouseenter="pauseBannerSlider()" onmouseleave="startBannerSlider()">
+            {{-- Slides --}}
+            <div class="flex transition-transform duration-500 ease-in-out" id="banner-track">
+                @foreach ($banners as $banner)
+                    <div class="w-full flex-shrink-0">
+                        <div class="relative h-[240px] sm:h-[300px] md:h-[360px] overflow-hidden">
+                            <img src="{{ $banner->image }}" alt="{{ $banner->title }}" class="h-full w-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-transparent"></div>
+                            <div class="absolute inset-0 flex items-center px-6 sm:px-12 md:px-16">
+                                <div class="max-w-xl text-left">
+                                    <h2 class="text-2xl font-black text-white sm:text-3xl md:text-4xl leading-tight drop-shadow-xs">{{ $banner->title }}</h2>
+                                    @if($banner->subtitle)
+                                        <p class="mt-2.5 text-sm text-slate-200 sm:text-base leading-relaxed max-w-lg">{{ $banner->subtitle }}</p>
+                                    @endif
+                                    @if($banner->link)
+                                        <a href="{{ $banner->link }}" class="mt-5 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700">
+                                            {{ $banner->link_text ?? 'Selengkapnya' }}
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Navigation arrows --}}
+            @if($banners->count() > 1)
+                <button onclick="slideBanner(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-md transition shadow-md" aria-label="Sebelumnya">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+                </button>
+                <button onclick="slideBanner(1)" class="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-md transition shadow-md" aria-label="Selanjutnya">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </button>
+
+                {{-- Dots --}}
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2" id="banner-dots">
+                    @foreach ($banners as $i => $b)
+                        <button onclick="goToBanner({{ $i }})" class="h-2 rounded-full transition-all duration-300 {{ $i === 0 ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/75' }}" aria-label="Banner {{ $i + 1 }}"></button>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <script>
+        (function() {
+            let currentBanner = 0;
+            let bannerInterval = null;
+            const track = document.getElementById('banner-track');
+            const dots = document.getElementById('banner-dots');
+            const total = {{ $banners->count() }};
+
+            if (total <= 1 || !track) return;
+
+            function updateSlider() {
+                track.style.transform = 'translateX(-' + (currentBanner * 100) + '%)';
+                if (dots) {
+                    dots.querySelectorAll('button').forEach(function(dot, i) {
+                        dot.className = i === currentBanner
+                            ? 'h-2 rounded-full transition-all duration-300 w-6 bg-white'
+                            : 'h-2 rounded-full transition-all duration-300 w-2 bg-white/50 hover:bg-white/75';
+                    });
+                }
+            }
+
+            window.slideBanner = function(dir) {
+                currentBanner = (currentBanner + dir + total) % total;
+                updateSlider();
+            };
+
+            window.goToBanner = function(index) {
+                currentBanner = index;
+                updateSlider();
+            };
+
+            window.startBannerSlider = function() {
+                if (bannerInterval) clearInterval(bannerInterval);
+                bannerInterval = setInterval(function() { window.slideBanner(1); }, 5000);
+            };
+
+            window.pauseBannerSlider = function() {
+                if (bannerInterval) clearInterval(bannerInterval);
+            };
+
+            window.startBannerSlider();
+        })();
+    </script>
+    @endif
+
+
     {{-- ===== LOWONGAN PEKERJAAN TERBARU ===== --}}
     @if($latestJobs->count())
     <section class="mx-auto max-w-6xl px-6 pb-16">
