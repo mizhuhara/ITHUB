@@ -293,6 +293,48 @@ class JobListingFeatureTest extends TestCase
         $response->assertViewIs('career.kerja');
         $response->assertSee('Aditya Pratama');
         $response->assertSee('Senior Fullstack Developer');
+        $response->assertSee('Filter Pencari Kerja');
+    }
+
+    public function test_career_kerja_tab_supports_sidebar_filters(): void
+    {
+        JobSeeker::create([
+            'name' => 'Budi Laravel',
+            'email' => 'budi@example.com',
+            'job_title' => 'Backend Developer',
+            'experience_level' => 'Entry',
+            'availability' => 'Segera',
+            'skills' => ['Laravel', 'PHP'],
+            'status' => 'aktif',
+        ]);
+
+        JobSeeker::create([
+            'name' => 'Siti React',
+            'email' => 'siti@example.com',
+            'job_title' => 'Frontend Developer',
+            'experience_level' => 'Senior',
+            'availability' => 'Bulan Depan',
+            'skills' => ['React', 'JavaScript'],
+            'status' => 'aktif',
+        ]);
+
+        // Filter by experience = Entry
+        $resExp = $this->get(route('career.index', ['type' => 'kerja', 'experience' => ['Entry']]));
+        $resExp->assertOk();
+        $resExp->assertSee('Budi Laravel');
+        $resExp->assertDontSee('Siti React');
+
+        // Filter by availability = Bulan Depan
+        $resAvail = $this->get(route('career.index', ['type' => 'kerja', 'availability' => ['Bulan Depan']]));
+        $resAvail->assertOk();
+        $resAvail->assertSee('Siti React');
+        $resAvail->assertDontSee('Budi Laravel');
+
+        // Filter by skills = Laravel
+        $resSkill = $this->get(route('career.index', ['type' => 'kerja', 'skills' => ['Laravel']]));
+        $resSkill->assertOk();
+        $resSkill->assertSee('Budi Laravel');
+        $resSkill->assertDontSee('Siti React');
     }
 
     public function test_user_can_view_seeker_create_page(): void

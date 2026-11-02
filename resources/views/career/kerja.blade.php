@@ -4,14 +4,11 @@
 
 @section('content')
 <style>
-    /* ── page shell ── */
-    .sk-page {
+    .cr-page {
         max-width: 1280px;
         margin: 0 auto;
         padding: 0 24px;
     }
-
-    /* ── tabs (shared with career/index) ── */
     .cr-tabs {
         position: sticky;
         top: 62px;
@@ -45,36 +42,41 @@
         transition: color 0.15s, border-color 0.15s;
     }
     .cr-tabs a:hover { color: #2563eb; }
-    .cr-tabs a.on { color: #2563eb; border-bottom-color: #2563eb; }
+    .cr-tabs a.on {
+        color: #2563eb;
+        border-bottom-color: #2563eb;
+    }
 
-    /* ── hero bar ── */
+    /* ── Hero Banner ── */
     .sk-hero {
         background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
-        border-radius: 20px;
-        padding: 36px 40px;
-        margin-top: 28px;
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-top: 20px;
+        margin-bottom: 4px;
         color: #fff;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 24px;
+        gap: 20px;
         flex-wrap: wrap;
+        box-shadow: 0 4px 18px rgba(37, 99, 235, 0.14);
     }
-    .sk-hero-text h1 { font-size: 22px; font-weight: 800; margin: 0 0 6px; }
-    .sk-hero-text p  { font-size: 14px; color: #bfdbfe; margin: 0; }
+    .sk-hero-text h1 { font-size: 20px; font-weight: 800; margin: 0 0 4px; color: #fff; letter-spacing: -0.01em; }
+    .sk-hero-text p  { font-size: 13.5px; color: #bfdbfe; margin: 0; line-height: 1.4; }
     .sk-hero-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
         background: #fff;
         color: #2563eb;
         font-weight: 700;
-        font-size: 14px;
-        padding: 11px 22px;
+        font-size: 13.5px;
+        padding: 10px 20px;
         border-radius: 10px;
         text-decoration: none;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        transition: transform 0.15s, box-shadow 0.15s, color 0.15s;
         cursor: pointer;
         border: none;
         font-family: inherit;
@@ -82,23 +84,193 @@
     }
     .sk-hero-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);
         color: #1d4ed8;
         text-decoration: none;
     }
 
-    /* ── toolbar ── */
-    .sk-toolbar {
+    /* ── Layout & Sidebar (Identical to Career) ── */
+    .cr-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 20px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+    }
+    .cr-sidebar {
+        position: sticky;
+        top: 115px;
+        max-height: calc(100vh - 130px);
+        overflow-y: auto;
+        padding-right: 2px;
+        padding-bottom: 24px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .cr-sidebar::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .cr-main {
+        padding-right: 4px;
+        padding-bottom: 24px;
+    }
+
+    /* Filter Card */
+    .cr-filter-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 4px 16px 0 rgba(15, 23, 42, 0.02);
+        overflow: hidden;
+    }
+    .cr-filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px 14px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .cr-filter-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .cr-filter-icon {
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+    }
+    .cr-filter-title {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+        margin: 0;
+    }
+    .cr-clear {
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+    .cr-clear:hover {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #2563eb;
+        text-decoration: none;
+    }
+    .cr-filter-section {
+        padding: 16px 18px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .cr-filter-section:last-child {
+        border-bottom: none;
+    }
+    .cr-filter-section-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .cr-check-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .cr-check-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 6px 8px;
+        margin: 0 -8px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #334155;
+        cursor: pointer;
+        transition: background-color 0.12s ease, color 0.12s ease;
+        user-select: none;
+    }
+    .cr-check-item:hover {
+        background-color: #f8fafc;
+        color: #0f172a;
+    }
+    .cr-check-item.active {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+    .cr-check-item input {
+        width: 15px;
+        height: 15px;
+        border-radius: 4px;
+        border: 1.5px solid #cbd5e1;
+        accent-color: #2563eb;
+        cursor: pointer;
+    }
+    .cr-skills-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .cr-skill-pill {
+        display: inline-flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 500;
+        color: #475569;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 7px;
+        padding: 4px 9px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+    .cr-skill-pill input {
+        display: none;
+    }
+    .cr-skill-pill:hover {
+        border-color: #cbd5e1;
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+    .cr-skill-pill.active {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+
+    /* ── Toolbar ── */
+    .cr-toolbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        margin: 24px 0 16px;
+        margin-bottom: 16px;
         flex-wrap: wrap;
     }
-    .sk-count { font-size: 14px; color: #64748b; margin: 0; }
-    .sk-count strong { color: #0f172a; }
-    .sk-search {
+    .cr-count {
+        font-size: 14px;
+        color: #64748b;
+        margin: 0;
+    }
+    .cr-count strong { color: #0f172a; }
+    .cr-search {
         display: flex;
         align-items: center;
         background: #fff;
@@ -109,8 +281,8 @@
         flex: 1;
         max-width: 360px;
     }
-    .sk-search svg { color: #94a3b8; flex-shrink: 0; }
-    .sk-search input {
+    .cr-search svg { color: #94a3b8; flex-shrink: 0; }
+    .cr-search input {
         border: none;
         outline: none;
         font-size: 13.5px;
@@ -121,112 +293,133 @@
         color: #334155;
     }
 
-    /* ── grid ── */
-    .sk-grid {
+    /* ── Grid ── */
+    .cr-list {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        padding-bottom: 48px;
+        gap: 14px;
     }
-    @media (max-width: 1080px) { .sk-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 620px)  { .sk-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1080px) {
+        .cr-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 640px) {
+        .cr-list {
+            grid-template-columns: 1fr;
+        }
+    }
 
-    /* ── seeker card ── */
-    .sk-card {
+    /* ── Card (Same as Karir) ── */
+    .cr-card {
         background: #fff;
         border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 18px;
+        border-radius: 12px;
+        padding: 13px;
         transition: box-shadow 0.2s, transform 0.2s;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        justify-content: space-between;
     }
-    .sk-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
-    .sk-card-header { display: flex; align-items: center; gap: 12px; }
-    .sk-avatar {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
+    .cr-card:hover {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        transform: translateY(-1px);
+    }
+    .cr-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+    .cr-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 800;
-        font-size: 16px;
-        color: #fff;
-        flex-shrink: 0;
-    }
-    .sk-card-name { font-size: 14.5px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1.2; }
-    .sk-card-title { font-size: 12.5px; color: #2563eb; font-weight: 600; margin: 2px 0 0; }
-    .sk-avail-badge {
-        margin-left: auto;
-        font-size: 10.5px;
         font-weight: 700;
-        padding: 3px 8px;
-        border-radius: 20px;
-        flex-shrink: 0;
+        font-size: 11px;
+        color: #fff;
     }
-    .avail-segera    { background: #dcfce7; color: #15803d; }
-    .avail-bulan     { background: #fef3c7; color: #b45309; }
-    .avail-lebih     { background: #f1f5f9; color: #64748b; }
-
-    .sk-meta {
+    .cr-tag {
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 4px;
+    }
+    .cr-tag.jobs { background: #dbeafe; color: #2563eb; }
+    .cr-tag.internship { background: #fef3c7; color: #d97706; }
+    .cr-tag.freelance { background: #fce7f3; color: #db2777; }
+    .cr-tag.remote { background: #d1fae5; color: #059669; }
+    .cr-tag.graduate { background: #ede9fe; color: #7c3aed; }
+    .cr-card-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 1px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .cr-card-company {
+        font-size: 11.5px;
+        color: #64748b;
+        margin: 0;
+    }
+    .cr-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px 10px;
+        gap: 4px 8px;
+        margin-top: 6px;
     }
-    .sk-meta-item {
+    .cr-meta-item {
         display: flex;
         align-items: center;
         gap: 4px;
-        font-size: 11.5px;
+        font-size: 11px;
         color: #64748b;
     }
-    .sk-meta-item svg { width: 12px; height: 12px; color: #94a3b8; flex-shrink: 0; }
-
-    .sk-skills {
+    .cr-meta-item svg { color: #94a3b8; flex-shrink: 0; width: 12px; height: 12px; }
+    .cr-skill-row {
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
+        margin-top: 6px;
     }
-    .sk-skill-chip {
+    .cr-chip {
         font-size: 10.5px;
         font-weight: 600;
         color: #334155;
         background: #f1f5f9;
         border-radius: 4px;
-        padding: 2px 7px;
+        padding: 1.5px 6px;
     }
-
-    .sk-about {
-        font-size: 12px;
+    .cr-desc {
+        font-size: 11.5px;
         color: #475569;
-        line-height: 1.5;
+        line-height: 1.45;
+        margin: 6px 0 8px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        margin: 0;
     }
-
-    .sk-card-footer {
+    .cr-card-bottom {
         margin-top: auto;
-        padding-top: 10px;
+        padding-top: 8px;
         border-top: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
     }
-    .sk-exp-badge {
-        font-size: 10.5px;
-        font-weight: 700;
+    .cr-card-bottom .it-status {
+        font-size: 11px;
         padding: 2px 7px;
-        border-radius: 4px;
-        background: #eff6ff;
-        color: #2563eb;
     }
-    .sk-view-btn {
+    .cr-apply {
         display: inline-flex;
         align-items: center;
         padding: 5px 12px;
@@ -239,39 +432,69 @@
         box-shadow: 0 1px 3px rgba(37,99,235,0.2);
         transition: background 0.15s;
     }
-    .sk-view-btn:hover {
-        background: #1d4ed8;
-        color: #fff;
-        text-decoration: none;
-    }
+    .cr-apply:hover { background: #1d4ed8; color: #fff; text-decoration: none; }
 
-    /* ── empty ── */
-    .sk-empty {
-        grid-column: 1 / -1;
+    .cr-empty {
         text-align: center;
         padding: 64px 24px;
         background: #fff;
         border: 1px dashed #cbd5e1;
         border-radius: 14px;
     }
-    .sk-empty h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 6px; }
-    .sk-empty p  { font-size: 14px; color: #64748b; margin: 0; }
+    .cr-empty h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 6px;
+    }
+    .cr-empty p { font-size: 14px; color: #64748b; margin: 0; }
+    .cr-filter-toggle {
+        display: none;
+        width: 100%;
+        margin-bottom: 12px;
+        padding: 10px 14px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2563eb;
+        background: #eff6ff;
+        border: 1.5px solid #bfdbfe;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    @media (max-width: 860px) {
+        .cr-layout {
+            grid-template-columns: 1fr;
+            height: auto;
+            min-height: 0;
+        }
+        .cr-sidebar {
+            display: none;
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+        .cr-sidebar.open { display: block; }
+        .cr-main { overflow: visible; }
+        .cr-filter-toggle { display: block; }
+        .cr-tabs { top: 62px; }
+        .sk-hero { padding: 22px 20px; }
+    }
 </style>
 
-{{-- Shared tabs nav --}}
-<div style="margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);">
+<div class="cr-page">
+    {{-- Tabs --}}
     <nav class="cr-tabs" aria-label="Kategori Karir">
         <div class="cr-tabs-inner">
             @foreach($tabs as $key => $label)
-                <a href="{{ route('career.index', ['type' => $key]) }}"
+                <a href="{{ route('career.index', array_merge(request()->except('type'), ['type' => $key])) }}"
                    class="{{ $tab === $key ? 'on' : '' }}"
                    id="tab-{{ $key }}">{{ $label }}</a>
             @endforeach
         </div>
     </nav>
-</div>
 
-<div class="sk-page">
     {{-- Success banner --}}
     @if(session('seeker_success'))
         <div id="sk-success" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #6ee7b7;border-radius:12px;padding:14px 20px;margin-top:16px;font-size:14px;font-weight:600;color:#065f46;">
@@ -287,112 +510,75 @@
             <h1>Direktori Pencari Kerja</h1>
             <p>Temukan kandidat berbakat atau daftarkan dirimu agar perusahaan bisa menemukanmu lebih mudah.</p>
         </div>
-        <a href="{{ route('career.seeker.create') }}" class="sk-hero-btn">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <a href="{{ route('career.seeker.create') }}" class="sk-hero-btn" id="btn-daftar-dirimu">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
             Daftarkan Dirimu
         </a>
     </div>
 
-    {{-- Toolbar --}}
-    <div class="sk-toolbar">
-        <p class="sk-count"><strong>{{ $seekers->total() }}</strong> pencari kerja aktif terdaftar</p>
-        <form class="sk-search" method="GET" action="{{ route('career.index') }}">
-            <input type="hidden" name="type" value="kerja">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="7"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari nama, posisi, lokasi...">
-        </form>
-    </div>
+    {{-- 2-Column Layout with Sidebar --}}
+    <div class="cr-layout">
+        @include('career._seeker-filters')
 
-    {{-- Grid --}}
-    <div class="sk-grid">
-        @forelse($seekers as $seeker)
-            @php
-                $initials = collect(explode(' ', $seeker->name))->take(2)->map(fn($w) => strtoupper(substr($w,0,1)))->implode('');
-                $colors = ['#2563eb','#7c3aed','#db2777','#059669','#d97706','#0891b2','#dc2626','#65a30d'];
-                $avatarColor = $colors[$seeker->id % count($colors)];
-                $availClass = match($seeker->availability) {
-                    'Segera' => 'avail-segera',
-                    'Bulan Depan' => 'avail-bulan',
-                    default => 'avail-lebih',
-                };
-            @endphp
-            <div class="sk-card" id="seeker-card-{{ $seeker->id }}">
-                {{-- Header --}}
-                <div class="sk-card-header">
-                    <div class="sk-avatar" style="background: {{ $avatarColor }}">{{ $initials }}</div>
-                    <div style="min-width:0;flex:1;">
-                        <p class="sk-card-name">{{ $seeker->name }}</p>
-                        <p class="sk-card-title">{{ $seeker->job_title }}</p>
-                    </div>
-                    <span class="sk-avail-badge {{ $availClass }}">{{ $seeker->availability }}</span>
+        <div class="cr-main">
+            <button type="button" class="cr-filter-toggle" id="cr-filter-toggle">Tampilkan Filter</button>
+
+            <div class="cr-toolbar">
+                <p class="cr-count"><strong>{{ $seekers->total() }}</strong> pencari kerja tersedia</p>
+                <form class="cr-search" method="GET" action="{{ route('career.index') }}">
+                    <input type="hidden" name="type" value="kerja">
+                    @foreach((array) request('experience', []) as $v)
+                        <input type="hidden" name="experience[]" value="{{ $v }}">
+                    @endforeach
+                    @foreach((array) request('availability', []) as $v)
+                        <input type="hidden" name="availability[]" value="{{ $v }}">
+                    @endforeach
+                    @foreach((array) request('skills', []) as $v)
+                        <input type="hidden" name="skills[]" value="{{ $v }}">
+                    @endforeach
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari nama, posisi, lokasi..." id="seeker-search">
+                </form>
+            </div>
+
+            @if(count($seekers) === 0)
+                <div class="cr-empty">
+                    <h3>Tidak ada pencari kerja yang sesuai</h3>
+                    <p>Hapus filter pencarian atau coba kata kunci lain.</p>
+                </div>
+            @else
+                <div class="cr-list">
+                    @foreach($seekers as $seeker)
+                        @include('career._seeker-card', ['seeker' => $seeker])
+                    @endforeach
                 </div>
 
-                {{-- Meta --}}
-                <div class="sk-meta">
-                    @if($seeker->location)
-                    <span class="sk-meta-item">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
-                        {{ $seeker->location }}
-                    </span>
-                    @endif
-                    @if($seeker->expected_salary)
-                    <span class="sk-meta-item">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                        {{ $seeker->expected_salary }}
-                    </span>
-                    @endif
-                </div>
-
-                {{-- Skills --}}
-                @if(!empty($seeker->skills))
-                    <div class="sk-skills">
-                        @foreach(array_slice($seeker->skills, 0, 5) as $skill)
-                            <span class="sk-skill-chip">{{ $skill }}</span>
-                        @endforeach
-                        @if(count($seeker->skills) > 5)
-                            <span class="sk-skill-chip" style="background:#e2e8f0;color:#64748b;">+{{ count($seeker->skills) - 5 }}</span>
-                        @endif
+                {{-- Pagination (Centered) --}}
+                @if($seekers->hasPages())
+                    <div class="cr-pagination sk-pagination mt-10 mb-4 flex justify-center w-full">
+                        {{ $seekers->withQueryString()->links('vendor.pagination.tailwind') }}
                     </div>
                 @endif
-
-                {{-- About --}}
-                @if($seeker->about)
-                    <p class="sk-about">{{ $seeker->about }}</p>
-                @endif
-
-                {{-- Footer --}}
-                <div class="sk-card-footer">
-                    <span class="sk-exp-badge">{{ $seeker->experience_level }}</span>
-                    <a href="{{ route('career.seeker.show', $seeker->id) }}" class="sk-view-btn" id="view-seeker-{{ $seeker->id }}">
-                        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" style="margin-right:4px">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                        </svg>
-                        Lihat Detail
-                    </a>
-                </div>
-            </div>
-        @empty
-            <div class="sk-empty">
-                <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#cbd5e1" stroke-width="1.5" style="margin:0 auto 12px;display:block;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
-                </svg>
-                <h3>Belum ada pencari kerja terdaftar</h3>
-                <p>Jadilah yang pertama mendaftarkan dirimu!</p>
-            </div>
-        @endforelse
-    </div>
-
-    {{-- Pagination (Centered) --}}
-    @if($seekers->hasPages())
-        <div class="sk-pagination mt-10 mb-4 flex justify-center w-full">
-            {{ $seekers->withQueryString()->links('vendor.pagination.tailwind') }}
+            @endif
         </div>
-    @endif
+    </div>
 </div>
+
+<script>
+    (function () {
+        var btn = document.getElementById('cr-filter-toggle');
+        var side = document.getElementById('cr-sidebar');
+        if (btn && side) {
+            btn.addEventListener('click', function () {
+                side.classList.toggle('open');
+                btn.textContent = side.classList.contains('open') ? 'Sembunyikan Filter' : 'Tampilkan Filter';
+            });
+        }
+    })();
+</script>
 @endsection
