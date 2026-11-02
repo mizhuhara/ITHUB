@@ -25,10 +25,23 @@ use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Event;
+use App\Models\JobListing;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $latestJobs = JobListing::where('is_active', true)
+        ->where('status', '!=', 'Draft')
+        ->latest('id')
+        ->take(6)
+        ->get();
+
+    $upcomingEvents = Event::where('status', 'Approved')
+        ->latest('id')
+        ->take(3)
+        ->get();
+
+    return view('welcome', compact('latestJobs', 'upcomingEvents'));
 })->name('welcome');
 
 Route::get('/education', [EducationController::class, 'index'])->name('education.index');
