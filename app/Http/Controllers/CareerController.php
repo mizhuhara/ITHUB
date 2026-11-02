@@ -37,8 +37,28 @@ class CareerController extends Controller
                 $seekerQuery->where(function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
                         ->orWhere('job_title', 'like', "%{$keyword}%")
-                        ->orWhere('location', 'like', "%{$keyword}%");
+                        ->orWhere('location', 'like', "%{$keyword}%")
+                        ->orWhere('about', 'like', "%{$keyword}%");
                 });
+            }
+
+            if ($request->filled('experience')) {
+                $seekerQuery->whereIn('experience_level', (array) $request->query('experience'));
+            }
+
+            if ($request->filled('availability')) {
+                $seekerQuery->whereIn('availability', (array) $request->query('availability'));
+            }
+
+            if ($request->filled('skills')) {
+                $skillFilters = (array) $request->query('skills');
+                foreach ($skillFilters as $skill) {
+                    $seekerQuery->where(function ($q) use ($skill) {
+                        $q->whereJsonContains('skills', $skill)
+                            ->orWhereJsonContains('skills', strtolower($skill))
+                            ->orWhereJsonContains('skills', ucfirst($skill));
+                    });
+                }
             }
 
             $seekers = $seekerQuery->latest('id')->paginate(6)->withQueryString();
@@ -47,6 +67,13 @@ class CareerController extends Controller
                 'seekers' => $seekers,
                 'tab' => $tab,
                 'tabs' => $this->tabs,
+                'experienceLevels' => ['Entry', 'Mid', 'Senior'],
+                'availabilities' => ['Segera', 'Bulan Depan', '> 1 Bulan'],
+                'allSkills' => [
+                    'Laravel', 'PHP', 'React', 'Vue', 'JavaScript', 'TypeScript',
+                    'Python', 'Node.js', 'Go', 'Java', 'UI/UX', 'Figma', 'Tailwind',
+                    'MySQL', 'PostgreSQL', 'Docker', 'AWS', 'Git', 'Flutter',
+                ],
             ]);
         }
 
