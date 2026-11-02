@@ -136,3 +136,4 @@ class AdminBannerTest extends TestCase
         $response->assertDontSee('Banner Tersembunyi');
     }
 }
+
