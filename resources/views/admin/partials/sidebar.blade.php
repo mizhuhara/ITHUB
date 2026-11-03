@@ -137,6 +137,13 @@
                     'href' => route('admin.reports.index'),
                     'roles' => ['super_admin', 'admin'],
                 ],
+                [
+                    'label' => 'Banner',
+                    'icon' => 'banner',
+                    'active' => request()->routeIs('admin.banners.*'),
+                    'href' => route('admin.banners.index'),
+                    'roles' => ['super_admin'],
+                ],
             ];
 
             // Filter: hanya menu yang role boleh lihat
@@ -229,6 +236,8 @@
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                         @elseif ($item['icon'] === 'globe')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"/></svg>
+                        @elseif ($item['icon'] === 'banner')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path stroke-linecap="round" d="M2 10h20"/></svg>
                         @endif
                     </span>
 

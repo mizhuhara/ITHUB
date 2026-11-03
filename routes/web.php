@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminApplicationController;
 use App\Http\Controllers\AdminArticleController;
+use App\Http\Controllers\AdminBannerController;
 use App\Http\Controllers\AdminCommunityController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminEventController;
@@ -26,10 +27,29 @@ use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserReportController;
+use App\Models\Banner;
+use App\Models\Event;
+use App\Models\JobListing;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $latestJobs = JobListing::where('is_active', true)
+        ->where('status', '!=', 'Draft')
+        ->latest('id')
+        ->take(6)
+        ->get();
+
+    $upcomingEvents = Event::where('status', 'Approved')
+        ->latest('id')
+        ->take(3)
+        ->get();
+
+    $banners = Banner::where('is_active', true)
+        ->orderBy('sort_order')
+        ->orderByDesc('id')
+        ->get();
+
+    return view('welcome', compact('latestJobs', 'upcomingEvents', 'banners'));
 })->name('welcome');
 
 Route::get('/education', [EducationController::class, 'index'])->name('education.index');
@@ -224,6 +244,14 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/articles/{id}/edit', [AdminArticleController::class, 'edit'])->name('admin.articles.edit');
     Route::put('/admin/articles/{id}', [AdminArticleController::class, 'update'])->name('admin.articles.update');
     Route::delete('/admin/articles/{id}', [AdminArticleController::class, 'destroy'])->name('admin.articles.destroy');
+
+    // Admin Banners (super_admin only)
+    Route::get('/admin/banners', [AdminBannerController::class, 'index'])->name('admin.banners.index');
+    Route::get('/admin/banners/create', [AdminBannerController::class, 'create'])->name('admin.banners.create');
+    Route::post('/admin/banners', [AdminBannerController::class, 'store'])->name('admin.banners.store');
+    Route::get('/admin/banners/{id}/edit', [AdminBannerController::class, 'edit'])->name('admin.banners.edit');
+    Route::put('/admin/banners/{id}', [AdminBannerController::class, 'update'])->name('admin.banners.update');
+    Route::delete('/admin/banners/{id}', [AdminBannerController::class, 'destroy'])->name('admin.banners.destroy');
 
 }); // end admin group
 
