@@ -21,13 +21,33 @@
 
             {{-- Author Info --}}
             <div class="flex items-center gap-3.5 pt-2">
-                <img src="{{ $article['author_avatar'] }}" alt="{{ $article['author_name'] }}" class="w-11 h-11 rounded-full object-cover shrink-0 border border-slate-200">
+                @if(!empty($article['author_avatar']))
+                    <img src="{{ $article['author_avatar'] }}" alt="{{ $article['author_name'] }}" class="w-11 h-11 rounded-full object-cover shrink-0 border border-slate-200">
+                @else
+                    <span class="w-11 h-11 rounded-full shrink-0 flex items-center justify-center text-sm font-bold text-white shadow-xs" style="background-color: {{ $article['author_bg'] }}">
+                        {{ $article['author_initials'] }}
+                    </span>
+                @endif
                 <div>
-                    <h3 class="text-sm font-bold text-slate-900">
-                        {{ $article['author_name'] }}
-                    </h3>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @if(!empty($article['author_url']))
+                            <a href="{{ $article['author_url'] }}" class="text-sm font-bold text-slate-900 hover:text-blue-600 transition" title="Lihat profil {{ $article['author_name'] }}">
+                                {{ $article['author_name'] }}
+                            </a>
+                        @else
+                            <h3 class="text-sm font-bold text-slate-900">
+                                {{ $article['author_name'] }}
+                            </h3>
+                        @endif
+                        @if(!empty($article['author_badge']))
+                            <span class="px-2 py-0.5 rounded text-[11px] font-semibold {{ $article['author_badge_class'] }}">
+                                {{ $article['author_badge'] }}
+                            </span>
+                        @endif
+                    </div>
                     <p class="text-xs text-slate-500 mt-0.5">
-                        {{ $article['author_role'] ?? 'Tech Author' }} <span class="mx-1.5">•</span> {{ $article['date'] }} <span class="mx-1.5">•</span> {{ $article['read_time'] }}
+                        <span class="text-slate-600 font-medium">{{ $article['author_role'] ?? 'Penulis' }}</span>
+                        <span class="mx-1.5">•</span> {{ $article['date'] }} <span class="mx-1.5">•</span> {{ $article['read_time'] }}
                     </p>
                 </div>
             </div>
