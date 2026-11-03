@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\School;
+use App\Models\UserReport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -318,6 +319,36 @@ class AdminSchoolController extends Controller
         $path = $request->file('file')->store('editor', 'public');
 
         return response()->json(['url' => Storage::url($path)]);
+    }
+
+    /**
+     * Tampilkan halaman formulir pelaporan bug / masalah untuk admin sekolah.
+     */
+    public function reportBug(): View
+    {
+        return view('admin.schools.report_bug');
+    }
+
+    /**
+     * Simpan laporan bug dari admin sekolah.
+     */
+    public function storeReportBug(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'category' => ['required', 'string', 'in:Bug,Konten,Teknis,Lainnya'],
+            'subject' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:2000'],
+            'priority' => ['required', 'string', 'in:low,medium,high'],
+        ]);
+
+        UserReport::create([
+            ...$validated,
+            'user_id' => auth()->id(),
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('admin.school.report-bug')
+            ->with('success', 'Laporan masalah berhasil dikirim ke tim IndoTech. Tim kami akan segera meninjaunya.');
     }
 
     private function validateSchool(Request $request): array

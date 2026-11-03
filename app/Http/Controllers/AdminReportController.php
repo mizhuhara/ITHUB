@@ -8,8 +8,10 @@ use App\Models\JobListing;
 use App\Models\ReportExport;
 use App\Models\School;
 use App\Models\User;
+use App\Models\UserReport;
 use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -80,6 +82,16 @@ class AdminReportController extends Controller
                 ->latest()
                 ->paginate(10, ['*'], 'exports_page')
                 ->withQueryString(),
+            'userReports' => UserReport::with('user')
+                ->when($request->query('report_status'), fn ($q, $s) => $q->where('status', $s))
+                ->latest()
+                ->paginate(15, ['*'], 'ur_page')
+                ->withQueryString(),
+            'userReports' => UserReport::with('user')
+                ->when($request->query('report_status'), fn ($q, $s) => $q->where('status', $s))
+                ->latest()
+                ->paginate(15, ['*'], 'ur_page')
+                ->withQueryString(),
             'activeType' => $request->query('type', ''),
             'from' => $request->query('from'),
             'to' => $request->query('to'),
@@ -102,6 +114,22 @@ class AdminReportController extends Controller
             'from' => $request->query('from'),
             'to' => $request->query('to'),
         ]);
+    }
+
+    /**
+     * Update status laporan dari user (hanya super_admin/admin).
+     */
+    public function updateUserReport(Request $request, UserReport $userReport): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,investigating,resolved,closed'],
+            'admin_notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $userReport->update($validated);
+
+        return redirect()->route('admin.reports.index')
+            ->with('success', 'Status laporan berhasil diperbarui.');
     }
 
     public function export(Request $request, string $type): StreamedResponse

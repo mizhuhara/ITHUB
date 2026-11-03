@@ -355,63 +355,217 @@
                 </form>
             </div>
 
-            {{-- Ganti Password Card --}}
-            <div class="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs h-fit space-y-6">
-                <div>
-                    <h2 class="text-base font-bold text-slate-900">Ganti Password</h2>
-                    <p class="text-sm text-slate-500 mt-1">Gunakan minimal 8 karakter dengan kombinasi yang kuat.</p>
+            {{-- Right Column: Ganti Password & Laporkan Masalah --}}
+            <div class="space-y-6">
+                {{-- Ganti Password Card --}}
+                <div class="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs space-y-6">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">Ganti Password</h2>
+                        <p class="text-sm text-slate-500 mt-1">Gunakan minimal 8 karakter dengan kombinasi yang kuat.</p>
 
-                    <form method="POST" data-async data-async-reload action="{{ route('profile.password') }}" class="mt-5 space-y-4">
-                        @csrf
-                        @method('PUT')
+                        <form method="POST" data-async data-async-reload action="{{ route('profile.password') }}" class="mt-5 space-y-4">
+                            @csrf
+                            @method('PUT')
 
-                        <div>
-                            <label for="current_password" class="block text-sm font-semibold text-slate-700 mb-1.5">Password Saat Ini</label>
-                            <input type="password" name="current_password" id="current_password" required autocomplete="current-password"
-                                   class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('current_password') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
-                            @error('current_password')
-                                <p class="text-xs text-red-600 mt-1.5">{{ $message }}</p>
-                            @enderror
+                            <div>
+                                <label for="current_password" class="block text-sm font-semibold text-slate-700 mb-1.5">Password Saat Ini</label>
+                                <input type="password" name="current_password" id="current_password" required autocomplete="current-password"
+                                       class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('current_password') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
+                                @error('current_password')
+                                    <p class="text-xs text-red-600 mt-1.5">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="password" class="block text-sm font-semibold text-slate-700 mb-1.5">Password Baru</label>
+                                <input type="password" name="password" id="password" required autocomplete="new-password"
+                                       class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('password') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
+                                @error('password')
+                                    <p class="text-xs text-red-600 mt-1.5">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-1.5">Ulangi Password Baru</label>
+                                <input type="password" name="password_confirmation" id="password_confirmation" required autocomplete="new-password"
+                                       class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:border-blue-500 focus:outline-none">
+                            </div>
+
+                            <button type="submit"
+                                    class="rounded-xl bg-slate-900 hover:bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition cursor-pointer">
+                                Perbarui Password
+                            </button>
+                        </form>
+                    </div>
+
+                    {{-- Security Tip Box --}}
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 space-y-1.5">
+                        <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-blue-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                            <span>Tips Profil & Portofolio</span>
                         </div>
-
-                        <div>
-                            <label for="password" class="block text-sm font-semibold text-slate-700 mb-1.5">Password Baru</label>
-                            <input type="password" name="password" id="password" required autocomplete="new-password"
-                                   class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('password') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
-                            @error('password')
-                                <p class="text-xs text-red-600 mt-1.5">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-1.5">Ulangi Password Baru</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" required autocomplete="new-password"
-                                   class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm focus:border-blue-500 focus:outline-none">
-                        </div>
-
-                        <button type="submit"
-                                class="rounded-xl bg-slate-900 hover:bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition cursor-pointer">
-                            Perbarui Password
-                        </button>
-                    </form>
+                        <p class="leading-relaxed">Pastikan CV yang Anda unggah bertipe PDF maksimal 2MB dengan informasi kontak dan keahlian yang terbaru untuk memudahkan proses rekrutmen kerja/magang.</p>
+                    </div>
                 </div>
 
-                {{-- Security Tip Box --}}
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 space-y-1.5">
-                    <div class="font-bold text-slate-800 flex items-center gap-1.5">
-                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-blue-600">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                        <span>Tips Profil & Portofolio</span>
+                {{-- Laporkan Masalah Card (di bawah tempat perbarui password) --}}
+                <div class="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+                                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-rose-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-900">Laporkan Masalah</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Temukan bug atau kendala sistem? Beritahu kami.</p>
+                            </div>
+                        </div>
+                        <button type="button" id="open-report-modal" onclick="showReportModal()"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition cursor-pointer shrink-0">
+                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            </svg>
+                            Laporkan Masalah
+                        </button>
                     </div>
-                    <p class="leading-relaxed">Pastikan CV yang Anda unggah bertipe PDF maksimal 2MB dengan informasi kontak dan keahlian yang terbaru untuk memudahkan proses rekrutmen kerja/magang.</p>
+
+                    @if(session('report_success'))
+                        {{-- Top-right floating toast alert --}}
+                        <div id="report-toast" class="fixed top-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900 text-white text-[13.5px] shadow-2xl border border-slate-800 transition-all duration-300 animate-fade-in max-w-md">
+                            <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0 pr-1">
+                                <p class="font-bold text-[13px] text-white">Laporan Terkirim!</p>
+                                <p class="text-[12px] text-slate-300 leading-snug mt-0.5">{{ session('report_success') }}</p>
+                            </div>
+                            <button type="button" onclick="this.closest('#report-toast').remove()" class="text-slate-400 hover:text-white p-1 transition">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <script>
+                            setTimeout(() => {
+                                const toast = document.getElementById('report-toast');
+                                if (toast) {
+                                    toast.style.opacity = '0';
+                                    toast.style.transform = 'translateY(-10px)';
+                                    setTimeout(() => toast.remove(), 300);
+                                }
+                            }, 5000);
+                        </script>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@push('scripts')
+{{-- Modal Laporkan Masalah --}}
+<div id="report-modal-overlay"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg animate-fade-in">
+        {{-- Modal Header --}}
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-rose-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-[15px] font-bold text-slate-900">Laporkan Masalah</h3>
+                    <p class="text-[12px] text-slate-500">Laporan akan diteruskan ke tim IndoTech.</p>
+                </div>
+            </div>
+            <button type="button" id="close-report-modal" onclick="hideReportModal()"
+                    class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Modal Body --}}
+        <form method="POST" action="{{ route('user.report.store') }}" class="px-6 py-5 space-y-4">
+            @csrf
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="modal_category" class="block text-sm font-semibold text-slate-700 mb-1.5">Kategori Masalah</label>
+                    <select id="modal_category" name="category" required
+                            class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('category') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="Bug" @selected(old('category') === 'Bug')>Bug / Error Sistem</option>
+                        <option value="Konten" @selected(old('category') === 'Konten')>Konten Tidak Sesuai</option>
+                        <option value="Teknis" @selected(old('category') === 'Teknis')>Masalah Teknis</option>
+                        <option value="Lainnya" @selected(old('category') === 'Lainnya')>Lainnya</option>
+                    </select>
+                    @error('category')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="modal_priority" class="block text-sm font-semibold text-slate-700 mb-1.5">Prioritas</label>
+                    <select id="modal_priority" name="priority" required
+                            class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('priority') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
+                        <option value="">-- Pilih Prioritas --</option>
+                        <option value="low" @selected(old('priority') === 'low')>Rendah</option>
+                        <option value="medium" @selected(old('priority', 'medium') === 'medium')>Sedang</option>
+                        <option value="high" @selected(old('priority') === 'high')>Tinggi</option>
+                    </select>
+                    @error('priority')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div>
+                <label for="modal_subject" class="block text-sm font-semibold text-slate-700 mb-1.5">Judul Laporan</label>
+                <input type="text" id="modal_subject" name="subject" required
+                       value="{{ old('subject') }}"
+                       placeholder="cth. Tombol simpan tidak berfungsi di halaman profil"
+                       class="w-full rounded-xl border px-3.5 py-2.5 text-sm focus:outline-none {{ $errors->has('subject') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">
+                @error('subject')
+                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="modal_description" class="block text-sm font-semibold text-slate-700 mb-1.5">Deskripsi Masalah</label>
+                <textarea id="modal_description" name="description" rows="4" required maxlength="2000"
+                          placeholder="Jelaskan masalah yang Anda temukan secara detail: langkah untuk mereproduksi, halaman yang bermasalah, dll."
+                          class="w-full rounded-xl border px-3.5 py-2.5 text-sm resize-none focus:outline-none {{ $errors->has('description') ? 'border-red-300 focus:border-red-400' : 'border-slate-200 focus:border-blue-500' }}">{{ old('description') }}</textarea>
+                @error('description')
+                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- Modal Footer --}}
+            <div class="flex items-center justify-between gap-3 pt-1">
+                <p class="text-xs text-slate-400">Laporan akan dikirim ke tim IndoTech untuk ditindaklanjuti.</p>
+                <div class="flex gap-2 shrink-0">
+                    <button type="button" id="cancel-report-modal" onclick="hideReportModal()"
+                            class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 rounded-xl bg-rose-500 hover:bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition cursor-pointer">
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                        Kirim Laporan
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     function previewAvatar(input) {
         if (input.files && input.files[0]) {
@@ -447,6 +601,40 @@
             }
         }
     }
+
+    // Modal Laporkan Masalah
+    function showReportModal() {
+        const overlay = document.getElementById('report-modal-overlay');
+        if (!overlay) return;
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+    }
+
+    function hideReportModal() {
+        const overlay = document.getElementById('report-modal-overlay');
+        if (!overlay) return;
+        overlay.classList.remove('flex');
+        overlay.classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const overlay = document.getElementById('report-modal-overlay');
+
+        overlay?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideReportModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay && !overlay.classList.contains('hidden')) {
+                hideReportModal();
+            }
+        });
+
+        @if($errors->hasAny(['category', 'priority', 'subject', 'description']))
+            showReportModal();
+        @endif
+    });
 </script>
-@endpush
 @endsection
