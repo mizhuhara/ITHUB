@@ -62,21 +62,21 @@
                 [
                     'label' => $userRole === 'school' ? 'Informasi Sekolah' : 'School',
                     'icon' => 'school',
-                    'active' => request()->routeIs('admin.schools.*'),
+                    'active' => request()->routeIs('admin.schools.*') && !request()->routeIs('admin.school*.report-bug*'),
                     'href' => route('admin.schools.index'),
                     'roles' => ['super_admin', 'admin', 'school'],
                 ],
                 [
                     'label' => $userRole === 'university' ? 'Informasi Kampus' : 'Universities',
                     'icon' => 'university',
-                    'active' => request()->routeIs('admin.univ.*'),
+                    'active' => request()->routeIs('admin.univ.*') && !request()->routeIs('admin.univ*.report-bug*'),
                     'href' => route('admin.univ.index'),
                     'roles' => ['super_admin', 'admin', 'university'],
                 ],
                 [
                     'label' => $userRole === 'company' ? 'Informasi Perusahaan' : 'Company',
                     'icon' => 'company',
-                    'active' => request()->routeIs('admin.company.*'),
+                    'active' => request()->routeIs('admin.company.*') && !request()->routeIs('admin.company*.report-bug*'),
                     'href' => route('admin.company.index'),
                     'roles' => ['super_admin', 'admin', 'company'],
                 ],
@@ -107,6 +107,13 @@
                     'active' => request()->routeIs('admin.articles.*'),
                     'href' => route('admin.articles.index'),
                     'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
+                ],
+                [
+                    'label' => 'Laporkan Masalah',
+                    'icon' => 'bug',
+                    'active' => request()->routeIs('admin.school*.report-bug*') || request()->routeIs('admin.univ*.report-bug*') || request()->routeIs('admin.company*.report-bug*'),
+                    'href' => $userRole === 'university' ? route('admin.univ.report-bug') : ($userRole === 'company' ? route('admin.company.report-bug') : route('admin.school.report-bug')),
+                    'roles' => ['school', 'university', 'company'],
                 ],
                 [
                     'label' => 'Lihat Website',
@@ -218,6 +225,8 @@
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm6 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/></svg>
                         @elseif ($item['icon'] === 'reports')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
+                        @elseif ($item['icon'] === 'bug')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                         @elseif ($item['icon'] === 'globe')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"/></svg>
                         @endif

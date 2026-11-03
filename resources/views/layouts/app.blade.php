@@ -1471,5 +1471,7 @@
         @unless(View::hasSection('hide_footer'))
             @include('partials.footer')
         @endunless
+
+        @stack('scripts')
     </body>
 </html>

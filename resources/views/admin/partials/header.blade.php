@@ -51,6 +51,11 @@
                     $title = 'User Management';
                     $breadcrumb = 'User Management';
                     $subtitle = 'Kelola semua akun pengguna dan hak akses terdaftar di platform.';
+                } elseif (request()->routeIs('admin.school*.report-bug*') || request()->routeIs('admin.univ*.report-bug*') || request()->routeIs('admin.company*.report-bug*')) {
+                    $title = 'Laporkan Masalah';
+                    $breadcrumb = 'Laporkan Masalah';
+                    $subtitle = 'Kirim laporan bug sistem, kendala teknis, atau masalah konten langsung ke tim IndoTech.';
+                    $parentName = null;
                 } elseif (request()->routeIs('admin.schools.*')) {
                     $parentRoute = route('admin.schools.index');
                     $parentName = 'SMK IT';
@@ -225,7 +230,10 @@
             $pendingApplications = $isAdminArea
                 ? \App\Models\JobApplication::where('status', 'pending')->count()
                 : 0;
-            $notificationTotal = $pendingVerifications + $pendingEvents + $pendingApplications;
+            $pendingReports = $isAdminArea
+                ? \App\Models\UserReport::where('status', 'pending')->count()
+                : 0;
+            $notificationTotal = $pendingVerifications + $pendingEvents + $pendingApplications + $pendingReports;
         @endphp
         @if($isAdminArea)
             <div class="relative" id="admin-notif-nav">
@@ -276,6 +284,16 @@
                                 <span class="block text-[11.5px] text-slate-500">{{ $pendingApplications }} lamaran menunggu</span>
                             </span>
                             @if($pendingApplications > 0)<span class="mt-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-[18px] text-center">{{ $pendingApplications }}</span>@endif
+                        </a>
+                        <a href="{{ route('admin.reports.index', ['report_status' => 'pending']) }}" class="flex items-start gap-2.5 px-3.5 py-2.5 hover:bg-slate-50 transition-colors">
+                            <span class="mt-0.5 w-7 h-7 shrink-0 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+                                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                            </span>
+                            <span class="min-w-0 flex-1">
+                                <span class="block text-[13px] font-semibold text-slate-800">Laporan masalah</span>
+                                <span class="block text-[11.5px] text-slate-500">{{ $pendingReports }} laporan masalah baru</span>
+                            </span>
+                            @if($pendingReports > 0)<span class="mt-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-[18px] text-center">{{ $pendingReports }}</span>@endif
                         </a>
                     @endif
                 </div>

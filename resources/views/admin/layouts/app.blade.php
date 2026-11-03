@@ -59,7 +59,7 @@
         {{-- Main Content --}}
         <main class="flex-1 p-8">
             {{-- Flash Alert Messages --}}
-            @if(session('success'))
+            @if(session('success') && !request()->routeIs('*report-bug*'))
                 <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center justify-between text-sm shadow-sm animate-fade-in">
                     <div class="flex items-center gap-2.5">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-emerald-600"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
