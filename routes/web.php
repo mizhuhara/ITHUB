@@ -26,6 +26,7 @@ use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserReportController;
 use App\Models\Banner;
 use App\Models\Event;
 use App\Models\JobListing;
@@ -143,6 +144,8 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/schools/create', [AdminSchoolController::class, 'create'])->name('admin.schools.create');
     Route::post('/admin/schools', [AdminSchoolController::class, 'store'])->name('admin.schools.store');
     Route::post('/admin/editor-upload', [AdminSchoolController::class, 'editorUpload'])->name('admin.editor.upload');
+    Route::get('/admin/schools/report-bug', [AdminSchoolController::class, 'reportBug'])->name('admin.school.report-bug');
+    Route::post('/admin/schools/report-bug', [AdminSchoolController::class, 'storeReportBug'])->name('admin.school.report-bug.store');
     Route::get('/admin/schools/{id}', [AdminSchoolController::class, 'show'])->name('admin.schools.show');
     Route::get('/admin/schools/{id}/edit', [AdminSchoolController::class, 'edit'])->name('admin.schools.edit');
     Route::put('/admin/schools/{id}', [AdminSchoolController::class, 'update'])->name('admin.schools.update');
@@ -152,6 +155,8 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/univ', [AdminUnivController::class, 'index'])->name('admin.univ.index');
     Route::get('/admin/univ/create', [AdminUnivController::class, 'create'])->name('admin.univ.create');
     Route::post('/admin/univ', [AdminUnivController::class, 'store'])->name('admin.univ.store');
+    Route::get('/admin/univ/report-bug', [AdminUnivController::class, 'reportBug'])->name('admin.univ.report-bug');
+    Route::post('/admin/univ/report-bug', [AdminUnivController::class, 'storeReportBug'])->name('admin.univ.report-bug.store');
     Route::get('/admin/univ/{id}', [AdminUnivController::class, 'show'])->name('admin.univ.show');
     Route::get('/admin/univ/{id}/edit', [AdminUnivController::class, 'edit'])->name('admin.univ.edit');
     Route::put('/admin/univ/{id}', [AdminUnivController::class, 'update'])->name('admin.univ.update');
@@ -161,6 +166,8 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/company', [AdminCompanyController::class, 'index'])->name('admin.company.index');
     Route::get('/admin/company/create', [AdminCompanyController::class, 'create'])->name('admin.company.create');
     Route::post('/admin/company', [AdminCompanyController::class, 'store'])->name('admin.company.store');
+    Route::get('/admin/company/report-bug', [AdminCompanyController::class, 'reportBug'])->name('admin.company.report-bug');
+    Route::post('/admin/company/report-bug', [AdminCompanyController::class, 'storeReportBug'])->name('admin.company.report-bug.store');
     Route::get('/admin/company/{id}', [AdminCompanyController::class, 'show'])->name('admin.company.show');
     Route::get('/admin/company/{id}/edit', [AdminCompanyController::class, 'edit'])->name('admin.company.edit');
     Route::put('/admin/company/{id}', [AdminCompanyController::class, 'update'])->name('admin.company.update');
@@ -228,6 +235,7 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/reports/{type}/export/pdf', [AdminReportController::class, 'exportPdf'])->name('admin.reports.export.pdf');
     Route::get('/admin/reports/{type}/export/xlsx', [AdminReportController::class, 'exportXlsx'])->name('admin.reports.export.xlsx');
     Route::get('/admin/reports/{type}', [AdminReportController::class, 'show'])->name('admin.reports.show');
+    Route::patch('/admin/user-reports/{userReport}', [AdminReportController::class, 'updateUserReport'])->name('admin.user-reports.update');
 
     // Admin Articles
     Route::get('/admin/articles', [AdminArticleController::class, 'index'])->name('admin.articles.index');
@@ -260,6 +268,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/dashboard/password', [ProfileController::class, 'updatePassword'])
         ->middleware('throttle:6,1')
         ->name('profile.password');
+    Route::post('/dashboard/report', [UserReportController::class, 'store'])->name('user.report.store');
 });
 
 // Auth Routes
