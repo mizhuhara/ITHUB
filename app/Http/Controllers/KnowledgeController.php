@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Company;
+use App\Models\School;
+use App\Models\University;
 use Illuminate\Http\Request;
 
 class KnowledgeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Article::published();
+        $query = Article::published()->with('user');
 
         // Category filter
         $category = $request->query('category', 'All');
@@ -28,7 +31,7 @@ class KnowledgeController extends Controller
             });
         }
 
-        $perPage = 3;
+        $perPage = 6;
         $currentPage = max(1, (int) $request->query('page', 1));
         $total = $query->count();
         $totalPages = max(1, (int) ceil($total / $perPage));
@@ -115,7 +118,7 @@ class KnowledgeController extends Controller
 
     public function show($id)
     {
-        $article = Article::published()->findOrFail($id);
+        $article = Article::published()->with('user')->findOrFail($id);
         $article->increment('views');
 
         $articleArray = $this->articleToArray($article);
@@ -136,6 +139,7 @@ class KnowledgeController extends Controller
         }
 
         $relatedArticles = Article::published()
+            ->with('user')
             ->where('id', '!=', $article->id)
             ->inRandomOrder()
             ->take(3)
@@ -156,6 +160,88 @@ class KnowledgeController extends Controller
      */
     private function articleToArray(Article $article): array
     {
+        $user = $article->user;
+        $name = null;
+        $role = null;
+        $avatar = $article->author_avatar;
+        $badge = null;
+        $badgeClass = 'bg-slate-100 text-slate-700';
+        $authorUrl = null;
+
+        if ($user) {
+            switch ($user->role) {
+                case 'school':
+                    $school = School::where('user_id', $user->id)->first();
+                    $name = $school?->name ?: $user->name;
+                    $role = $school?->institution_type ?: 'Sekolah Vokasi';
+                    $avatar = $school?->logo_url ?: ($user->avatar_url ?: $avatar);
+                    $badge = 'Sekolah';
+                    $badgeClass = 'bg-blue-50 text-blue-700 border border-blue-200/60';
+                    $authorUrl = $school ? route('education.show', $school->id) : null;
+                    break;
+                case 'university':
+                    $univ = University::where('user_id', $user->id)->first();
+                    $name = $univ?->name ?: $user->name;
+                    $role = $univ?->type ?: 'Perguruan Tinggi';
+                    $avatar = $univ?->logo_url ?: ($user->avatar_url ?: $avatar);
+                    $badge = 'Kampus';
+                    $badgeClass = 'bg-indigo-50 text-indigo-700 border border-indigo-200/60';
+                    $authorUrl = $univ ? route('campus.show', $univ->id) : null;
+                    break;
+                case 'company':
+                    $comp = Company::where('user_id', $user->id)->first();
+                    $name = $comp?->name ?: $user->name;
+                    $role = $comp?->industry ?: 'Perusahaan Mitra';
+                    $avatar = $comp?->logo_url ?: ($user->avatar_url ?: $avatar);
+                    $badge = 'Industri';
+                    $badgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200/60';
+                    $authorUrl = route('industry', ['q' => $comp?->name ?? '']);
+                    break;
+                case 'super_admin':
+                case 'admin':
+                    $name = $user->name ?: 'Admin IndoTech';
+                    $role = 'Admin IndoTech';
+                    $avatar = $user->avatar_url ?: $avatar;
+                    $badge = 'Admin';
+                    $badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200/60';
+                    break;
+                default:
+                    $name = $user->name;
+                    $role = 'Member IndoTech';
+                    $avatar = $user->avatar_url ?: $avatar;
+                    $badge = 'Member';
+                    $badgeClass = 'bg-slate-100 text-slate-700 border border-slate-200';
+                    break;
+            }
+        }
+
+        if (empty($name)) {
+            $name = ! empty($article->author_name) ? $article->author_name : 'Admin IndoTech';
+        }
+        if (empty($role)) {
+            $role = ! empty($article->author_role) ? $article->author_role : 'Kontributor';
+        }
+
+        // Format avatar URL properly
+        if (! empty($avatar)) {
+            if (! str_starts_with($avatar, 'http://') && ! str_starts_with($avatar, 'https://')) {
+                $avatar = asset(ltrim($avatar, '/'));
+            }
+        } else {
+            $avatar = null;
+        }
+
+        // Initials & deterministic background color for avatar fallback
+        $words = preg_split('/\s+/', trim($name));
+        $initials = '';
+        foreach (array_slice($words, 0, 2) as $w) {
+            $initials .= strtoupper(substr($w, 0, 1));
+        }
+        $initials = ! empty($initials) ? $initials : 'IT';
+
+        $colors = ['#2563eb', '#4f46e5', '#7c3aed', '#059669', '#d97706', '#dc2626', '#0891b2', '#0284c7'];
+        $bg = $colors[abs(crc32($name)) % count($colors)];
+
         return [
             'id' => $article->id,
             'title' => $article->title,
@@ -164,9 +250,14 @@ class KnowledgeController extends Controller
             'excerpt' => $article->excerpt ?? '',
             'image' => $article->image ?? 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop',
             'image_caption' => $article->image_caption ?? null,
-            'author_name' => $article->author_name,
-            'author_avatar' => $article->author_avatar ?? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop',
-            'author_role' => $article->author_role ?? '',
+            'author_name' => $name,
+            'author_avatar' => $avatar,
+            'author_initials' => $initials,
+            'author_bg' => $bg,
+            'author_role' => $role,
+            'author_badge' => $badge,
+            'author_badge_class' => $badgeClass,
+            'author_url' => $authorUrl,
             'date' => $article->formatted_date,
             'read_time' => $article->read_time ?? '5 min read',
             'tags' => $article->tags ?? [],

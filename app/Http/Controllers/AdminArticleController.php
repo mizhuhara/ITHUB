@@ -137,6 +137,7 @@ class AdminArticleController extends Controller
             'university' => 'Perguruan Tinggi',
             default => 'Admin IndoTech',
         };
+        $defaultAvatar = $company?->logo_url ?? $school?->logo_url ?? $univ?->logo_url ?? $user?->avatar_url;
 
         $article = Article::create([
             'title' => $validated['title'],
@@ -147,7 +148,7 @@ class AdminArticleController extends Controller
             'tags' => $tagsArray,
             'author_name' => ! empty($validated['author_name']) ? $validated['author_name'] : $defaultAuthor,
             'author_role' => ! empty($validated['author_role']) ? $validated['author_role'] : $defaultRole,
-            'author_avatar' => $validated['author_avatar'] ?? null,
+            'author_avatar' => ! empty($validated['author_avatar']) ? $validated['author_avatar'] : $defaultAvatar,
             'image' => $imageUrl,
             'image_caption' => $validated['image_caption'] ?? null,
             'status' => $validated['status'],
@@ -207,6 +208,12 @@ class AdminArticleController extends Controller
             $imageUrl = $validated['image'] ?? $article->image;
         }
 
+        $user = $request->user();
+        $company = $user && $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
+        $school = $user && $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
+        $univ = $user && $user->role === 'university' ? University::where('user_id', $user->id)->first() : null;
+        $defaultAvatar = $company?->logo_url ?? $school?->logo_url ?? $univ?->logo_url ?? $user?->avatar_url;
+
         $article->update([
             'title' => $validated['title'],
             'slug' => ! empty($validated['slug']) ? $validated['slug'] : $article->slug,
@@ -215,13 +222,14 @@ class AdminArticleController extends Controller
             'category' => $validated['category'],
             'tags' => $tagsArray,
             'author_name' => $validated['author_name'] ?? $article->author_name,
-            'author_role' => $validated['author_role'] ?? null,
-            'author_avatar' => $validated['author_avatar'] ?? null,
+            'author_role' => $validated['author_role'] ?? $article->author_role,
+            'author_avatar' => ! empty($validated['author_avatar']) ? $validated['author_avatar'] : ($article->author_avatar ?: $defaultAvatar),
             'image' => $imageUrl,
             'image_caption' => $validated['image_caption'] ?? null,
             'status' => $validated['status'],
             'read_time' => $validated['read_time'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
+            'user_id' => $article->user_id ?: ($user ? $user->id : null),
         ]);
 
         return redirect()->route('admin.articles.index')

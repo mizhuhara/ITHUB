@@ -168,13 +168,33 @@
                         {{-- Author Metadata Footer --}}
                         <div class="p-6 pt-0">
                             <div class="pt-4 border-t border-slate-100 flex items-center gap-3">
-                                <img src="{{ $article['author_avatar'] }}" alt="{{ $article['author_name'] }}" class="w-9 h-9 rounded-full object-cover shrink-0">
-                                <div>
-                                    <h4 class="text-xs font-bold text-slate-800 leading-tight">
-                                        {{ $article['author_name'] }}
-                                    </h4>
-                                    <p class="text-[11px] text-slate-400 mt-0.5">
-                                        {{ $article['date'] }} <span class="mx-1">•</span> {{ $article['read_time'] }}
+                                @if(!empty($article['author_avatar']))
+                                    <img src="{{ $article['author_avatar'] }}" alt="{{ $article['author_name'] }}" class="w-9 h-9 rounded-full object-cover shrink-0 border border-slate-200">
+                                @else
+                                    <span class="w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-xs font-bold text-white shadow-xs" style="background-color: {{ $article['author_bg'] }}">
+                                        {{ $article['author_initials'] }}
+                                    </span>
+                                @endif
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        @if(!empty($article['author_url']))
+                                            <a href="{{ $article['author_url'] }}" class="text-xs font-bold text-slate-800 leading-tight truncate hover:text-blue-600 transition" title="Lihat profil {{ $article['author_name'] }}">
+                                                {{ $article['author_name'] }}
+                                            </a>
+                                        @else
+                                            <h4 class="text-xs font-bold text-slate-800 leading-tight truncate">
+                                                {{ $article['author_name'] }}
+                                            </h4>
+                                        @endif
+                                        @if(!empty($article['author_badge']))
+                                            <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold {{ $article['author_badge_class'] }}">
+                                                {{ $article['author_badge'] }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5 truncate">
+                                        <span class="text-slate-500 font-medium">{{ $article['author_role'] }}</span>
+                                        <span class="mx-1">•</span> {{ $article['date'] }} <span class="mx-1">•</span> {{ $article['read_time'] }}
                                     </p>
                                 </div>
                             </div>
