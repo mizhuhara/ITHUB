@@ -1,4 +1,4 @@
-<header class="bg-white border-b border-slate-200/80 px-6 sm:px-8 py-3.5 flex items-center justify-between gap-4 sticky top-0 z-30 min-h-[66px]">
+<header class="bg-white border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4 sticky top-0 z-30 min-h-[58px] sm:min-h-[66px]">
     @php
         $headerUserRole = auth()->user()?->role ?? 'user';
         $homeRoute = match($headerUserRole) {
@@ -11,27 +11,35 @@
     @endphp
 
     {{-- Left: Breadcrumb & Title Info --}}
-    <div class="flex-1 min-w-0 pr-4">
-        @if(View::hasSection('header_title'))
-            <div class="flex flex-col">
-                <nav class="flex items-center gap-1.5 text-[12px] text-slate-400 font-medium leading-none mb-1">
-                    <a href="{{ $homeRoute }}" class="hover:text-blue-600 transition">Home</a>
-                    <span class="text-slate-300">›</span>
-                    <span class="text-slate-700 font-bold truncate">@yield('header_breadcrumb', View::yieldContent('header_title'))</span>
-                </nav>
-                <div class="flex items-center gap-3 min-w-0">
-                    <h1 class="text-[19px] sm:text-[21px] font-extrabold text-slate-900 tracking-tight leading-tight truncate">
-                        @yield('header_title')
-                    </h1>
-                    @if(View::hasSection('header_subtitle'))
-                        <span class="hidden xl:inline-block text-slate-300">|</span>
-                        <p class="hidden xl:inline-block text-[13px] text-slate-500 font-medium truncate leading-none">
-                            @yield('header_subtitle')
-                        </p>
-                    @endif
+    <div class="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 pr-2 sm:pr-4">
+        {{-- Mobile Sidebar Toggle --}}
+        <button type="button" id="admin-sidebar-toggle" class="lg:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0" aria-label="Buka Menu">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+
+        <div class="flex-1 min-w-0">
+            @if(View::hasSection('header_title'))
+                <div class="flex flex-col">
+                    <nav class="flex items-center gap-1.5 text-[11px] sm:text-[12px] text-slate-400 font-medium leading-none mb-1">
+                        <a href="{{ $homeRoute }}" class="hover:text-blue-600 transition shrink-0">Home</a>
+                        <span class="text-slate-300">›</span>
+                        <span class="text-slate-700 font-bold truncate">@yield('header_breadcrumb', View::yieldContent('header_title'))</span>
+                    </nav>
+                    <div class="flex items-center gap-3 min-w-0">
+                        <h1 class="text-[17px] sm:text-[19px] lg:text-[21px] font-extrabold text-slate-900 tracking-tight leading-tight truncate">
+                            @yield('header_title')
+                        </h1>
+                        @if(View::hasSection('header_subtitle'))
+                            <span class="hidden xl:inline-block text-slate-300">|</span>
+                            <p class="hidden xl:inline-block text-[13px] text-slate-500 font-medium truncate leading-none">
+                                @yield('header_subtitle')
+                            </p>
+                        @endif
+                    </div>
                 </div>
-            </div>
-        @else
+            @else
             @php
                 $title = 'Main Dashboard';
                 $breadcrumb = 'Main Dashboard';
@@ -169,17 +177,17 @@
                 }
             @endphp
             <div class="flex flex-col">
-                <nav class="flex items-center gap-1.5 text-[12px] text-slate-400 font-medium leading-none mb-1">
-                    <a href="{{ $homeRoute }}" class="hover:text-blue-600 transition">Home</a>
+                <nav class="flex items-center gap-1.5 text-[11px] sm:text-[12px] text-slate-400 font-medium leading-none mb-1">
+                    <a href="{{ $homeRoute }}" class="hover:text-blue-600 transition shrink-0">Home</a>
                     @if($parentName && $parentRoute)
                         <span class="text-slate-300">›</span>
-                        <a href="{{ $parentRoute }}" class="hover:text-blue-600 transition">{{ $parentName }}</a>
+                        <a href="{{ $parentRoute }}" class="hover:text-blue-600 transition shrink-0">{{ $parentName }}</a>
                     @endif
                     <span class="text-slate-300">›</span>
                     <span class="text-slate-700 font-bold truncate">{{ $breadcrumb }}</span>
                 </nav>
                 <div class="flex items-center gap-3 min-w-0">
-                    <h1 class="text-[19px] sm:text-[21px] font-extrabold text-slate-900 tracking-tight leading-tight truncate">
+                    <h1 class="text-[17px] sm:text-[19px] lg:text-[21px] font-extrabold text-slate-900 tracking-tight leading-tight truncate">
                         {{ $title }}
                     </h1>
                     @if(!empty($subtitle))
@@ -191,10 +199,11 @@
                 </div>
             </div>
         @endif
+        </div>
     </div>
 
     {{-- Right Icons & Profile --}}
-    <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+    <div class="flex items-center gap-2 sm:gap-4 shrink-0">
         @php
             // Ambil logo institusi jika user adalah school/company/university
             $institutionLogoUrl = null;
@@ -211,7 +220,7 @@
             $headerAvatarUrl = $institutionLogoUrl ?? Auth::user()->avatar_url;
         @endphp
         {{-- Help / Info --}}
-        <button type="button" class="p-2 rounded-full text-slate-500 hover:bg-slate-100 transition" aria-label="Help">
+        <button type="button" class="hidden sm:inline-flex p-2 rounded-full text-slate-500 hover:bg-slate-100 transition" aria-label="Help">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <circle cx="12" cy="12" r="9"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 9a2.5 2.5 0 0 1 4.9.8c0 1.7-2.4 2.2-2.4 3.7m0 3h.01"/>
@@ -300,11 +309,11 @@
             </div>
         @endif
 
-        <div class="h-7 w-[1px] bg-slate-200 mx-1"></div>
+        <div class="hidden sm:block h-7 w-[1px] bg-slate-200 mx-1"></div>
 
         {{-- Admin Profile Badge & Dropdown --}}
         <div class="relative" id="admin-user-nav">
-            <button type="button" id="admin-user-btn" aria-haspopup="true" aria-expanded="false" class="flex items-center gap-3 pl-1 group text-left cursor-pointer focus:outline-none">
+            <button type="button" id="admin-user-btn" aria-haspopup="true" aria-expanded="false" class="flex items-center gap-2 sm:gap-3 pl-1 group text-left cursor-pointer focus:outline-none">
                 <div class="text-right hidden sm:block">
                     <div class="text-[13px] font-bold text-slate-900 leading-tight group-hover:text-brand-600 transition-colors">{{ Auth::user()->name }}</div>
                     <div class="text-[11px] text-slate-500 capitalize">
@@ -323,9 +332,9 @@
                     </div>
                 </div>
                 @if($headerAvatarUrl)
-                    <img src="{{ $headerAvatarUrl }}" alt="{{ Auth::user()->name }}" class="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-slate-100 group-hover:ring-brand-200 transition-all">
+                    <img src="{{ $headerAvatarUrl }}" alt="{{ Auth::user()->name }}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shadow-sm ring-2 ring-slate-100 group-hover:ring-brand-200 transition-all">
                 @else
-                    <div class="w-9 h-9 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-sm group-hover:bg-brand-700 transition-colors">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-sm group-hover:bg-brand-700 transition-colors">
                         <span class="text-[13px] font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                     </div>
                 @endif

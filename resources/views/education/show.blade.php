@@ -25,11 +25,11 @@
     <div class="-mt-20 sm:-mt-24 relative z-10 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 mb-12">
         
         {{-- Circular Avatar Logo --}}
-        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-slate-100 shadow-md bg-white flex items-center justify-center shrink-0 p-2 overflow-hidden">
+        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg bg-white shrink-0 overflow-hidden ring-2 ring-slate-200/80 flex items-center justify-center">
             @if(!empty($school['logo_url']))
-                <img src="{{ $school['logo_url'] }}" alt="{{ $school['name'] }}" class="w-full h-full object-contain rounded-full">
+                <img src="{{ $school['logo_url'] }}" alt="{{ $school['name'] }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full rounded-full flex items-center justify-center text-white text-base sm:text-lg font-black text-center {{ $school['logo_bg_class'] ?? 'bg-blue-600' }}">
+                <div class="w-full h-full flex items-center justify-center text-white text-base sm:text-lg font-black text-center {{ $school['logo_bg_class'] ?? 'bg-blue-600' }}">
                     {{ $school['logo_text'] }}
                 </div>
             @endif
@@ -102,7 +102,7 @@
         {{-- Left Column: About --}}
         <div class="lg:col-span-2">
             <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Tentang Sekolah</h2>
-            <div class="prose max-w-none text-slate-700 text-sm sm:text-base leading-relaxed mb-4">
+            <div class="prose max-w-none text-slate-700 text-sm sm:text-base leading-relaxed mb-4 [&_a]:text-blue-600 [&_a]:underline [&_a]:font-semibold hover:[&_a]:text-blue-800 hover:[&_a]:underline [&_a]:cursor-pointer [&_a]:transition-colors [&_a]:break-all">
                 {!! $school['about'] !!}
             </div>
             @if(!empty($school['mission']))

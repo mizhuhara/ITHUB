@@ -11,7 +11,8 @@ class School extends Model
         'user_id', 'npsn', 'name', 'institution_type', 'city', 'province', 'location',
         'address', 'latitude', 'longitude', 'map_link', 'status', 'logo_url', 'logo_name',
         'logo_text', 'logo_bg', 'email', 'website', 'phone', 'description', 'gallery',
-        'tags', 'competencies', 'total_students', 'industry_partners', 'founded',
+        'tags', 'competencies', 'total_students', 'industry_partners', 'placement_rate',
+        'modern_labs', 'founded', 'accreditation',
     ];
 
     protected function casts(): array

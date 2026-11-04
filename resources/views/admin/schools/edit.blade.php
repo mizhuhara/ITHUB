@@ -374,6 +374,132 @@
                             <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Akreditasi --}}
+                    <div>
+                        <label class="form-label">Akreditasi</label>
+                        <div class="relative">
+                            <select name="accreditation" 
+                                    class="input appearance-none cursor-pointer pr-10">
+                                <option value="A" {{ old('accreditation', $school['accreditation'] ?? '') == 'A' ? 'selected' : '' }}>A (Unggul)</option>
+                                <option value="B" {{ old('accreditation', $school['accreditation'] ?? '') == 'B' ? 'selected' : '' }}>B (Baik)</option>
+                                <option value="C" {{ old('accreditation', $school['accreditation'] ?? '') == 'C' ? 'selected' : '' }}>C (Cukup)</option>
+                                <option value="Belum Terakreditasi" {{ old('accreditation', $school['accreditation'] ?? '') == 'Belum Terakreditasi' ? 'selected' : '' }}>Belum Terakreditasi</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Website --}}
+                    <div>
+                        <label class="form-label">Website</label>
+                        <input type="url" 
+                               name="website" 
+                               value="{{ old('website', $school['website'] ?? '') }}" 
+                               placeholder="https://smk.sch.id"
+                               class="input">
+                        @error('website')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label class="form-label">Email</label>
+                        <input type="email"
+                               name="email"
+                               value="{{ old('email', $school['email'] ?? '') }}"
+                               placeholder="info@smk.sch.id"
+                               class="input">
+                        @error('email')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Telepon --}}
+                    <div>
+                        <label class="form-label">Nomor Telepon</label>
+                        <input type="text"
+                               name="phone"
+                               value="{{ old('phone', $school['phone'] ?? '') }}"
+                               placeholder="(021) 1234567"
+                               class="input">
+                        @error('phone')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tingkat Penyerapan Kerja --}}
+                    <div>
+                        <label class="form-label">Tingkat Penyerapan Kerja</label>
+                        <input type="text"
+                               name="placement_rate"
+                               value="{{ old('placement_rate', $school['placement_rate'] ?? '') }}"
+                               placeholder="Contoh: 95%"
+                               class="input">
+                        @error('placement_rate')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Mitra Industri --}}
+                    <div>
+                        <label class="form-label">Mitra Industri (Jumlah)</label>
+                        <input type="number"
+                               name="industry_partners"
+                               value="{{ old('industry_partners', $school['industry_partners'] ?? '') }}"
+                               placeholder="Contoh: 25"
+                               min="0"
+                               class="input">
+                        @error('industry_partners')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Siswa Aktif --}}
+                    <div>
+                        <label class="form-label">Siswa Aktif (Jumlah)</label>
+                        <input type="number"
+                               name="total_students"
+                               value="{{ old('total_students', $school['total_students'] ?? '') }}"
+                               placeholder="Contoh: 1200"
+                               min="0"
+                               class="input">
+                        @error('total_students')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Lab IT Modern --}}
+                    <div>
+                        <label class="form-label">Lab IT Modern (Jumlah Lab)</label>
+                        <input type="number"
+                               name="modern_labs"
+                               value="{{ old('modern_labs', $school['modern_labs'] ?? '') }}"
+                               placeholder="Contoh: 6"
+                               min="0"
+                               class="input">
+                        @error('modern_labs')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tahun Berdiri --}}
+                    <div>
+                        <label class="form-label">Tahun Berdiri</label>
+                        <input type="number"
+                               name="founded"
+                               value="{{ old('founded', $school['founded'] ?? '') }}"
+                               placeholder="1995"
+                               min="1900"
+                               max="{{ date('Y') }}"
+                               class="input">
+                        @error('founded')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 

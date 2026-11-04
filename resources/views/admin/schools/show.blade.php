@@ -54,7 +54,7 @@
 
                 <div class="border-t border-slate-100 pt-5">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Deskripsi & Profil</h3>
-                    <div class="prose max-w-none text-sm text-slate-700 leading-relaxed font-medium">
+                    <div class="prose max-w-none text-sm text-slate-700 leading-relaxed font-medium [&_a]:text-blue-600 [&_a]:underline [&_a]:font-semibold hover:[&_a]:text-blue-800 [&_a]:break-all">
                         {!! $school['description'] ?? 'Belum ada deskripsi profil untuk sekolah ini.' !!}
                     </div>
                 </div>

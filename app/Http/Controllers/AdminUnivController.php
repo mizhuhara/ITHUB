@@ -269,8 +269,13 @@ class AdminUnivController extends Controller
             'location' => ['required', 'string', 'max:150'],
             'accreditation' => ['nullable', 'string'],
             'website' => ['nullable', 'url', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1000'],
-            'address' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'total_students' => ['nullable', 'integer', 'min:0'],
+            'total_faculties' => ['nullable', 'integer', 'min:0'],
+            'founded' => ['nullable', 'integer', 'min:1900', 'max:'.date('Y')],
+            'description' => ['nullable', 'string'],
+            'address' => ['nullable', 'string', 'max:500'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'map_link' => ['nullable', 'string', 'max:500'],
@@ -279,11 +284,17 @@ class AdminUnivController extends Controller
             'gallery.*' => ['image', 'max:5120'],
             'existing_gallery' => ['nullable', 'array'],
             'existing_gallery.*' => ['string'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:100'],
         ]);
 
         $locationParts = array_map('trim', explode(',', $validated['location']));
         $city = $locationParts[0] ?? $validated['location'];
         $province = $locationParts[1] ?? '';
+
+        // Build logo_text from name initials
+        $words = explode(' ', $validated['name']);
+        $logoText = mb_strtoupper(implode('', array_map(fn ($w) => mb_substr($w, 0, 1), array_slice($words, 0, 4))));
 
         $data = [
             'name' => $validated['name'],
@@ -294,11 +305,19 @@ class AdminUnivController extends Controller
             'province' => $province,
             'accreditation' => $validated['accreditation'] ?? $univ->accreditation,
             'website' => $validated['website'] ?? $univ->website,
+            'email' => $validated['email'] ?? $univ->email,
+            'phone' => $validated['phone'] ?? $univ->phone,
+            'total_students' => $validated['total_students'] ?? $univ->total_students,
+            'total_faculties' => $validated['total_faculties'] ?? $univ->total_faculties,
+            'founded' => $validated['founded'] ?? $univ->founded,
             'description' => $validated['description'] ?? $univ->description,
             'address' => $validated['address'] ?? $univ->address,
             'latitude' => $validated['latitude'] ?? $univ->latitude,
             'longitude' => $validated['longitude'] ?? $univ->longitude,
             'map_link' => $validated['map_link'] ?? $univ->map_link,
+            'logo_text' => $logoText,
+            'status' => 'Active',
+            'tags' => array_values(array_filter($validated['tags'] ?? [], fn ($t) => ! empty(trim($t)))),
         ];
 
         if ($request->hasFile('logo')) {
@@ -325,7 +344,7 @@ class AdminUnivController extends Controller
 
         $univ->update($data);
 
-        return redirect()->route('admin.univ.index')
+        return redirect()->route('admin.univ.edit', $univ->id)
             ->with('success', "Data universitas \"{$validated['name']}\" berhasil diperbarui.");
     }
 
