@@ -117,10 +117,14 @@
                         <img src="{{ $campus['image'] }}" alt="{{ $campus['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         
                         {{-- Logo Box --}}
-                        <div class="absolute bottom-3 left-4 w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-md p-1.5 flex items-center justify-center">
-                            <div class="w-full h-full rounded-lg flex items-center justify-center text-white text-xs font-bold text-center leading-none {{ $campus['logo_bg_class'] ?? 'bg-blue-600' }}">
-                                {{ $campus['logo_text'] }}
-                            </div>
+                        <div class="absolute bottom-3 left-4 w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-md p-0.5 flex items-center justify-center overflow-hidden">
+                            @if(!empty($campus['logo_url']))
+                                <img src="{{ $campus['logo_url'] }}" alt="{{ $campus['name'] }}" class="w-full h-full object-cover rounded-lg">
+                            @else
+                                <div class="w-full h-full rounded-lg flex items-center justify-center text-white text-xs font-bold text-center leading-none {{ $campus['logo_bg_class'] ?? 'bg-blue-600' }}">
+                                    {{ $campus['logo_text'] }}
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -138,7 +142,7 @@
                                     <svg class="w-3 h-3 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                                     </svg>
-                                    Verified
+                                    Terverifikasi
                                 </span>
                             @endif
                         </div>

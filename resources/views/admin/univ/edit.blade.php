@@ -3,11 +3,117 @@
 @section('title', 'Edit Informasi Universitas — IndoTech')
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Summernote Lite CSS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
     .leaflet-container {
         font-family: inherit;
         z-index: 10 !important;
+    }
+    .leaflet-popup-content-wrapper {
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        padding: 4px;
+    }
+    .leaflet-popup-content {
+        margin: 10px 14px;
+        font-family: inherit;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #1e293b;
+    }
+    /* Summernote styling adjustments for clean Tailwind admin integration */
+    .note-editor.note-frame {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+    }
+    .note-toolbar {
+        background: #f8fafc !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-radius: 0 !important;
+        padding: 8px 10px !important;
+    }
+    .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset) {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        color: #334155 !important;
+        padding: 5px 9px !important;
+        font-size: 13px !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    }
+    .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset):hover {
+        background: #eff6ff !important;
+        border-color: #93c5fd !important;
+        color: #2563eb !important;
+    }
+    .note-toolbar .note-btn-group {
+        gap: 2px !important;
+    }
+    .note-editable {
+        font-family: inherit !important;
+        font-size: 14px !important;
+        color: #1e293b !important;
+        line-height: 1.7 !important;
+        padding: 18px !important;
+        background-color: #ffffff !important;
+    }
+    .note-editable ul { list-style-type: disc !important; padding-left: 24px !important; }
+    .note-editable ol { list-style-type: decimal !important; padding-left: 24px !important; }
+    .note-editable h1 { font-size: 2rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
+    .note-editable h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
+    .note-editable h3 { font-size: 1.25rem !important; font-weight: 600 !important; margin-bottom: 0.5rem !important; }
+    .note-editable p { margin-bottom: 0.75rem !important; }
+    .note-editable blockquote { border-left: 4px solid #2563eb !important; padding-left: 16px !important; color: #64748b !important; font-style: italic !important; }
+    .note-statusbar {
+        border-top: 1px solid #f1f5f9 !important;
+        background: #f8fafc !important;
+    }
+    .note-dropdown-menu {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important;
+        padding: 6px !important;
+        z-index: 1050 !important;
+    }
+    .note-dropdown-item {
+        color: #334155 !important;
+        padding: 6px 10px !important;
+        border-radius: 6px !important;
+        font-size: 13px !important;
+    }
+    .note-dropdown-item:hover {
+        background: #eff6ff !important;
+        color: #2563eb !important;
+    }
+    .note-modal { z-index: 1050 !important; }
+    .note-modal-backdrop { z-index: 1040 !important; }
+    .note-modal .modal-content {
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important;
+    }
+    .note-modal .btn-primary {
+        background: #2563eb !important;
+        border-color: #2563eb !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        padding: 8px 16px !important;
+    }
+    .note-color-palette .note-color-btn {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        min-height: 18px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 1px solid rgba(0,0,0,0.15) !important;
+        border-radius: 3px !important;
     }
 </style>
 @endpush
@@ -141,6 +247,75 @@
                             <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label class="form-label">Email</label>
+                        <input type="email"
+                               name="email"
+                               value="{{ old('email', $univ['email'] ?? '') }}"
+                               placeholder="info@universitas.ac.id"
+                               class="input">
+                        @error('email')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Telepon --}}
+                    <div>
+                        <label class="form-label">Nomor Telepon</label>
+                        <input type="text"
+                               name="phone"
+                               value="{{ old('phone', $univ['phone'] ?? '') }}"
+                               placeholder="(021) 1234567"
+                               class="input">
+                        @error('phone')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Total Mahasiswa --}}
+                    <div>
+                        <label class="form-label">Total Mahasiswa</label>
+                        <input type="number"
+                               name="total_students"
+                               value="{{ old('total_students', $univ['total_students'] ?? '') }}"
+                               placeholder="12000"
+                               min="0"
+                               class="input">
+                        @error('total_students')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Total Fakultas --}}
+                    <div>
+                        <label class="form-label">Total Fakultas / Prodi</label>
+                        <input type="number"
+                               name="total_faculties"
+                               value="{{ old('total_faculties', $univ['total_faculties'] ?? '') }}"
+                               placeholder="10"
+                               min="0"
+                               class="input">
+                        @error('total_faculties')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tahun Berdiri --}}
+                    <div>
+                        <label class="form-label">Tahun Berdiri</label>
+                        <input type="number"
+                               name="founded"
+                               value="{{ old('founded', $univ['founded'] ?? '') }}"
+                               placeholder="1950"
+                               min="1900"
+                               max="{{ date('Y') }}"
+                               class="input">
+                        @error('founded')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
@@ -155,22 +330,57 @@
 
                 <div>
                     <label class="form-label">Profil, Fakultas & Keunggulan</label>
-                    <textarea name="description" 
-                              id="univDescription"
-                              rows="5"
-                              maxlength="1000"
-                              oninput="document.getElementById('charCount').textContent = this.value.length + ' / 1000 characters'"
-                              class="input p-4 leading-relaxed resize-none">{{ old('description', $univ['description'] ?? '') }}</textarea>
-                    
-                    <div class="flex justify-end mt-2">
-                        <span id="charCount" class="text-[12.5px] font-medium text-slate-500">
-                            {{ strlen(old('description', $univ['description'] ?? '')) }} / 1000 characters
-                        </span>
-                    </div>
+                    <textarea name="description"
+                              id="univDescription">{{ old('description', $univ['description'] ?? '') }}</textarea>
+                    @error('description')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
-            {{-- Card 3: Campus Gallery --}}
+            {{-- Card 3: IT Study Programs / Tags --}}
+            <div class="card">
+                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
+                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                    </svg>
+                    <div>
+                        <h2 class="text-[17px] font-bold text-slate-900">Program Studi IT</h2>
+                        <p class="text-[12px] text-slate-500">Tambahkan program studi / jurusan IT yang tersedia di universitas ini</p>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Daftar Program Studi</label>
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" id="tagInputField"
+                               placeholder="Contoh: Teknik Informatika"
+                               class="input flex-1"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault();addTag();}">
+                        <button type="button" onclick="addTag()"
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-xl transition shrink-0">
+                            + Tambah
+                        </button>
+                    </div>
+                    <div id="tagContainer" class="flex flex-wrap gap-2 min-h-[40px]">
+                        @php
+                            $existingTags = is_array($univ['tags'] ?? null) ? $univ['tags'] : [];
+                        @endphp
+                        @foreach($existingTags as $tag)
+                            <span class="tag-item inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl">
+                                {{ $tag }}
+                                <input type="hidden" name="tags[]" value="{{ $tag }}">
+                                <button type="button" onclick="removeTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+                                </button>
+                            </span>
+                        @endforeach
+                    </div>
+                    <p class="text-[11.5px] text-slate-400 mt-2">Tekan Enter atau klik tombol Tambah untuk menambahkan program studi. Klik × untuk menghapus.</p>
+                </div>
+            </div>
+
+            {{-- Card 4: Campus Gallery --}}
             <div class="card">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2.5 text-slate-900">
@@ -380,8 +590,91 @@
 @endsection
 
 @push('scripts')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 <script>
+    // ---- Summernote for University Description ----
+    $(document).ready(function() {
+        $('#univDescription').summernote({
+            placeholder: 'Tuliskan profil universitas, visi misi, program unggulan, dan detail kurikulum...',
+            tabsize: 2,
+            height: 380,
+            minHeight: 250,
+            maxHeight: 700,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph', 'height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video', 'hr']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            fontNames: ['Plus Jakarta Sans', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+            fontNamesIgnoreCheck: ['Plus Jakarta Sans'],
+            callbacks: {
+                onChange: function(contents) {
+                    $('#univDescription').val(contents);
+                },
+                onImageUpload: function(files) {
+                    var formData = new FormData();
+                    formData.append('file', files[0]);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    $.ajax({
+                        url: '{{ route('admin.editor.upload') }}',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            $('#univDescription').summernote('insertImage', data.url);
+                        },
+                        error: function(xhr) {
+                            var msg = xhr.responseJSON && xhr.responseJSON.message
+                                ? xhr.responseJSON.message
+                                : 'Gagal mengunggah gambar.';
+                            alert(msg);
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    // ---- IT Study Programs / Tags ----
+    function addTag() {
+        const input = document.getElementById('tagInputField');
+        const value = input.value.trim();
+        if (!value) return;
+
+        const existing = Array.from(document.querySelectorAll('#tagContainer .tag-item input[type=hidden]')).map(i => i.value.toLowerCase());
+        if (existing.includes(value.toLowerCase())) {
+            input.value = '';
+            input.focus();
+            return;
+        }
+
+        const container = document.getElementById('tagContainer');
+        const tag = document.createElement('span');
+        tag.className = 'tag-item inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl';
+        tag.innerHTML = `
+            ${value}
+            <input type="hidden" name="tags[]" value="${value}">
+            <button type="button" onclick="removeTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none">
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            </button>
+        `;
+        container.appendChild(tag);
+        input.value = '';
+        input.focus();
+    }
+
+    function removeTag(button) {
+        button.closest('.tag-item')?.remove();
+    }
+
     // -------------------------------------------------------------
     // 1. LOGO PREVIEW & UPLOAD
     // -------------------------------------------------------------

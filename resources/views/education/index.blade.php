@@ -128,9 +128,9 @@
                         <img src="{{ $school['image'] }}" alt="{{ $school['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         
                         {{-- Logo Box --}}
-                        <div class="absolute bottom-3 left-4 w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-md p-1.5 flex items-center justify-center overflow-hidden">
+                        <div class="absolute bottom-3 left-4 w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-md p-0.5 flex items-center justify-center overflow-hidden">
                             @if(!empty($school['logo_url']))
-                                <img src="{{ $school['logo_url'] }}" alt="{{ $school['name'] }}" class="w-full h-full object-contain rounded-lg">
+                                <img src="{{ $school['logo_url'] }}" alt="{{ $school['name'] }}" class="w-full h-full object-cover rounded-lg">
                             @else
                                 <div class="w-full h-full rounded-lg flex items-center justify-center text-white text-xs font-bold text-center leading-none {{ $school['logo_bg_class'] ?? 'bg-blue-600' }}">
                                     {{ $school['logo_text'] }}
@@ -168,13 +168,20 @@
                         </div>
 
                         {{-- Competencies Tags --}}
-                        <div class="flex flex-wrap gap-1.5 mb-5">
-                            @foreach($school['tags'] as $tag)
-                                <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-600">
-                                    {{ $tag }}
-                                </span>
-                            @endforeach
-                        </div>
+                        @if(!empty($school['tags']))
+                            <div class="flex flex-wrap gap-1.5 mb-5">
+                                @foreach(array_slice($school['tags'], 0, 4) as $tag)
+                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 border border-blue-100/80">
+                                        {{ $tag }}
+                                    </span>
+                                @endforeach
+                                @if(count($school['tags']) > 4)
+                                    <span class="text-xs font-semibold px-2 py-1 rounded-md bg-slate-100 text-slate-500">
+                                        +{{ count($school['tags']) - 4 }}
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
 

@@ -10,7 +10,7 @@
 
     {{-- Back Button --}}
     <div class="absolute top-6 left-6 z-20">
-        <a href="{{ route('campus.index') }}" class="w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-md transition cursor-pointer" aria-label="Back to Directory">
+        <a href="{{ route('campus.index') }}" class="w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-md transition cursor-pointer" aria-label="Kembali ke Direktori Kampus">
             <svg class="w-5 h-5 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
@@ -25,10 +25,14 @@
     <div class="-mt-20 sm:-mt-24 relative z-10 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 mb-12">
 
         {{-- Circular Avatar Logo --}}
-        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-slate-100 shadow-md bg-white flex items-center justify-center shrink-0 p-2">
-            <div class="w-full h-full rounded-full flex items-center justify-center text-white text-base sm:text-lg font-black text-center {{ $campus['logo_bg_class'] ?? 'bg-blue-600' }}">
-                {{ $campus['logo_text'] }}
-            </div>
+        <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg bg-white shrink-0 overflow-hidden ring-2 ring-slate-200/80 flex items-center justify-center">
+            @if(!empty($campus['logo_url']))
+                <img src="{{ $campus['logo_url'] }}" alt="{{ $campus['name'] }}" class="w-full h-full object-cover">
+            @else
+                <div class="w-full h-full flex items-center justify-center text-white text-base sm:text-lg font-black text-center {{ $campus['logo_bg_class'] ?? 'bg-blue-600' }}">
+                    {{ $campus['logo_text'] }}
+                </div>
+            @endif
         </div>
 
         {{-- Campus Main Info --}}
@@ -40,7 +44,7 @@
                         <svg class="w-3.5 h-3.5 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
-                        Verified
+                        Terverifikasi
                     </span>
                 @endif
                 @php
@@ -72,30 +76,36 @@
 
             {{-- Action Buttons --}}
             <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                @if(!empty($campus['website']))
                 <a href="{{ $campus['website'] }}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition shadow-xs">
                     <svg class="w-4 h-4 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <circle cx="12" cy="12" r="10"/>
                         <line x1="2" y1="12" x2="22" y2="12"/>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                     </svg>
                     Website
                 </a>
+                @endif
 
+                @if(!empty($campus['email']))
                 <a href="mailto:{{ $campus['email'] }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold rounded-xl transition">
                     <svg class="w-4 h-4 stroke-2 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
                     Email
                 </a>
+                @endif
 
+                @if(!empty($campus['map_link']))
                 <a href="{{ $campus['map_link'] }}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold rounded-xl transition">
                     <svg class="w-4 h-4 stroke-2 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <polygon points="1 6 1 22 8 18 15 22 22 18 22 2 15 6 8 2 1 6"/>
                         <line x1="8" y1="2" x2="8" y2="18"/>
                         <line x1="15" y1="6" x2="15" y2="22"/>
                     </svg>
-                    Map
+                    Peta Lokasi
                 </a>
+                @endif
             </div>
         </div>
     </div>
@@ -105,18 +115,15 @@
 
         {{-- Left Column: About --}}
         <div class="lg:col-span-2">
-            <h2 class="text-2xl font-extrabold text-slate-900 mb-4">About the Campus</h2>
-            <p class="text-blue-600 text-sm sm:text-base leading-relaxed mb-4">
-                {{ $campus['about'] }}
-            </p>
-            <p class="text-blue-600 text-sm sm:text-base leading-relaxed">
-                {{ $campus['mission'] }}
-            </p>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Tentang Kampus</h2>
+            <div class="text-slate-700 text-sm sm:text-base leading-relaxed prose max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a]:font-semibold hover:[&_a]:text-blue-800 hover:[&_a]:underline [&_a]:cursor-pointer [&_a]:transition-colors [&_a]:break-all">
+                {!! $campus['about'] !!}
+            </div>
         </div>
 
         {{-- Right Column: Key Statistics Box --}}
         <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-6 sm:p-7 shadow-xs self-start">
-            <h3 class="text-base font-bold text-slate-900 mb-6">Key Statistics</h3>
+            <h3 class="text-base font-bold text-slate-900 mb-6">Statistik Utama</h3>
 
             <div class="grid grid-cols-2 gap-6">
                 @foreach($campus['stats'] as $label => $value)
@@ -124,19 +131,51 @@
                         <span class="text-3xl font-extrabold text-blue-600 block mb-1">
                             {{ $value }}
                         </span>
-                        <span class="text-xs font-semibold text-slate-500">{{ str_replace('_', ' ', $label) }}</span>
+                        <span class="text-xs font-semibold text-slate-500">{{ $label }}</span>
                     </div>
                 @endforeach
             </div>
         </div>
     </div>
 
-    {{-- Skill Competencies Section --}}
+    {{-- Campus Gallery Section --}}
+    @if(!empty($campus['gallery']) && count($campus['gallery']) > 0)
+    <div class="mb-16">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-extrabold text-slate-900">Galeri Kampus</h2>
+            <span class="text-[13px] font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{{ count($campus['gallery']) }} Foto</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            @foreach($campus['gallery'] as $photo)
+                <div class="aspect-square rounded-2xl overflow-hidden border border-slate-200 shadow-xs group cursor-pointer"
+                     onclick="openLightbox('{{ $photo }}')">
+                    <img src="{{ $photo }}" alt="Galeri {{ $campus['name'] }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Lightbox --}}
+    <div id="lightbox" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4"
+         onclick="closeLightbox()">
+        <div class="relative max-w-4xl max-h-[90vh]">
+            <img id="lightboxImg" src="" alt="Preview" class="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl">
+            <button onclick="closeLightbox()" class="absolute -top-4 -right-4 w-9 h-9 rounded-full bg-white text-slate-800 flex items-center justify-center shadow-lg hover:bg-slate-100 transition">
+                <svg class="w-5 h-5 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    @endif
+
+    {{-- Program Studi IT Section --}}
     <div class="pb-16">
-        <h2 class="text-2xl font-extrabold text-slate-900 mb-6">IT Study Programs</h2>
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-6">Program Studi IT</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @foreach($campus['competencies'] as $comp)
+            @forelse($campus['competencies'] as $comp)
                 <div class="bg-slate-50/60 border border-slate-200/70 rounded-2xl p-6 hover:shadow-md transition">
                     <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-4 shadow-xs">
                         @if($comp['icon'] == 'code')
@@ -172,10 +211,33 @@
                         {{ $comp['desc'] }}
                     </p>
                 </div>
-            @endforeach
+            @empty
+                <div class="col-span-full bg-slate-50 border border-slate-200/80 rounded-2xl p-6 text-center text-slate-400 text-sm">
+                    Belum ada program studi IT yang ditambahkan.
+                </div>
+            @endforelse
         </div>
     </div>
 
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function openLightbox(src) {
+        document.getElementById('lightboxImg').src = src;
+        const lb = document.getElementById('lightbox');
+        lb.classList.remove('hidden');
+        lb.classList.add('flex');
+    }
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        lb.classList.add('hidden');
+        lb.classList.remove('flex');
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+</script>
+@endpush

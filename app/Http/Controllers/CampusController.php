@@ -9,8 +9,12 @@ class CampusController extends Controller
 {
     public function index(): View
     {
-        $campuses = University::where('status', 'Active')
-            ->inRandomOrder()
+        $campuses = University::where(function ($query) {
+            $query->whereIn('status', ['Active', 'active', 'Pending', 'pending'])
+                ->orWhereNull('status')
+                ->orWhere('status', '!=', 'Inactive');
+        })
+            ->latest()
             ->get()
             ->map(fn (University $university) => $this->mapCampus($university))
             ->all();
@@ -20,14 +24,13 @@ class CampusController extends Controller
 
     public function show(string $id): View
     {
-        $university = University::where('status', 'Active')
-            ->where(function ($query) use ($id) {
-                $query->where('npsn', $id);
+        $university = University::where(function ($query) use ($id) {
+            $query->where('npsn', $id);
 
-                if (ctype_digit($id)) {
-                    $query->orWhere('id', (int) $id);
-                }
-            })
+            if (ctype_digit($id)) {
+                $query->orWhere('id', (int) $id);
+            }
+        })
             ->firstOrFail();
 
         return view('education.campus.show', [
@@ -41,38 +44,50 @@ class CampusController extends Controller
     private function mapCampus(University $university): array
     {
         $tags = $university->tags ?? [];
+        if (! is_array($tags)) {
+            $tags = [];
+        }
         $isPublic = $university->type === 'Negeri';
+        $gallery = is_array($university->gallery) ? $university->gallery : [];
+
+        // Banner image: use first gallery image if available, else standard fallback
+        $bannerImage = ! empty($gallery) ? $gallery[0] : 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=80';
 
         return [
             'id' => $university->npsn ?: (string) $university->id,
             'name' => $university->name,
-            'verified' => $university->status === 'Active',
-            'category_badge' => $isPublic ? 'Public University' : 'Private University',
+            'verified' => in_array(strtolower($university->status ?? ''), ['active', 'verified'], true) || empty($university->status),
+            'category_badge' => $isPublic ? 'Perguruan Tinggi Negeri' : 'Perguruan Tinggi Swasta',
             'location' => $university->location ?: trim("{$university->city}, {$university->province}", ', '),
             'location_full' => $university->address ?: trim("{$university->location}, Indonesia", ', '),
             'province' => $university->province,
             'faculty' => $university->accreditation ? "Akreditasi {$university->accreditation}" : '-',
             'tags' => $tags,
-            'status_badge' => $university->status === 'Active' ? 'Verified' : $university->status,
-            'status_badge_type' => $university->status === 'Active' ? 'green' : 'gray',
-            'image' => $university->logo_url ?: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=80',
+            'status_badge' => 'Terverifikasi',
+            'status_badge_type' => 'green',
+            'image' => $bannerImage,
+            'logo_url' => $university->logo_url,
+            'gallery' => $gallery,
             'logo_bg_class' => $university->logo_bg ?: 'bg-blue-700',
             'logo_text' => $university->logo_text ?: mb_substr($university->name, 0, 8),
             'website' => $university->website,
             'email' => $university->email,
+            'phone' => $university->phone,
+            'latitude' => $university->latitude,
+            'longitude' => $university->longitude,
             'map_link' => $university->map_link ?: 'https://maps.google.com/?q='.urlencode($university->name),
             'about' => $university->description ?: "{$university->name} adalah perguruan tinggi di {$university->location}.",
             'mission' => 'Menyelenggarakan pendidikan, penelitian, dan pengabdian masyarakat di bidang teknologi informasi.',
             'stats' => [
-                'active_students' => $university->total_students ? number_format($university->total_students) : '-',
-                'faculties' => (string) ($university->total_faculties ?? '-'),
-                'accreditation' => $university->accreditation ?? '-',
-                'founded' => (string) ($university->founded ?? '-'),
+                'Mahasiswa Aktif' => $university->total_students ? number_format($university->total_students) : '-',
+                'Fakultas / Prodi' => (string) ($university->total_faculties ?? '-'),
+                'Akreditasi' => $university->accreditation ?? '-',
+                'Tahun Berdiri' => (string) ($university->founded ?? '-'),
             ],
             'competencies' => collect($tags)->map(fn (string $tag) => [
                 'name' => $tag,
                 'icon' => $this->iconForTag($tag),
-                'desc' => "Program studi {$tag}.",
+                'desc' => "Program studi bidang {$tag}.",
             ])->all(),
         ];
     }

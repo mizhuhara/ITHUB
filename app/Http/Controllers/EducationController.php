@@ -40,7 +40,13 @@ class EducationController extends Controller
      */
     private function mapSchool(School $school): array
     {
-        $tags = $school->tags ?? [];
+        $tags = collect($school->competencies ?? [])
+            ->merge(collect($school->tags ?? []))
+            ->filter(fn ($t) => ! empty(trim((string) $t)))
+            ->unique()
+            ->values()
+            ->all();
+
         $gallery = is_array($school->gallery) ? $school->gallery : [];
 
         // Choose banner: first gallery image if exists, else fallback to standard vocational image
@@ -72,12 +78,12 @@ class EducationController extends Controller
             'about' => $school->description ?: "{$school->name} adalah institusi pendidikan vokasi di {$school->location}.",
             'mission' => 'Menyiapkan lulusan yang kompeten, adaptif, dan siap kerja di industri teknologi.',
             'stats' => [
-                'placement_rate' => '-',
-                'industry_partners' => ($school->industry_partners ?? 0).'+',
-                'active_students' => (string) ($school->total_students ?? '-'),
-                'modern_labs' => '-',
+                'placement_rate' => ! empty($school->placement_rate) ? (str_contains((string) $school->placement_rate, '%') ? $school->placement_rate : $school->placement_rate.'%') : '-',
+                'industry_partners' => $school->industry_partners !== null && $school->industry_partners !== '' ? $school->industry_partners.'+' : '-',
+                'active_students' => $school->total_students !== null && $school->total_students !== '' ? number_format((int) $school->total_students) : '-',
+                'modern_labs' => $school->modern_labs !== null && $school->modern_labs !== '' ? (string) $school->modern_labs : '-',
             ],
-            'competencies' => collect($tags)->merge(collect($school->competencies ?? []))->unique()->map(fn (string $tag) => [
+            'competencies' => collect($tags)->map(fn (string $tag) => [
                 'name' => $tag,
                 'icon' => $this->iconForTag($tag),
                 'desc' => "Program keahlian {$tag}.",

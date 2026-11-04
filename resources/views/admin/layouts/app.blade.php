@@ -47,6 +47,9 @@
 </head>
 <body class="bg-[#f8fafd] min-h-screen text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
 
+{{-- ===== MOBILE SIDEBAR BACKDROP ===== --}}
+<div id="admin-sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
+
 <div class="flex min-h-screen">
     {{-- ===== SIDEBAR ===== --}}
     @include('admin.partials.sidebar')
@@ -57,7 +60,7 @@
         @include('admin.partials.header')
 
         {{-- Main Content --}}
-        <main class="flex-1 p-8">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
             {{-- Flash Alert Messages --}}
             @if(session('success') && !request()->routeIs('*report-bug*'))
                 <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center justify-between text-sm shadow-sm animate-fade-in">
@@ -81,6 +84,46 @@
 @include('admin.assets.update-modal')
 @include('admin.assets.verification-pending-modal')
 @include('partials.async-form')
+
+{{-- Mobile Sidebar Drawer Toggle Script --}}
+<script>
+    (function() {
+        const sidebar = document.getElementById('admin-sidebar');
+        const backdrop = document.getElementById('admin-sidebar-backdrop');
+        const toggleBtn = document.getElementById('admin-sidebar-toggle');
+        const closeBtn = document.getElementById('admin-sidebar-close');
+
+        function openSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.remove('-translate-x-full');
+            if (backdrop) backdrop.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+        }
+
+        function closeSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.add('-translate-x-full');
+            if (backdrop) backdrop.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+        }
+
+        toggleBtn?.addEventListener('click', openSidebar);
+        closeBtn?.addEventListener('click', closeSidebar);
+        backdrop?.addEventListener('click', closeSidebar);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar && !sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                closeSidebar();
+            }
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
+    })();
+</script>
 
 @stack('scripts')
 </body>
