@@ -51,9 +51,9 @@ class AdminBannerController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
-            'image' => ['nullable', 'url', 'max:500'],
+            'image' => ['nullable', 'string', 'max:500'],
             'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
-            'link' => ['nullable', 'url', 'max:500'],
+            'link' => ['nullable', 'string', 'max:500'],
             'link_text' => ['nullable', 'string', 'max:100'],
             'is_active' => ['nullable'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -108,9 +108,9 @@ class AdminBannerController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
-            'image' => ['nullable', 'url', 'max:500'],
+            'image' => ['nullable', 'string', 'max:500'],
             'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
-            'link' => ['nullable', 'url', 'max:500'],
+            'link' => ['nullable', 'string', 'max:500'],
             'link_text' => ['nullable', 'string', 'max:100'],
             'is_active' => ['nullable'],
             'sort_order' => ['nullable', 'integer', 'min:0'],

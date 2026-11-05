@@ -49,13 +49,6 @@
                     'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
                 ],
                 [
-                    'label' => 'Applications',
-                    'icon' => 'jobs',
-                    'active' => request()->routeIs('admin.applications.*'),
-                    'href' => route('admin.applications.index'),
-                    'roles' => ['super_admin', 'admin'],
-                ],
-                [
                     'label' => 'Users and Verification',
                     'icon' => 'users',
                     'active' => $isUserAndVerification,

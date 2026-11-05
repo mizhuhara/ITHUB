@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
         <title>@yield('title', config('app.name', 'IndoTech'))</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @fonts
