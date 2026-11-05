@@ -29,6 +29,7 @@ use App\Http\Controllers\InstitutionMembershipController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserReportController;
 use App\Models\Banner;
 use App\Models\Event;
@@ -54,6 +55,8 @@ Route::get('/', function () {
 
     return view('welcome', compact('latestJobs', 'upcomingEvents', 'banners'));
 })->name('welcome');
+
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::get('/education', [EducationController::class, 'index'])->name('education.index');
 Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
