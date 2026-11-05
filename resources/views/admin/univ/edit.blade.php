@@ -3,11 +3,117 @@
 @section('title', 'Edit Informasi Universitas — IndoTech')
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Summernote Lite CSS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
     .leaflet-container {
         font-family: inherit;
         z-index: 10 !important;
+    }
+    .leaflet-popup-content-wrapper {
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        padding: 4px;
+    }
+    .leaflet-popup-content {
+        margin: 10px 14px;
+        font-family: inherit;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #1e293b;
+    }
+    /* Summernote styling adjustments for clean Tailwind admin integration */
+    .note-editor.note-frame {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+    }
+    .note-toolbar {
+        background: #f8fafc !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-radius: 0 !important;
+        padding: 8px 10px !important;
+    }
+    .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset) {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        color: #334155 !important;
+        padding: 5px 9px !important;
+        font-size: 13px !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+    }
+    .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset):hover {
+        background: #eff6ff !important;
+        border-color: #93c5fd !important;
+        color: #2563eb !important;
+    }
+    .note-toolbar .note-btn-group {
+        gap: 2px !important;
+    }
+    .note-editable {
+        font-family: inherit !important;
+        font-size: 14px !important;
+        color: #1e293b !important;
+        line-height: 1.7 !important;
+        padding: 18px !important;
+        background-color: #ffffff !important;
+    }
+    .note-editable ul { list-style-type: disc !important; padding-left: 24px !important; }
+    .note-editable ol { list-style-type: decimal !important; padding-left: 24px !important; }
+    .note-editable h1 { font-size: 2rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
+    .note-editable h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
+    .note-editable h3 { font-size: 1.25rem !important; font-weight: 600 !important; margin-bottom: 0.5rem !important; }
+    .note-editable p { margin-bottom: 0.75rem !important; }
+    .note-editable blockquote { border-left: 4px solid #2563eb !important; padding-left: 16px !important; color: #64748b !important; font-style: italic !important; }
+    .note-statusbar {
+        border-top: 1px solid #f1f5f9 !important;
+        background: #f8fafc !important;
+    }
+    .note-dropdown-menu {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important;
+        padding: 6px !important;
+        z-index: 1050 !important;
+    }
+    .note-dropdown-item {
+        color: #334155 !important;
+        padding: 6px 10px !important;
+        border-radius: 6px !important;
+        font-size: 13px !important;
+    }
+    .note-dropdown-item:hover {
+        background: #eff6ff !important;
+        color: #2563eb !important;
+    }
+    .note-modal { z-index: 1050 !important; }
+    .note-modal-backdrop { z-index: 1040 !important; }
+    .note-modal .modal-content {
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important;
+    }
+    .note-modal .btn-primary {
+        background: #2563eb !important;
+        border-color: #2563eb !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        padding: 8px 16px !important;
+    }
+    .note-color-palette .note-color-btn {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        min-height: 18px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 1px solid rgba(0,0,0,0.15) !important;
+        border-radius: 3px !important;
     }
 </style>
 @endpush
@@ -34,56 +140,61 @@
         <div class="lg:col-span-8 space-y-6">
 
             {{-- Card 1: Basic Information --}}
-            <div class="card">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
                 {{-- Card Header with Blue Icon --}}
-                <div class="flex items-center gap-2.5 mb-6 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Informasi Dasar</h2>
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Informasi Dasar</h2>
+                        <p class="text-[12px] text-slate-500">Identitas utama, akreditasi, dan kontak universitas</p>
+                    </div>
                 </div>
 
                 {{-- Fields Grid (2 cols) --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {{-- University Name --}}
                     <div>
-                        <label class="form-label">Nama Universitas</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nama Universitas</label>
                         <input type="text" 
                                name="name" 
                                id="univNameInput"
                                value="{{ old('name', $univ['name']) }}" 
                                required
                                placeholder="Universitas Indonesia"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- NPSN --}}
                     <div>
-                        <label class="form-label">NPSN</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
                         <input type="text" 
                                name="npsn" 
                                value="{{ old('npsn', $univ['npsn'] ?? '') }}" 
                                required
                                placeholder="20109988"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('npsn')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- University Type --}}
                     <div>
-                        <label class="form-label">Tipe Institusi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tipe Institusi</label>
                         <div class="relative">
                             <select name="type" 
-                                    class="input appearance-none cursor-pointer pr-10">
+                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="Negeri" {{ old('type', $univ['type'] ?? '') == 'Negeri' ? 'selected' : '' }}>Negeri (PTN)</option>
                                 <option value="Swasta" {{ old('type', $univ['type'] ?? '') == 'Swasta' ? 'selected' : '' }}>Swasta (PTS)</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
                             </div>
                         </div>
@@ -102,7 +213,7 @@
                                required
                                autocomplete="off"
                                placeholder="Contoh: Depok, Jawa Barat"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         
                         {{-- Location suggestions dropdown --}}
                         <div id="locationSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
@@ -114,16 +225,16 @@
 
                     {{-- Accreditation --}}
                     <div>
-                        <label class="form-label">Akreditasi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Akreditasi</label>
                         <div class="relative">
                             <select name="accreditation" 
-                                    class="input appearance-none cursor-pointer pr-10">
+                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="A" {{ old('accreditation', $univ['accreditation'] ?? '') == 'A' ? 'selected' : '' }}>A (Unggul)</option>
                                 <option value="B" {{ old('accreditation', $univ['accreditation'] ?? '') == 'B' ? 'selected' : '' }}>B (Baik)</option>
                                 <option value="C" {{ old('accreditation', $univ['accreditation'] ?? '') == 'C' ? 'selected' : '' }}>C (Cukup)</option>
                                 <option value="Belum Terakreditasi" {{ old('accreditation', $univ['accreditation'] ?? '') == 'Belum Terakreditasi' ? 'selected' : '' }}>Belum Terakreditasi</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
                             </div>
                         </div>
@@ -131,63 +242,177 @@
 
                     {{-- Website --}}
                     <div>
-                        <label class="form-label">Website</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Website</label>
                         <input type="url" 
                                name="website" 
                                value="{{ old('website', $univ['website'] ?? '') }}" 
-                               placeholder="https://www.ui.ac.id"
-                               class="input">
+                               placeholder="https://www.ui.ac.id" 
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('website')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Email</label>
+                        <input type="email"
+                               name="email"
+                               value="{{ old('email', $univ['email'] ?? '') }}"
+                               placeholder="info@universitas.ac.id"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('email')
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Telepon --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nomor Telepon</label>
+                        <input type="text"
+                               name="phone"
+                               value="{{ old('phone', $univ['phone'] ?? '') }}"
+                               placeholder="(021) 1234567"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('phone')
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Total Mahasiswa --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Total Mahasiswa</label>
+                        <input type="number"
+                               name="total_students"
+                               value="{{ old('total_students', $univ['total_students'] ?? '') }}"
+                               placeholder="12000"
+                               min="0"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('total_students')
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Total Fakultas --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Total Fakultas / Prodi</label>
+                        <input type="number"
+                               name="total_faculties"
+                               value="{{ old('total_faculties', $univ['total_faculties'] ?? '') }}"
+                               placeholder="10"
+                               min="0"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('total_faculties')
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tahun Berdiri --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tahun Berdiri</label>
+                        <input type="number"
+                               name="founded"
+                               value="{{ old('founded', $univ['founded'] ?? '') }}"
+                               placeholder="1950"
+                               min="1900"
+                               max="{{ date('Y') }}"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('founded')
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
             </div>
 
             {{-- Card 2: University Description --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Deskripsi Universitas</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Deskripsi Universitas</h2>
+                        <p class="text-[12px] text-slate-500">Profil lengkap, fakultas, akreditasi prodi, dan keunggulan</p>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="form-label">Profil, Fakultas & Keunggulan</label>
-                    <textarea name="description" 
-                              id="univDescription"
-                              rows="5"
-                              maxlength="1000"
-                              oninput="document.getElementById('charCount').textContent = this.value.length + ' / 1000 characters'"
-                              class="input p-4 leading-relaxed resize-none">{{ old('description', $univ['description'] ?? '') }}</textarea>
-                    
-                    <div class="flex justify-end mt-2">
-                        <span id="charCount" class="text-[12.5px] font-medium text-slate-500">
-                            {{ strlen(old('description', $univ['description'] ?? '')) }} / 1000 characters
-                        </span>
-                    </div>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-2">Profil, Fakultas & Keunggulan</label>
+                    <textarea name="description"
+                              id="univDescription">{{ old('description', $univ['description'] ?? '') }}</textarea>
+                    @error('description')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
-            {{-- Card 3: Campus Gallery --}}
-            <div class="card">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2.5 text-slate-900">
-                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                            <rect x="3" y="3" width="18" height="18" rx="3"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+            {{-- Card 3: IT Study Programs / Tags --}}
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
                         </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Program Studi IT</h2>
+                        <p class="text-[12px] text-slate-500">Tambahkan program studi / jurusan IT yang tersedia di universitas ini</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-[13px] font-semibold text-slate-700">Daftar Program Studi</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="tagInputField"
+                               placeholder="Contoh: Teknik Informatika"
+                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault();addTag();}">
+                        <button type="button" onclick="addTag()"
+                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-lg transition shrink-0 shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                            Tambah
+                        </button>
+                    </div>
+                    <div id="tagContainer" class="flex flex-wrap gap-2 min-h-[40px] pt-1">
+                        @php
+                            $existingTags = is_array($univ['tags'] ?? null) ? $univ['tags'] : [];
+                        @endphp
+                        @foreach($existingTags as $tag)
+                            <span class="tag-item inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl">
+                                {{ $tag }}
+                                <input type="hidden" name="tags[]" value="{{ $tag }}">
+                                <button type="button" onclick="removeTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+                                </button>
+                            </span>
+                        @endforeach
+                    </div>
+                    <p class="text-[11.5px] text-slate-400">Tekan Enter atau klik tombol Tambah untuk menambahkan program studi. Klik × untuk menghapus.</p>
+                </div>
+            </div>
+
+            {{-- Card 4: Campus Gallery --}}
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5 text-slate-900">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                            </svg>
+                        </div>
                         <div>
-                            <h2 class="text-[17px] font-bold text-slate-900">Galeri Kampus</h2>
+                            <h2 class="text-[16px] font-bold text-slate-900">Galeri Kampus</h2>
                             <p class="text-[12px] text-slate-500">Unggah foto suasana kampus, laboratorium, dan fasilitas</p>
                         </div>
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-xl transition cursor-pointer">
-                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                         </svg>
                         Tambah Foto
@@ -216,7 +441,7 @@
                     @endforeach
 
                     {{-- Add Photo Slot Card --}}
-                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-[#f0f4f9] hover:bg-[#e4ebf5] border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
+                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -234,10 +459,17 @@
         <div class="lg:col-span-4 space-y-6">
 
             {{-- Card 1: Logo & Branding --}}
-            <div class="card flex flex-col items-center text-center">
-                <div class="w-full flex items-center justify-between mb-4">
-                    <h2 class="text-[17px] font-bold text-slate-900">Logo & Profil</h2>
-                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Format Gambar</span>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col items-center text-center">
+                <div class="w-full flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Logo & Profil</h2>
+                    </div>
+                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Format Gambar</span>
                 </div>
 
                 {{-- Logo Preview Box --}}
@@ -287,9 +519,17 @@
             </div>
 
             {{-- Card 2: Interactive Real-time Map Location (Strictly Indonesia) --}}
-            <div class="card space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-[17px] font-bold text-slate-900">Peta Lokasi Kampus</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Peta Lokasi Kampus</h2>
+                    </div>
                     <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200/60">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Indonesia Saja
@@ -299,7 +539,7 @@
                 {{-- Address Input with Live Suggestions Dropdown --}}
                 <div class="relative">
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-[12.5px] font-semibold text-slate-700">Alamat Lengkap</label>
+                        <label class="block text-[13px] font-semibold text-slate-700">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
                     <textarea name="address" 
@@ -307,7 +547,7 @@
                               rows="2"
                               autocomplete="off"
                               placeholder="Ketik alamat jalan di Indonesia..."
-                              class="input p-4 leading-relaxed resize-none">{{ old('address', $univ['address'] ?? '') }}</textarea>
+                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address', $univ['address'] ?? '') }}</textarea>
 
                     {{-- Autocomplete Suggestions Dropdown for Address --}}
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
@@ -380,8 +620,91 @@
 @endsection
 
 @push('scripts')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 <script>
+    // ---- Summernote for University Description ----
+    $(document).ready(function() {
+        $('#univDescription').summernote({
+            placeholder: 'Tuliskan profil universitas, visi misi, program unggulan, dan detail kurikulum...',
+            tabsize: 2,
+            height: 380,
+            minHeight: 250,
+            maxHeight: 700,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph', 'height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video', 'hr']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            fontNames: ['Plus Jakarta Sans', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+            fontNamesIgnoreCheck: ['Plus Jakarta Sans'],
+            callbacks: {
+                onChange: function(contents) {
+                    $('#univDescription').val(contents);
+                },
+                onImageUpload: function(files) {
+                    var formData = new FormData();
+                    formData.append('file', files[0]);
+                    formData.append('_token', '{{ csrf_token() }}');
+                    $.ajax({
+                        url: '{{ route('admin.editor.upload') }}',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            $('#univDescription').summernote('insertImage', data.url);
+                        },
+                        error: function(xhr) {
+                            var msg = xhr.responseJSON && xhr.responseJSON.message
+                                ? xhr.responseJSON.message
+                                : 'Gagal mengunggah gambar.';
+                            alert(msg);
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    // ---- IT Study Programs / Tags ----
+    function addTag() {
+        const input = document.getElementById('tagInputField');
+        const value = input.value.trim();
+        if (!value) return;
+
+        const existing = Array.from(document.querySelectorAll('#tagContainer .tag-item input[type=hidden]')).map(i => i.value.toLowerCase());
+        if (existing.includes(value.toLowerCase())) {
+            input.value = '';
+            input.focus();
+            return;
+        }
+
+        const container = document.getElementById('tagContainer');
+        const tag = document.createElement('span');
+        tag.className = 'tag-item inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl';
+        tag.innerHTML = `
+            ${value}
+            <input type="hidden" name="tags[]" value="${value}">
+            <button type="button" onclick="removeTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none">
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            </button>
+        `;
+        container.appendChild(tag);
+        input.value = '';
+        input.focus();
+    }
+
+    function removeTag(button) {
+        button.closest('.tag-item')?.remove();
+    }
+
     // -------------------------------------------------------------
     // 1. LOGO PREVIEW & UPLOAD
     // -------------------------------------------------------------

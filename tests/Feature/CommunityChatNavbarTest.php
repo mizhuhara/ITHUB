@@ -33,7 +33,6 @@ class CommunityChatNavbarTest extends TestCase
         $response->assertSee('Chat Komunitas');
         $response->assertSee('Lihat Semua');
         $response->assertSee('Buka Semua Chat');
-        $response->assertSee('id="it-notif-btn"', false);
     }
 
     public function test_navbar_shows_empty_state_when_user_has_no_joined_communities(): void

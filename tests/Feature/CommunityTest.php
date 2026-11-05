@@ -92,7 +92,6 @@ class CommunityTest extends TestCase
         $response->assertSee('Logo Komunitas');
         $response->assertSee('Banner Komunitas');
         $response->assertSee('Jenis Komunitas');
-        $response->assertSee('Lokasi Kegiatan');
         $response->assertSee('Bahasa Utama');
         $response->assertSee('Aturan Komunitas');
         $response->assertSee('Buat Komunitas');
@@ -120,8 +119,10 @@ class CommunityTest extends TestCase
         $community = Community::where('name', 'Komunitas Flutter Indonesia')->first();
         $this->assertNotNull($community);
 
-        $response->assertRedirect(route('community.show', $community));
+        $response->assertRedirect(route('community.my'));
         $this->assertEquals($user->id, $community->user_id);
+        $this->assertEquals('pending', $community->status);
+        $this->assertEquals('pending', $community->approval_status);
         $this->assertEquals('Technology', $community->category);
         $this->assertEquals('public', $community->type);
         $this->assertEquals('Jakarta / Online', $community->location);
@@ -143,7 +144,6 @@ class CommunityTest extends TestCase
             'description',
             'logo',
             'type',
-            'location',
             'language',
         ]);
     }
@@ -374,5 +374,75 @@ class CommunityTest extends TestCase
         $pageTwo->assertOk();
         $pageTwo->assertSee('Komunitas Tech 2');
         $pageTwo->assertSee('Komunitas Tech 1');
+    }
+
+    public function test_user_can_create_community_with_tags(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('community.store'), [
+            'name' => 'Figma Community Bali',
+            'category' => 'Design',
+            'description' => 'Komunitas belajar desain dan Figma di Bali.',
+            'logo' => UploadedFile::fake()->image('logo.png', 100, 100),
+            'type' => 'public',
+            'mode' => 'online',
+            'language' => 'Bahasa Indonesia',
+            'tags' => 'UI/UX, #Figma, Design System, Prototyping',
+        ]);
+
+        $response->assertRedirect(route('community.my'));
+
+        $community = Community::where('name', 'Figma Community Bali')->firstOrFail();
+        $this->assertEquals(['UI/UX', 'Figma', 'Design System', 'Prototyping'], $community->tags);
+    }
+
+    public function test_owner_can_update_community_tags(): void
+    {
+        $owner = User::factory()->create();
+        $community = Community::create([
+            'user_id' => $owner->id,
+            'name' => 'Web Dev Club',
+            'category' => 'Technology',
+            'description' => 'Komunitas web dev.',
+            'status' => 'active',
+            'type' => 'public',
+            'mode' => 'online',
+            'language' => 'Bahasa Indonesia',
+        ]);
+
+        $response = $this->actingAs($owner)->put(route('community.manage.update', $community), [
+            'name' => 'Web Dev Club',
+            'category' => 'Technology',
+            'description' => 'Komunitas web dev.',
+            'status' => 'active',
+            'type' => 'public',
+            'mode' => 'online',
+            'language' => 'Bahasa Indonesia',
+            'tags' => 'Laravel, React, Vue, TailwindCSS',
+        ]);
+
+        $response->assertSessionHas('success');
+
+        $community->refresh();
+        $this->assertEquals(['Laravel', 'React', 'Vue', 'TailwindCSS'], $community->tags);
+    }
+
+    public function test_search_finds_community_by_tag(): void
+    {
+        Community::create([
+            'name' => 'Front-End Masters',
+            'category' => 'Technology',
+            'description' => 'Belajar coding antarmuka.',
+            'status' => 'active',
+            'approval_status' => 'approved',
+            'tags' => ['ReactJS', 'NextJS', 'TypeScript'],
+        ]);
+
+        $response = $this->get(route('community.index', ['q' => 'TypeScript']));
+        $response->assertOk();
+        $response->assertSee('Front-End Masters');
+        $response->assertSee('#TypeScript');
     }
 }

@@ -241,6 +241,12 @@ class AdminSchoolController extends Controller
             $data['map_link'] = "https://www.google.com/maps?q={$data['latitude']},{$data['longitude']}";
         }
 
+        if ($request->has('competencies')) {
+            $competenciesClean = array_values(array_filter($request->input('competencies', []), fn ($c) => ! empty(trim((string) $c))));
+            $data['competencies'] = $competenciesClean;
+            $data['tags'] = $competenciesClean;
+        }
+
         $school->update($data);
 
         if ($request->wantsJson()) {
@@ -380,6 +386,8 @@ class AdminSchoolController extends Controller
             'existing_gallery.*' => ['string'],
             'total_students' => ['nullable', 'integer', 'min:0'],
             'industry_partners' => ['nullable', 'integer', 'min:0'],
+            'placement_rate' => ['nullable', 'string', 'max:20'],
+            'modern_labs' => ['nullable', 'integer', 'min:0'],
             'founded' => ['nullable', 'string', 'max:10'],
             'accreditation' => ['nullable', 'string', 'max:10'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],

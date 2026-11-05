@@ -1,4 +1,4 @@
-<aside class="w-64 shrink-0 bg-white border-r border-slate-200/80 flex flex-col h-screen sticky top-0 z-40 select-none">
+<aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200/80 flex flex-col h-screen select-none transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:static lg:h-screen lg:sticky lg:top-0 lg:z-40 shrink-0">
     @php 
         $userRole = auth()->user()?->role ?? 'user'; 
         if ($userRole === 'school_admin') {
@@ -20,15 +20,23 @@
         $pendingVerificationsCount = in_array($userRole, ['super_admin', 'admin'], true) 
             ? \App\Models\User::where('status', 'pending')->count() 
             : 0;
+        $pendingCommunityApprovalsCount = ($userRole === 'super_admin')
+            ? \App\Models\Community::where('approval_status', 'pending')->count()
+            : 0;
     @endphp
 
     {{-- Header / Brand --}}
-    <div class="h-16 px-6 flex items-center border-b border-slate-200/80 shrink-0">
+    <div class="h-16 px-6 flex items-center justify-between border-b border-slate-200/80 shrink-0">
         <a href="{{ $dashboardRoute }}" class="group flex items-center gap-2">
             <span class="text-[21px] font-black text-slate-900 tracking-tight leading-none group-hover:text-brand-600 transition-colors">
                 Indo<span class="text-brand-600">Tech</span>
             </span>
         </a>
+        <button type="button" id="admin-sidebar-close" class="lg:hidden p-1.5 -mr-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="Tutup Sidebar">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
     </div>
 
     {{-- Nav with Smooth Invisible/Ultra-thin Scrollbar --}}
@@ -42,13 +50,6 @@
                     'active' => $isDashboardActive,
                     'href' => $dashboardRoute,
                     'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
-                ],
-                [
-                    'label' => 'Applications',
-                    'icon' => 'jobs',
-                    'active' => request()->routeIs('admin.applications.*'),
-                    'href' => route('admin.applications.index'),
-                    'roles' => ['super_admin', 'admin'],
                 ],
                 [
                     'label' => 'Users and Verification',
@@ -129,6 +130,14 @@
                     'active' => request()->routeIs('admin.community.*'),
                     'href' => route('admin.community.index'),
                     'roles' => ['super_admin', 'admin'],
+                ],
+                [
+                    'label' => 'Approval Komunitas',
+                    'icon' => 'approval',
+                    'active' => request()->routeIs('admin.community-approvals.*'),
+                    'href' => route('admin.community-approvals.index'),
+                    'badge' => $pendingCommunityApprovalsCount,
+                    'roles' => ['super_admin'],
                 ],
                 [
                     'label' => 'Reports',
@@ -230,6 +239,8 @@
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 12h6"/></svg>
                         @elseif ($item['icon'] === 'community')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm6 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/></svg>
+                        @elseif ($item['icon'] === 'approval')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                         @elseif ($item['icon'] === 'reports')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
                         @elseif ($item['icon'] === 'bug')
@@ -242,6 +253,12 @@
                     </span>
 
                     <span class="flex-1 tracking-tight">{{ $item['label'] }}</span>
+
+                    @if(!empty($item['badge']) && $item['badge'] > 0)
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-100 text-amber-800 leading-none mr-1">
+                            {{ $item['badge'] }}
+                        </span>
+                    @endif
 
                     @if (!empty($item['target']))
                         <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-400 group-hover:text-slate-600 transition-colors shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>

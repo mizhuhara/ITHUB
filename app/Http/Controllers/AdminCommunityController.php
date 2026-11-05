@@ -60,6 +60,9 @@ class AdminCommunityController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateCommunity($request);
+        $validated['approval_status'] = 'approved';
+        $validated['approved_by'] = $request->user()->id;
+        $validated['approved_at'] = now();
 
         Community::create($validated);
 

@@ -26,8 +26,12 @@ class AdminArticleController extends Controller
         $tab = $request->query('tab', 'all');
         if ($tab === 'published') {
             $query->where('status', 'published');
+        } elseif ($tab === 'pending') {
+            $query->where('status', 'pending');
         } elseif ($tab === 'draft') {
             $query->where('status', 'draft');
+        } elseif ($tab === 'rejected') {
+            $query->where('status', 'rejected');
         } elseif ($tab === 'archived') {
             $query->where('status', 'archived');
         }
@@ -48,16 +52,20 @@ class AdminArticleController extends Controller
         $visible = $this->visibleArticles();
 
         $totalArticles = (clone $visible)->count();
+        $pendingCount = (clone $visible)->where('status', 'pending')->count();
         $publishedCount = (clone $visible)->where('status', 'published')->count();
         $draftCount = (clone $visible)->where('status', 'draft')->count();
+        $rejectedCount = (clone $visible)->where('status', 'rejected')->count();
         $totalViews = (clone $visible)->sum('views');
 
         return view('admin.articles.index', [
             'articles' => $articles,
             'currentTab' => $tab,
             'totalArticles' => number_format($totalArticles),
+            'pendingCount' => number_format($pendingCount),
             'publishedCount' => number_format($publishedCount),
             'draftCount' => number_format($draftCount),
+            'rejectedCount' => number_format($rejectedCount),
             'totalViews' => $totalViews >= 1000
                 ? number_format($totalViews / 1000, 1).'K'
                 : number_format($totalViews),
@@ -108,7 +116,7 @@ class AdminArticleController extends Controller
             'image' => ['nullable', 'url', 'max:500'],
             'image_caption' => ['nullable', 'string', 'max:255'],
             'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
-            'status' => ['required', 'in:published,draft,archived'],
+            'status' => ['required', 'in:published,pending,draft,rejected,archived'],
             'read_time' => ['nullable', 'string', 'max:50'],
             'meta_description' => ['nullable', 'string', 'max:500'],
         ]);
@@ -126,6 +134,16 @@ class AdminArticleController extends Controller
         }
 
         $user = $request->user();
+        $isSuperAdmin = $user && in_array($user->role, ['super_admin', 'admin'], true);
+
+        // Institusi (sekolah/kampus/perusahaan): jika memilih publish, status otomatis menjadi pending menunggu approve super admin
+        $status = $validated['status'];
+        if (! $isSuperAdmin) {
+            if ($status === 'published') {
+                $status = 'pending';
+            }
+        }
+
         $company = $user && $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
         $school = $user && $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
         $univ = $user && $user->role === 'university' ? University::where('user_id', $user->id)->first() : null;
@@ -151,14 +169,18 @@ class AdminArticleController extends Controller
             'author_avatar' => ! empty($validated['author_avatar']) ? $validated['author_avatar'] : $defaultAvatar,
             'image' => $imageUrl,
             'image_caption' => $validated['image_caption'] ?? null,
-            'status' => $validated['status'],
+            'status' => $status,
             'read_time' => $validated['read_time'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'user_id' => $user ? $user->id : null,
         ]);
 
+        $successMsg = ($status === 'pending')
+            ? "Artikel \"{$article->title}\" berhasil dikirim dan menunggu persetujuan (approval) Super Admin sebelum tayang."
+            : "Artikel \"{$article->title}\" berhasil disimpan!";
+
         return redirect()->route('admin.articles.index')
-            ->with('success', "Artikel \"{$article->title}\" berhasil disimpan ke database!");
+            ->with('success', $successMsg);
     }
 
     /**
@@ -191,7 +213,7 @@ class AdminArticleController extends Controller
             'image' => ['nullable', 'url', 'max:500'],
             'image_caption' => ['nullable', 'string', 'max:255'],
             'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
-            'status' => ['required', 'in:published,draft,archived'],
+            'status' => ['required', 'in:published,pending,draft,rejected,archived'],
             'read_time' => ['nullable', 'string', 'max:50'],
             'meta_description' => ['nullable', 'string', 'max:500'],
         ]);
@@ -209,6 +231,16 @@ class AdminArticleController extends Controller
         }
 
         $user = $request->user();
+        $isSuperAdmin = $user && in_array($user->role, ['super_admin', 'admin'], true);
+
+        // Institusi (sekolah/kampus/perusahaan): jika memilih publish, status otomatis menjadi pending menunggu approve super admin
+        $status = $validated['status'];
+        if (! $isSuperAdmin) {
+            if ($status === 'published') {
+                $status = 'pending';
+            }
+        }
+
         $company = $user && $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
         $school = $user && $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
         $univ = $user && $user->role === 'university' ? University::where('user_id', $user->id)->first() : null;
@@ -226,14 +258,51 @@ class AdminArticleController extends Controller
             'author_avatar' => ! empty($validated['author_avatar']) ? $validated['author_avatar'] : ($article->author_avatar ?: $defaultAvatar),
             'image' => $imageUrl,
             'image_caption' => $validated['image_caption'] ?? null,
-            'status' => $validated['status'],
+            'status' => $status,
             'read_time' => $validated['read_time'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'user_id' => $article->user_id ?: ($user ? $user->id : null),
         ]);
 
+        $successMsg = ($status === 'pending')
+            ? "Artikel \"{$article->title}\" berhasil diperbarui dan menunggu persetujuan (approval) Super Admin sebelum tayang."
+            : "Artikel \"{$article->title}\" berhasil diperbarui di database.";
+
         return redirect()->route('admin.articles.index')
-            ->with('success', "Artikel \"{$article->title}\" berhasil diperbarui di database.");
+            ->with('success', $successMsg);
+    }
+
+    /**
+     * Approve an article request (Admin/Super Admin only).
+     */
+    public function approve(int $id): RedirectResponse
+    {
+        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin'], true), 403, 'Hanya Admin/Super Admin yang dapat menyetujui artikel.');
+
+        $article = Article::findOrFail($id);
+        $article->update([
+            'status' => 'published',
+            'published_at' => $article->published_at ?: now(),
+        ]);
+
+        return redirect()->back()
+            ->with('success', "Artikel '{$article->title}' telah berhasil disetujui (Approved) dan kini telah tayang.");
+    }
+
+    /**
+     * Reject an article request (Admin/Super Admin only).
+     */
+    public function reject(int $id): RedirectResponse
+    {
+        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin'], true), 403, 'Hanya Admin/Super Admin yang dapat menolak artikel.');
+
+        $article = Article::findOrFail($id);
+        $article->update([
+            'status' => 'rejected',
+        ]);
+
+        return redirect()->back()
+            ->with('success', "Artikel '{$article->title}' telah ditolak (Rejected).");
     }
 
     /**
