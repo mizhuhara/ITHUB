@@ -194,7 +194,7 @@ class AdminUnivController extends Controller
                 $path = $image->store('universities/gallery', 'public');
                 $galleryUrls[] = Storage::url($path);
             }
-            $data['gallery'] = $galleryUrls;
+            $data['gallery'] = array_values(array_slice($galleryUrls, 0, 4));
         }
 
         $univ = University::create($data);
@@ -280,9 +280,9 @@ class AdminUnivController extends Controller
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'map_link' => ['nullable', 'string', 'max:500'],
             'logo' => ['nullable', 'image', 'max:5120'],
-            'gallery' => ['nullable', 'array'],
+            'gallery' => ['nullable', 'array', 'max:4'],
             'gallery.*' => ['image', 'max:5120'],
-            'existing_gallery' => ['nullable', 'array'],
+            'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'max:100'],
@@ -340,7 +340,7 @@ class AdminUnivController extends Controller
             }
         }
 
-        $data['gallery'] = array_values($gallery);
+        $data['gallery'] = array_values(array_slice($gallery, 0, 4));
 
         $univ->update($data);
 
