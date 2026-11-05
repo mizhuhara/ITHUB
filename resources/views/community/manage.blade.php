@@ -84,7 +84,13 @@
 
                     <div class="cmty-manage-info">
                         <div class="cmty-manage-badges">
-                            <span class="cmty-manage-badge cmty-manage-badge-role">Admin &amp; Pemilik</span>
+                            @if($isOwner)
+                                <span class="cmty-manage-badge cmty-manage-badge-role">Admin &amp; Pemilik</span>
+                            @elseif(($userRole ?? null) === 'admin')
+                                <span class="cmty-manage-badge cmty-manage-badge-role">Admin Komunitas</span>
+                            @elseif(($userRole ?? null) === 'moderator')
+                                <span class="cmty-manage-badge cmty-manage-badge-role cmty-manage-badge-moderator">Moderator</span>
+                            @endif
                             <span class="cmty-manage-badge cmty-manage-badge-cat">{{ $community->category }}</span>
                             <span class="cmty-manage-badge cmty-manage-badge-type">{{ $community->type === 'private' ? 'Privat' : 'Publik' }}</span>
                             @if($community->status === 'active')
@@ -118,14 +124,16 @@
 
         {{-- Manage Navigation Tabs --}}
         <div class="cmty-tabs-bar">
-            <button type="button" class="cmty-tab-btn active" onclick="showManageTab('settings', this)">
-                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Pengaturan Komunitas
-            </button>
-            <button type="button" class="cmty-tab-btn" onclick="showManageTab('members', this)">
+            @if($isOwner)
+                <button type="button" class="cmty-tab-btn active" onclick="showManageTab('settings', this)">
+                    <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Pengaturan Komunitas
+                </button>
+            @endif
+            <button type="button" class="cmty-tab-btn {{ ! $isOwner ? 'active' : '' }}" onclick="showManageTab('members', this)">
                 <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
@@ -139,6 +147,7 @@
             </button>
         </div>
 
+        @if($isOwner)
         {{-- ============================================================ --}}
         {{-- TAB 1: PENGATURAN KOMUNITAS                                   --}}
         {{-- ============================================================ --}}
@@ -148,6 +157,26 @@
                     <h2>Pengaturan Informasi Komunitas</h2>
                     <p>Perbarui profil, visibilitas, status, serta tata tertib komunitas Anda.</p>
                 </div>
+
+                @if($community->approval_status === 'rejected')
+                    <div style="margin-bottom: 24px; padding: 16px; border-radius: 14px; background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b;">
+                        <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; margin-bottom: 6px;">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <span>Pengajuan Komunitas Ini Ditolak oleh Super Admin</span>
+                        </div>
+                        <p style="font-size: 12.5px; color: #7f1d1d; margin: 0 0 6px 26px; line-height: 1.5;">
+                            Alasan penolakan: <strong>{{ $community->rejection_reason }}</strong>
+                        </p>
+                        <p style="font-size: 11.5px; color: #b91c1c; margin: 0 0 0 26px;">
+                            Silakan perbarui data di bawah, lalu klik tombol <strong>"Simpan &amp; Ajukan Kembali"</strong> di bawah untuk mengirim ulang ke Super Admin.
+                        </p>
+                    </div>
+                @elseif($community->approval_status === 'pending')
+                    <div style="margin-bottom: 24px; padding: 14px; border-radius: 12px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500;">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: #d97706; flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Komunitas ini sedang dalam antrean review persetujuan Super Admin sebelum tampil di direktori publik.</span>
+                    </div>
+                @endif
 
                 <form data-async data-async-reload action="{{ route('community.manage.update', $community) }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -190,14 +219,18 @@
                             </select>
                         </div>
 
-                        {{-- Lokasi Kegiatan --}}
+                        {{-- Mode Komunitas --}}
                         <div>
-                            <label class="cmty-m-label" for="m-loc">Lokasi Kegiatan <span class="text-red-500">*</span></label>
-                            <input type="text" id="m-loc" name="location" class="cmty-m-input" value="{{ old('location', $community->location) }}" placeholder="Contoh: Jakarta / Online" required>
+                            <label class="cmty-m-label" for="m-mode">Mode Komunitas <span class="text-red-500">*</span></label>
+                            <select id="m-mode" name="mode" class="cmty-m-select" required>
+                                <option value="online" {{ old('mode', $community->mode) === 'online' ? 'selected' : '' }}>Online (Daring)</option>
+                                <option value="offline" {{ old('mode', $community->mode) === 'offline' ? 'selected' : '' }}>Offline (Tatap Muka)</option>
+                                <option value="hybrid" {{ old('mode', $community->mode) === 'hybrid' ? 'selected' : '' }}>Hybrid (Kombinasi)</option>
+                            </select>
                         </div>
 
                         {{-- Bahasa Utama --}}
-                        <div class="cmty-form-full">
+                        <div>
                             <label class="cmty-m-label" for="m-lang">Bahasa Utama <span class="text-red-500">*</span></label>
                             <input type="text" id="m-lang" name="language" class="cmty-m-input" value="{{ old('language', $community->language) }}" placeholder="Contoh: Bahasa Indonesia" required>
                         </div>
@@ -227,25 +260,68 @@
                             <label class="cmty-m-label" for="m-rules">Aturan Komunitas (Opsional)</label>
                             <textarea id="m-rules" name="rules" rows="4" class="cmty-m-textarea" placeholder="Tata tertib bagi anggota...">{{ old('rules', $community->rules) }}</textarea>
                         </div>
+
+                        {{-- Tag Komunitas --}}
+                        <div class="cmty-form-full">
+                            <label class="cmty-m-label" for="m-tags">Tag / Topik Komunitas (Opsional)</label>
+                            <input type="text"
+                                   id="m-tags"
+                                   name="tags"
+                                   class="cmty-m-input"
+                                   value="{{ old('tags', !empty($community->tags) ? implode(', ', $community->tags) : '') }}"
+                                   placeholder="Contoh: UI/UX, Figma, Prototyping, Design System">
+                            <p class="cmty-m-hint">Pisahkan tag dengan tanda koma (,). Tag akan ditampilkan pada kartu komunitas di halaman direktori.</p>
+                        </div>
+
+                        {{-- Catatan Perbaikan Komunitas (Khusus jika status ditolak) --}}
+                        @if($community->approval_status === 'rejected')
+                            <div class="cmty-form-full" style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 14px; padding: 18px; margin-top: 10px;">
+                                <label class="cmty-m-label" for="m-resubmit-notes" style="color: #92400e; font-weight: 700;">
+                                    Catatan / Caption Perbaikan Komunitas <span class="text-red-500">*</span>
+                                </label>
+                                <p style="font-size: 12px; color: #78350f; margin: 0 0 8px; line-height: 1.5;">
+                                    Tuliskan penjelasan mengenai apa saja yang telah Anda perbaiki sesuai alasan penolakan agar Super Admin dapat meninjaunya kembali.
+                                </p>
+                                <textarea id="m-resubmit-notes" 
+                                          name="resubmit_notes" 
+                                          rows="3" 
+                                          class="cmty-m-textarea" 
+                                          placeholder="Contoh: Kami telah memperjelas deskripsi komunitas dan melengkapi tata tertib sesuai arahan..." 
+                                          required>{{ old('resubmit_notes', $community->resubmit_notes) }}</textarea>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="cmty-manage-actions">
-                        <button type="submit" class="cmty-m-submit-btn">
-                            Simpan Perubahan
-                        </button>
+                        @if($community->approval_status === 'rejected')
+                            <button type="submit" name="resubmit" value="1" class="cmty-m-submit-btn" style="background: #dc2626;">
+                                Simpan &amp; Ajukan Kembali ke Super Admin
+                            </button>
+                        @else
+                            <button type="submit" class="cmty-m-submit-btn">
+                                Simpan Perubahan
+                            </button>
+                        @endif
                     </div>
                 </form>
             </div>
         </div>
+        @endif
 
         {{-- ============================================================ --}}
         {{-- TAB 2: KELOLA ANGGOTA & KICK/BAN                              --}}
         {{-- ============================================================ --}}
-        <div id="tab-members" class="cmty-tab-pane">
+        <div id="tab-members" class="cmty-tab-pane {{ ! $isOwner ? 'active' : '' }}">
             <div class="cmty-pane-card">
                 <div class="cmty-pane-header">
                     <h2>Daftar Anggota Komunitas</h2>
-                    <p>Sebagai admin, Anda dapat meninjau keanggotaan, mengeluarkan anggota yang melanggar, atau memblokir akses ke komunitas.</p>
+                    <p>
+                        @if($isOwner)
+                            Sebagai pemilik, Anda dapat mengatur peran anggota (Anggota, Moderator, Admin), mengeluarkan anggota yang melanggar, atau memblokir akses ke komunitas.
+                        @else
+                            Sebagai moderator/admin, Anda dapat meninjau keanggotaan dan menertibkan anggota yang tidak sopan (kick / ban).
+                        @endif
+                    </p>
                 </div>
 
                 @if($members->isEmpty())
@@ -269,6 +345,7 @@
                                     @php
                                         $isCreator = ($m->id === $community->user_id);
                                         $isBanned = (bool) ($m->pivot->is_banned ?? false);
+                                        $mRole = $m->pivot->role ?? 'member';
                                     @endphp
                                     <tr>
                                         <td>
@@ -281,6 +358,8 @@
                                                         {{ $m->name }}
                                                         @if($isCreator)
                                                             <span class="cmty-tag-you">(Anda / Pemilik)</span>
+                                                        @elseif(auth()->id() === $m->id)
+                                                            <span class="cmty-tag-you">(Anda)</span>
                                                         @endif
                                                     </span>
                                                     <span class="cmty-member-email">{{ $m->email }}</span>
@@ -290,10 +369,24 @@
                                         <td>
                                             @if($isCreator)
                                                 <span class="cmty-role-pill admin">Pemilik &amp; Admin</span>
-                                            @elseif(($m->pivot->role ?? 'member') === 'admin')
-                                                <span class="cmty-role-pill admin">Admin</span>
+                                            @elseif($isOwner)
+                                                <form data-async data-async-reload action="{{ route('community.manage.member.role', [$community, $m]) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <select name="role" onchange="this.form.submit()" class="cmty-role-select role-{{ $mRole }}" title="Ubah role anggota">
+                                                        <option value="member" {{ $mRole === 'member' ? 'selected' : '' }}>Anggota</option>
+                                                        <option value="moderator" {{ $mRole === 'moderator' ? 'selected' : '' }}>Moderator</option>
+                                                        <option value="admin" {{ $mRole === 'admin' ? 'selected' : '' }}>Admin</option>
+                                                    </select>
+                                                </form>
                                             @else
-                                                <span class="cmty-role-pill member">Anggota</span>
+                                                @if($mRole === 'admin')
+                                                    <span class="cmty-role-pill admin">Admin</span>
+                                                @elseif($mRole === 'moderator')
+                                                    <span class="cmty-role-pill moderator">Moderator</span>
+                                                @else
+                                                    <span class="cmty-role-pill member">Anggota</span>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>
@@ -310,24 +403,37 @@
                                             @if($isCreator)
                                                 <span class="text-xs text-slate-400 font-semibold italic">Pemilik Utama</span>
                                             @else
-                                                <div class="cmty-action-buttons">
-                                                    {{-- Kick Button --}}
-                                                    <form data-async data-async-reload action="{{ route('community.manage.kick', [$community, $m]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengeluarkan {{ $m->name }} dari komunitas?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="cmty-btn-kick" title="Keluarkan anggota">
-                                                            Kick
-                                                        </button>
-                                                    </form>
+                                                @php
+                                                    $canKick = $community->canKickMember(auth()->user(), $m);
+                                                    $canBan = $community->canBanMember(auth()->user(), $m);
+                                                @endphp
 
-                                                    {{-- Ban / Unban Toggle Button --}}
-                                                    <form data-async data-async-reload action="{{ route('community.manage.ban', [$community, $m]) }}" method="POST" onsubmit="return confirm('{{ $isBanned ? "Buka blokir untuk {$m->name}?" : "Blokir {$m->name} dari komunitas?" }}');">
-                                                        @csrf
-                                                        <button type="submit" class="cmty-btn-ban {{ $isBanned ? 'unban' : '' }}">
-                                                            {{ $isBanned ? 'Buka Blokir' : 'Ban' }}
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                                @if($canKick || $canBan)
+                                                    <div class="cmty-action-buttons">
+                                                        {{-- Kick Button --}}
+                                                        @if($canKick)
+                                                            <form data-async data-async-reload action="{{ route('community.manage.kick', [$community, $m]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengeluarkan {{ $m->name }} dari komunitas?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="cmty-btn-kick" title="Keluarkan anggota">
+                                                                    Kick
+                                                                </button>
+                                                            </form>
+                                                        @endif
+
+                                                        {{-- Ban / Unban Toggle Button --}}
+                                                        @if($canBan)
+                                                            <form data-async data-async-reload action="{{ route('community.manage.ban', [$community, $m]) }}" method="POST" onsubmit="return confirm('{{ $isBanned ? "Buka blokir untuk {$m->name}?" : "Blokir {$m->name} dari komunitas?" }}');">
+                                                                @csrf
+                                                                <button type="submit" class="cmty-btn-ban {{ $isBanned ? 'unban' : '' }}">
+                                                                    {{ $isBanned ? 'Buka Blokir' : 'Ban' }}
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <span class="text-xs text-slate-400 font-medium italic">Tidak ada aksi</span>
+                                                @endif
                                             @endif
                                         </td>
                                     </tr>
@@ -601,6 +707,7 @@
     border-radius: 999px;
 }
 .cmty-manage-badge-role { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.cmty-manage-badge-role.cmty-manage-badge-moderator { background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
 .cmty-manage-badge-cat { background: #f1f5f9; color: #334155; }
 .cmty-manage-badge-type { background: #ede9fe; color: #6d28d9; }
 .cmty-manage-badge-active { background: #dcfce7; color: #15803d; }
@@ -842,7 +949,40 @@
     border-radius: 6px;
 }
 .cmty-role-pill.admin { background: #eff6ff; color: #1d4ed8; }
+.cmty-role-pill.moderator { background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
 .cmty-role-pill.member { background: #f1f5f9; color: #475569; }
+
+.cmty-role-select {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    color: #334155;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
+}
+.cmty-role-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+.cmty-role-select.role-admin {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+.cmty-role-select.role-moderator {
+    background-color: #ecfeff;
+    color: #0891b2;
+    border-color: #a5f3fc;
+}
+.cmty-role-select.role-member {
+    background-color: #f8fafc;
+    color: #475569;
+    border-color: #e2e8f0;
+}
 .cmty-status-pill {
     display: inline-block;
     font-size: 11.5px;

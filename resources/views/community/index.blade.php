@@ -36,9 +36,8 @@
                 $categories = ['Technology', 'Design', 'Business', 'Education', 'Science'];
             @endphp
             @foreach($categories as $cat)
-                @php $slug = strtolower(str_replace([' ', '&'], '-', $cat)); @endphp
-                <a href="{{ route('community.index', array_merge(request()->except('category','page'), ['category' => $slug])) }}"
-                   class="cmty-cat-pill {{ $activeCategory === $slug ? 'active' : '' }}">
+                <a href="{{ route('community.index', array_merge(request()->except('category','page'), ['category' => $cat])) }}"
+                   class="cmty-cat-pill {{ $activeCategory === $cat ? 'active' : '' }}">
                     {{ $cat }}
                 </a>
             @endforeach
@@ -146,7 +145,13 @@
                                         <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         </svg>
-                                        {{ number_format($community['members'] / 1000, 1) }}k anggota
+                                        @php
+                                            $mc = (int) $community['members'];
+                                            $memberLabel = $mc >= 1000
+                                                ? number_format($mc / 1000, 1) . 'k anggota'
+                                                : number_format($mc) . ' anggota';
+                                        @endphp
+                                        {{ $memberLabel }}
                                     </p>
                                     <p class="cmty-card-desc">{{ $community['description'] }}</p>
 
@@ -168,7 +173,7 @@
                                                 {{ $avatarInitials[$i] }}
                                             </div>
                                         @endfor
-                                        <span class="cmty-avatar-more">{{ number_format($community['members'] / 1000, 0) }}k anggota</span>
+                                        <span class="cmty-avatar-more">{{ $mc >= 1000 ? number_format($mc / 1000, 0) . 'k' : $mc }} anggota</span>
                                     </div>
                                     <a href="{{ route('community.show', $community['id']) }}" class="cmty-join-btn">
                                         Lihat

@@ -131,26 +131,24 @@
                     @enderror
                 </div>
 
-                {{-- Lokasi Kegiatan --}}
-                <div class="cmty-field-full">
-                    <label for="location" class="cmty-label">
-                        Lokasi Kegiatan <span class="cmty-req">*</span>
+                {{-- Mode Komunitas (Online / Offline / Hybrid) --}}
+                <div class="cmty-field">
+                    <label for="mode" class="cmty-label">
+                        Mode Komunitas <span class="cmty-req">*</span>
                     </label>
-                    <div class="cmty-input-icon-wrap">
-                        <svg class="cmty-input-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        <input type="text"
-                               id="location"
-                               name="location"
-                               value="{{ old('location') }}"
-                               class="cmty-input has-icon @error('location') is-invalid @enderror"
-                               placeholder="Contoh: Jakarta / Online, Yogyakarta, Seluruh Indonesia (Hybrid)"
-                               required>
+                    <div class="cmty-select-wrap">
+                        <select id="mode" name="mode" class="cmty-select @error('mode') is-invalid @enderror" required>
+                            <option value="online" {{ old('mode', 'online') === 'online' ? 'selected' : '' }}>Online (Kegiatan Daring)</option>
+                            <option value="offline" {{ old('mode') === 'offline' ? 'selected' : '' }}>Offline (Tatap Muka / Luring)</option>
+                            <option value="hybrid" {{ old('mode') === 'hybrid' ? 'selected' : '' }}>Hybrid (Kombinasi Online &amp; Offline)</option>
+                        </select>
+                        <div class="cmty-select-arrow">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
                     </div>
-                    <p class="cmty-hint">Sebutkan kota domisili atau tuliskan format kegiatan (Online, Offline, atau Hybrid).</p>
-                    @error('location')
+                    @error('mode')
                         <p class="cmty-error">{{ $message }}</p>
                     @enderror
                 </div>
@@ -194,6 +192,23 @@
                         </label>
                     </div>
                     @error('type')
+                        <p class="cmty-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Tag / Topik Komunitas --}}
+                <div class="cmty-field-full">
+                    <label for="tags" class="cmty-label">
+                        Tag / Topik Komunitas <span class="cmty-opt">(Opsional)</span>
+                    </label>
+                    <input type="text"
+                           id="tags"
+                           name="tags"
+                           class="cmty-input @error('tags') is-invalid @enderror"
+                           value="{{ old('tags') }}"
+                           placeholder="Contoh: UI/UX, Figma, Prototyping, Design System">
+                    <p class="cmty-hint">Tambahkan tag topik yang relevan untuk mempermudah anggota menemukan komunitas Anda. Pisahkan dengan tanda koma (,).</p>
+                    @error('tags')
                         <p class="cmty-error">{{ $message }}</p>
                     @enderror
                 </div>

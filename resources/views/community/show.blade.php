@@ -28,6 +28,28 @@
             </div>
         @endif
 
+        @if ($community->approval_status === 'pending')
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs font-medium text-amber-800 flex items-center gap-3">
+                <svg class="w-5 h-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div>
+                    <span class="font-bold">Pratinjau Komunitas:</span> Komunitas ini sedang dalam antrean review oleh Super Admin dan belum dapat diakses oleh publik.
+                </div>
+            </div>
+        @elseif ($community->approval_status === 'rejected')
+            <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-medium text-rose-800 space-y-1">
+                <div class="flex items-center gap-2 font-bold text-rose-900">
+                    <svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Pengajuan Komunitas Ini Ditolak:</span>
+                </div>
+                <p class="pl-7 text-rose-700 leading-relaxed">{{ $community->rejection_reason }}</p>
+                <div class="pl-7 pt-1">
+                    <a href="{{ route('community.manage', $community) }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-600 text-white font-bold hover:bg-rose-700 transition">
+                        Perbaiki &amp; Ajukan Kembali
+                    </a>
+                </div>
+            </div>
+        @endif
+
         <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
             @if ($community->cover_url)
                 <div class="h-40 sm:h-56 bg-slate-100 overflow-hidden">
@@ -50,9 +72,24 @@
                             <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1 rounded-full">
                                 {{ $community->category }}
                             </span>
-                            <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1 rounded-full border border-slate-200/60 inline-flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
-                            </span>
+                            @if ($community->approval_status === 'pending')
+                                <span class="bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full border border-amber-200 inline-flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Menunggu Persetujuan
+                                </span>
+                            @elseif ($community->approval_status === 'rejected')
+                                <span class="bg-rose-50 text-rose-700 text-xs font-semibold px-3 py-1 rounded-full border border-rose-200 inline-flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ditolak
+                                </span>
+                            @else
+                                <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1 rounded-full border border-slate-200/60 inline-flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
+                                </span>
+                            @endif
+                            @if ($community->mode)
+                                <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full border border-indigo-100 inline-flex items-center gap-1">
+                                    {{ $community->formatted_mode }}
+                                </span>
+                            @endif
                             @if ($community->type)
                                 <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-100 inline-flex items-center gap-1">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -65,15 +102,6 @@
                                     {{ $community->type === 'private' ? 'Privat' : 'Publik' }}
                                 </span>
                             @endif
-                            @if ($community->location)
-                                <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
-                                    {{ $community->location }}
-                                </span>
-                            @endif
                             @if ($community->language)
                                 <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-3 py-1 rounded-full inline-flex items-center gap-1">
                                     <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -84,7 +112,7 @@
                             @endif
                             @if ($isMember)
                                 <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-200/60">
-                                    Anda anggota
+                                    {{ $community->user_id === auth()->id() ? 'Pemilik' : 'Anda anggota' }}
                                 </span>
                             @endif
                         </div>
@@ -124,7 +152,7 @@
 
                 <div class="flex flex-wrap items-center gap-2.5 mt-8">
                     @auth
-                        @if (! $isMember)
+                        @if (! $isMember && $community->approval_status === 'approved' && $community->status === 'active')
                             <form action="{{ route('community.join', $community) }}" method="POST">
                                 @csrf
                                 <button type="submit"
@@ -149,7 +177,7 @@
                             </a>
                         @endif
 
-                        @if ($isOwnerOrAdmin)
+                        @if (($canModerate ?? false) || $isOwnerOrAdmin)
                             <a href="{{ route('community.manage', $community) }}"
                                class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition"
                                title="Kelola Komunitas"
@@ -162,7 +190,7 @@
                             </a>
                         @endif
 
-                        @if ($isMember)
+                        @if ($isMember && $community->user_id !== auth()->id())
                             <form id="form-leave-community" action="{{ route('community.leave', $community) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
@@ -276,65 +304,6 @@
             @endif
         </div>
 
-        {{-- Postingan & Diskusi Komunitas --}}
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-            <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">Diskusi Komunitas</h2>
-                    <p class="text-sm text-slate-500 mt-1">Wadah berbagi ilmu, tanya jawab, dan diskusi sesama anggota.</p>
-                </div>
-                @if ($isOwnerOrAdmin)
-                    <a href="{{ route('community.manage', $community) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200 transition">
-                        Moderasi Postingan
-                    </a>
-                @endif
-            </div>
-
-            {{-- Form Kirim Postingan Baru (Jika Member / Owner) --}}
-            @auth
-                @if ($isMember || $isOwnerOrAdmin)
-                    <form data-async data-async-reload action="{{ route('community.posts.store', $community) }}" method="POST" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 mb-8">
-                        @csrf
-                        <div class="space-y-3">
-                            <input type="text" name="title" placeholder="Judul diskusi (opsional)" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 outline-none focus:border-blue-500">
-                            <textarea name="content" rows="3" placeholder="Tuliskan pertanyaan, ide, atau topik diskusi di komunitas ini..." class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500" required></textarea>
-                            <div class="flex justify-end">
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2 px-5 rounded-xl transition">
-                                    Kirim Diskusi
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                @endif
-            @endauth
-
-            {{-- Daftar Postingan --}}
-            @if(isset($posts) && $posts->isNotEmpty())
-                <div class="space-y-4">
-                    @foreach($posts as $post)
-                        <div class="p-4 sm:p-5 rounded-2xl border border-slate-100 bg-slate-50/50">
-                            <div class="flex items-center justify-between gap-2 mb-2">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                                        {{ strtoupper(substr($post->user?->name ?: 'U', 0, 2)) }}
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">{{ $post->user?->name ?: 'Anggota' }}</p>
-                                        <p class="text-[11px] text-slate-400">{{ $post->created_at?->diffForHumans() }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            @if($post->title)
-                                <h3 class="text-sm font-bold text-slate-900 mt-1 mb-1">{{ $post->title }}</h3>
-                            @endif
-                            <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{{ $post->content }}</p>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <p class="text-xs text-slate-500 italic py-2">Belum ada diskusi di komunitas ini. Mulailah percakapan pertama!</p>
-            @endif
-        </div>
     </div>
 </div>
 

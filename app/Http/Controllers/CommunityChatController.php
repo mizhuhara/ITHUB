@@ -51,7 +51,7 @@ class CommunityChatController extends Controller
      */
     public function index(Request $request, Community $community): View
     {
-        abort_unless($community->status === 'active' || $community->isOwnerOrAdmin($request->user()), 404);
+        abort_unless(($community->status === 'active' && $community->approval_status === 'approved') || $request->user()?->role === 'super_admin', 404);
         abort_unless($community->canAccessChat($request->user()), 403, 'Akses ke chat komunitas ini dibatasi untuk anggota.');
 
         $isMember = $request->user() && $community->canSendChatMessage($request->user());
@@ -750,6 +750,7 @@ class CommunityChatController extends Controller
     {
         $communities = Community::query()
             ->where('status', 'active')
+            ->where('approval_status', 'approved')
             ->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)
                     ->orWhereHas('members', function ($m) use ($user) {
