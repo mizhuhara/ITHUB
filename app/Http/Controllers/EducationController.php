@@ -75,8 +75,7 @@ class EducationController extends Controller
             'map_link' => $school->map_link ?: (! empty($school->latitude) && ! empty($school->longitude) ? "https://www.google.com/maps?q={$school->latitude},{$school->longitude}" : 'https://maps.google.com/?q='.urlencode($school->name.', '.($school->location ?? ''))),
             'latitude' => $school->latitude,
             'longitude' => $school->longitude,
-            'about' => $school->description ?: "{$school->name} adalah institusi pendidikan vokasi di {$school->location}.",
-            'mission' => 'Menyiapkan lulusan yang kompeten, adaptif, dan siap kerja di industri teknologi.',
+            'about' => $school->description ?: 'Belum ada deskripsi profil untuk sekolah ini.',
             'stats' => [
                 'placement_rate' => ! empty($school->placement_rate) ? (str_contains((string) $school->placement_rate, '%') ? $school->placement_rate : $school->placement_rate.'%') : '-',
                 'industry_partners' => $school->industry_partners !== null && $school->industry_partners !== '' ? $school->industry_partners.'+' : '-',

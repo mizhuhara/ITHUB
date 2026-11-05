@@ -105,11 +105,6 @@
             <div class="prose max-w-none text-slate-700 text-sm sm:text-base leading-relaxed mb-4 [&_a]:text-blue-600 [&_a]:underline [&_a]:font-semibold hover:[&_a]:text-blue-800 hover:[&_a]:underline [&_a]:cursor-pointer [&_a]:transition-colors [&_a]:break-all">
                 {!! $school['about'] !!}
             </div>
-            @if(!empty($school['mission']))
-                <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-                    {{ $school['mission'] }}
-                </p>
-            @endif
         </div>
 
         {{-- Right Column: Key Statistics Box --}}
