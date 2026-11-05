@@ -10,6 +10,7 @@ class EducationController extends Controller
     public function index(): View
     {
         $schools = School::where('status', 'Active')
+            ->publiclyVisible()
             ->inRandomOrder()
             ->get()
             ->map(fn (School $school) => $this->mapSchool($school))
@@ -21,6 +22,7 @@ class EducationController extends Controller
     public function show(string $id): View
     {
         $school = School::where('status', 'Active')
+            ->publiclyVisible()
             ->where(function ($query) use ($id) {
                 $query->where('npsn', $id);
 

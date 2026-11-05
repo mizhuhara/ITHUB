@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminInternshipController;
 use App\Http\Controllers\AdminJobController;
+use App\Http\Controllers\AdminMembershipController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminSchoolController;
 use App\Http\Controllers\AdminUnivController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\InstitutionMembershipController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
@@ -264,6 +266,15 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::put('/admin/banners/{id}', [AdminBannerController::class, 'update'])->name('admin.banners.update');
     Route::delete('/admin/banners/{id}', [AdminBannerController::class, 'destroy'])->name('admin.banners.destroy');
 
+    // Admin Memberships & Premium Management (super_admin)
+    Route::get('/admin/memberships', [AdminMembershipController::class, 'index'])->name('admin.memberships.index');
+    Route::post('/admin/memberships/toggle-global', [AdminMembershipController::class, 'toggleGlobal'])->name('admin.memberships.toggle_global');
+    Route::post('/admin/memberships/{user}/toggle', [AdminMembershipController::class, 'toggleUser'])->name('admin.memberships.toggle');
+    Route::post('/admin/memberships/{user}/extend', [AdminMembershipController::class, 'update'])->name('admin.memberships.extend');
+    Route::post('/admin/memberships/settings', [AdminMembershipController::class, 'updateSettings'])->name('admin.memberships.settings');
+    Route::post('/admin/memberships/payments/{payment}/approve', [AdminMembershipController::class, 'approvePayment'])->name('admin.memberships.payments.approve');
+    Route::post('/admin/memberships/payments/{payment}/reject', [AdminMembershipController::class, 'rejectPayment'])->name('admin.memberships.payments.reject');
+
 }); // end admin group
 
 // Role dashboards (semua user login)
@@ -272,6 +283,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/school', [DashboardController::class, 'school'])->name('dashboard.school');
     Route::get('/dashboard/university', [DashboardController::class, 'university'])->name('dashboard.university');
     Route::get('/dashboard/company', [DashboardController::class, 'company'])->name('dashboard.company');
+    Route::get('/dashboard/membership', [InstitutionMembershipController::class, 'index'])->name('dashboard.membership');
+    Route::post('/dashboard/membership', [InstitutionMembershipController::class, 'store'])->name('dashboard.membership.store');
     Route::get('/dashboard/user', [DashboardController::class, 'user'])->name('dashboard.user');
     Route::get('/dashboard/applications', [MyApplicationController::class, 'index'])->name('applications.index');
     Route::get('/dashboard/profile', [ProfileController::class, 'edit'])->name('profile.edit');

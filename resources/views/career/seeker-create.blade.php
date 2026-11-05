@@ -295,32 +295,46 @@
                 </div>
             @endif
 
-            <form method="POST" data-async data-async-follow action="{{ route('career.seeker.store') }}">
+            <form method="POST" enctype="multipart/form-data" data-async data-async-follow action="{{ route('career.seeker.store') }}">
                 @csrf
                 <div class="skc-form-grid">
+                    {{-- Foto Profil --}}
+                    <div class="full">
+                        <label class="skc-label" for="photo">Foto Profil</label>
+                        <div style="display:flex;align-items:center;gap:14px;">
+                            @if(auth()->check() && auth()->user()->avatar_url)
+                                <img src="{{ auth()->user()->avatar_url }}" alt="Avatar Saat Ini" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #2563eb;flex-shrink:0;">
+                            @endif
+                            <div style="flex:1;">
+                                <input id="photo" name="photo" type="file" class="skc-input" accept="image/png,image/jpeg,image/jpg,image/webp" style="padding:8px 12px;height:auto;">
+                                <p class="skc-hint">Format: JPG, JPEG, PNG, WEBP (Maksimal 2MB). @if(auth()->check() && auth()->user()->avatar_url) Biarkan kosong jika ingin otomatis memakai foto profil akun IndoTech Anda. @endif</p>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Nama Lengkap --}}
                     <div>
                         <label class="skc-label" for="name">Nama Lengkap <span>*</span></label>
-                        <input id="name" name="name" type="text" class="skc-input" value="{{ old('name') }}" placeholder="Contoh: Budi Santoso" required>
+                        <input id="name" name="name" type="text" class="skc-input" value="{{ old('name', auth()->user()?->name) }}" placeholder="Contoh: Budi Santoso" required>
                     </div>
 
                     {{-- Email --}}
                     <div>
                         <label class="skc-label" for="email">Email <span>*</span></label>
-                        <input id="email" name="email" type="email" class="skc-input" value="{{ old('email') }}" placeholder="budi@example.com" required>
+                        <input id="email" name="email" type="email" class="skc-input" value="{{ old('email', auth()->user()?->email) }}" placeholder="budi@example.com" required>
                     </div>
 
                     {{-- No HP --}}
                     <div>
                         <label class="skc-label" for="phone">No. WhatsApp / HP</label>
-                        <input id="phone" name="phone" type="text" class="skc-input" value="{{ old('phone') }}" placeholder="+62 812 3456 7890">
+                        <input id="phone" name="phone" type="text" class="skc-input" value="{{ old('phone', auth()->user()?->phone) }}" placeholder="+62 812 3456 7890">
                         <p class="skc-hint">Akan digunakan perusahaan untuk menghubungimu langsung.</p>
                     </div>
 
                     {{-- Lokasi --}}
                     <div>
                         <label class="skc-label" for="location">Lokasi / Kota Domisili</label>
-                        <input id="location" name="location" type="text" class="skc-input" value="{{ old('location') }}" placeholder="Contoh: Jakarta Selatan, Bandung...">
+                        <input id="location" name="location" type="text" class="skc-input" value="{{ old('location', auth()->user()?->city ?? auth()->user()?->location) }}" placeholder="Contoh: Jakarta Selatan, Bandung...">
                     </div>
 
                     {{-- Posisi yang Dicari --}}

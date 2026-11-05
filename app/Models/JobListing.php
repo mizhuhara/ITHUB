@@ -122,10 +122,40 @@ class JobListing extends Model
     public function getLogoUrlAttribute(?string $value): ?string
     {
         if (! empty($value)) {
-            return $value;
+            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                return $value;
+            }
+
+            return asset('storage/'.ltrim($value, '/'));
         }
 
-        return $this->attributes['image'] ?? null;
+        // Try getting company logo or user avatar from poster user
+        if ($this->relationLoaded('user') ? $this->user : $this->user()->first()) {
+            $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();
+            if ($user?->company && ! empty($user->company->logo_url)) {
+                $compLogo = $user->company->logo_url;
+                if (str_starts_with($compLogo, 'http://') || str_starts_with($compLogo, 'https://')) {
+                    return $compLogo;
+                }
+
+                return asset('storage/'.ltrim($compLogo, '/'));
+            }
+
+            if ($user?->avatar_url) {
+                return $user->avatar_url;
+            }
+        }
+
+        if (! empty($this->attributes['image'])) {
+            $img = $this->attributes['image'];
+            if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://')) {
+                return $img;
+            }
+
+            return asset('storage/'.ltrim($img, '/'));
+        }
+
+        return null;
     }
 
     public function getImageAttribute(?string $value): ?string

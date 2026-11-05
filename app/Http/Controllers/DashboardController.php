@@ -357,6 +357,16 @@ class DashboardController extends Controller
             'cta_style' => 'secondary',
         ];
 
+        $authUser = auth()->user();
+        $cards[] = [
+            'label' => 'Status Keanggotaan',
+            'value' => $authUser->membership_status_label,
+            'sub' => $authUser->membership_days_remaining > 0 ? "Sisa {$authUser->membership_days_remaining} hari masa aktif (Trial/Member)" : 'Masa aktif keanggotaan telah berakhir',
+            'action' => 'Status & Perpanjangan',
+            'url' => route('dashboard.membership'),
+            'cta_style' => $authUser->membership_days_remaining <= 5 ? 'primary' : 'secondary',
+        ];
+
         return view('admin.dashboards.institution', [
             'title' => 'Dashboard Sekolah',
             'subtitle' => 'Kelola data dan informasi sekolah milik Anda.',
@@ -423,6 +433,16 @@ class DashboardController extends Controller
             'action' => 'Kelola Event',
             'url' => route('admin.events.index'),
             'cta_style' => 'secondary',
+        ];
+
+        $authUser = auth()->user();
+        $cards[] = [
+            'label' => 'Status Keanggotaan',
+            'value' => $authUser->membership_status_label,
+            'sub' => $authUser->membership_days_remaining > 0 ? "Sisa {$authUser->membership_days_remaining} hari masa aktif (Trial/Member)" : 'Masa aktif keanggotaan telah berakhir',
+            'action' => 'Status & Perpanjangan',
+            'url' => route('dashboard.membership'),
+            'cta_style' => $authUser->membership_days_remaining <= 5 ? 'primary' : 'secondary',
         ];
 
         return view('admin.dashboards.institution', [
@@ -505,6 +525,15 @@ class DashboardController extends Controller
                 'cta_style' => 'secondary',
             ];
         }
+
+        $cards[] = [
+            'label' => 'Status Keanggotaan',
+            'value' => $user->membership_status_label,
+            'sub' => $user->membership_days_remaining > 0 ? "Sisa {$user->membership_days_remaining} hari masa aktif (Trial/Member)" : 'Masa aktif keanggotaan telah berakhir',
+            'action' => 'Status & Perpanjangan',
+            'url' => route('dashboard.membership'),
+            'cta_style' => $user->membership_days_remaining <= 5 ? 'primary' : 'secondary',
+        ];
 
         return view('admin.dashboards.institution', [
             'title' => 'Dashboard Perusahaan',

@@ -26,6 +26,7 @@ class Internship extends Model
         'type',
         'logo_text',
         'logo_color',
+        'logo_url',
         'date_posted',
         'salary_range',
         'experience',
@@ -82,6 +83,35 @@ class Internship extends Model
     public function getDatePostedAttribute(): string
     {
         return $this->created_at ? $this->created_at->format('M d, Y') : date('M d, Y');
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (! empty($this->profile_picture)) {
+            if (str_starts_with($this->profile_picture, 'http://') || str_starts_with($this->profile_picture, 'https://')) {
+                return $this->profile_picture;
+            }
+
+            return asset('storage/'.ltrim($this->profile_picture, '/'));
+        }
+
+        if ($this->relationLoaded('user') ? $this->user : $this->user()->first()) {
+            $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();
+            if ($user?->company && ! empty($user->company->logo_url)) {
+                $compLogo = $user->company->logo_url;
+                if (str_starts_with($compLogo, 'http://') || str_starts_with($compLogo, 'https://')) {
+                    return $compLogo;
+                }
+
+                return asset('storage/'.ltrim($compLogo, '/'));
+            }
+
+            if ($user?->avatar_url) {
+                return $user->avatar_url;
+            }
+        }
+
+        return null;
     }
 
     public function getImageAttribute(): string
