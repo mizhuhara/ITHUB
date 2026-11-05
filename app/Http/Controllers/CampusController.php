@@ -9,11 +9,12 @@ class CampusController extends Controller
 {
     public function index(): View
     {
-        $campuses = University::where(function ($query) {
-            $query->whereIn('status', ['Active', 'active', 'Pending', 'pending'])
-                ->orWhereNull('status')
-                ->orWhere('status', '!=', 'Inactive');
-        })
+        $campuses = University::publiclyVisible()
+            ->where(function ($query) {
+                $query->whereIn('status', ['Active', 'active', 'Pending', 'pending'])
+                    ->orWhereNull('status')
+                    ->orWhere('status', '!=', 'Inactive');
+            })
             ->inRandomOrder()
             ->get()
             ->map(fn (University $university) => $this->mapCampus($university))
@@ -24,13 +25,14 @@ class CampusController extends Controller
 
     public function show(string $id): View
     {
-        $university = University::where(function ($query) use ($id) {
-            $query->where('npsn', $id);
+        $university = University::publiclyVisible()
+            ->where(function ($query) use ($id) {
+                $query->where('npsn', $id);
 
-            if (ctype_digit($id)) {
-                $query->orWhere('id', (int) $id);
-            }
-        })
+                if (ctype_digit($id)) {
+                    $query->orWhere('id', (int) $id);
+                }
+            })
             ->firstOrFail();
 
         return view('education.campus.show', [

@@ -140,56 +140,61 @@
         <div class="lg:col-span-8 space-y-6">
 
             {{-- Card 1: Basic Information --}}
-            <div class="card">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
                 {{-- Card Header with Blue Icon --}}
-                <div class="flex items-center gap-2.5 mb-6 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Informasi Dasar</h2>
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Informasi Dasar</h2>
+                        <p class="text-[12px] text-slate-500">Identitas utama, akreditasi, dan kontak universitas</p>
+                    </div>
                 </div>
 
                 {{-- Fields Grid (2 cols) --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {{-- University Name --}}
                     <div>
-                        <label class="form-label">Nama Universitas</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nama Universitas</label>
                         <input type="text" 
                                name="name" 
                                id="univNameInput"
                                value="{{ old('name', $univ['name']) }}" 
                                required
                                placeholder="Universitas Indonesia"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- NPSN --}}
                     <div>
-                        <label class="form-label">NPSN</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
                         <input type="text" 
                                name="npsn" 
                                value="{{ old('npsn', $univ['npsn'] ?? '') }}" 
                                required
                                placeholder="20109988"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('npsn')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- University Type --}}
                     <div>
-                        <label class="form-label">Tipe Institusi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tipe Institusi</label>
                         <div class="relative">
                             <select name="type" 
-                                    class="input appearance-none cursor-pointer pr-10">
+                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="Negeri" {{ old('type', $univ['type'] ?? '') == 'Negeri' ? 'selected' : '' }}>Negeri (PTN)</option>
                                 <option value="Swasta" {{ old('type', $univ['type'] ?? '') == 'Swasta' ? 'selected' : '' }}>Swasta (PTS)</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
                             </div>
                         </div>
@@ -208,7 +213,7 @@
                                required
                                autocomplete="off"
                                placeholder="Contoh: Depok, Jawa Barat"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         
                         {{-- Location suggestions dropdown --}}
                         <div id="locationSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
@@ -220,16 +225,16 @@
 
                     {{-- Accreditation --}}
                     <div>
-                        <label class="form-label">Akreditasi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Akreditasi</label>
                         <div class="relative">
                             <select name="accreditation" 
-                                    class="input appearance-none cursor-pointer pr-10">
+                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="A" {{ old('accreditation', $univ['accreditation'] ?? '') == 'A' ? 'selected' : '' }}>A (Unggul)</option>
                                 <option value="B" {{ old('accreditation', $univ['accreditation'] ?? '') == 'B' ? 'selected' : '' }}>B (Baik)</option>
                                 <option value="C" {{ old('accreditation', $univ['accreditation'] ?? '') == 'C' ? 'selected' : '' }}>C (Cukup)</option>
                                 <option value="Belum Terakreditasi" {{ old('accreditation', $univ['accreditation'] ?? '') == 'Belum Terakreditasi' ? 'selected' : '' }}>Belum Terakreditasi</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
                             </div>
                         </div>
@@ -237,132 +242,140 @@
 
                     {{-- Website --}}
                     <div>
-                        <label class="form-label">Website</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Website</label>
                         <input type="url" 
                                name="website" 
                                value="{{ old('website', $univ['website'] ?? '') }}" 
-                               placeholder="https://www.ui.ac.id"
-                               class="input">
+                               placeholder="https://www.ui.ac.id" 
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('website')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Email --}}
                     <div>
-                        <label class="form-label">Email</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Email</label>
                         <input type="email"
                                name="email"
                                value="{{ old('email', $univ['email'] ?? '') }}"
                                placeholder="info@universitas.ac.id"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('email')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Telepon --}}
                     <div>
-                        <label class="form-label">Nomor Telepon</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nomor Telepon</label>
                         <input type="text"
                                name="phone"
                                value="{{ old('phone', $univ['phone'] ?? '') }}"
                                placeholder="(021) 1234567"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('phone')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Total Mahasiswa --}}
                     <div>
-                        <label class="form-label">Total Mahasiswa</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Total Mahasiswa</label>
                         <input type="number"
                                name="total_students"
                                value="{{ old('total_students', $univ['total_students'] ?? '') }}"
                                placeholder="12000"
                                min="0"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('total_students')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Total Fakultas --}}
                     <div>
-                        <label class="form-label">Total Fakultas / Prodi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Total Fakultas / Prodi</label>
                         <input type="number"
                                name="total_faculties"
                                value="{{ old('total_faculties', $univ['total_faculties'] ?? '') }}"
                                placeholder="10"
                                min="0"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('total_faculties')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Tahun Berdiri --}}
                     <div>
-                        <label class="form-label">Tahun Berdiri</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tahun Berdiri</label>
                         <input type="number"
                                name="founded"
                                value="{{ old('founded', $univ['founded'] ?? '') }}"
                                placeholder="1950"
                                min="1900"
                                max="{{ date('Y') }}"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('founded')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
             </div>
 
             {{-- Card 2: University Description --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Deskripsi Universitas</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Deskripsi Universitas</h2>
+                        <p class="text-[12px] text-slate-500">Profil lengkap, fakultas, akreditasi prodi, dan keunggulan</p>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="form-label">Profil, Fakultas & Keunggulan</label>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-2">Profil, Fakultas & Keunggulan</label>
                     <textarea name="description"
                               id="univDescription">{{ old('description', $univ['description'] ?? '') }}</textarea>
                     @error('description')
-                        <p class="form-error">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
             {{-- Card 3: IT Study Programs / Tags --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
-                    </svg>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                        </svg>
+                    </div>
                     <div>
-                        <h2 class="text-[17px] font-bold text-slate-900">Program Studi IT</h2>
+                        <h2 class="text-[16px] font-bold text-slate-900">Program Studi IT</h2>
                         <p class="text-[12px] text-slate-500">Tambahkan program studi / jurusan IT yang tersedia di universitas ini</p>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Daftar Program Studi</label>
-                    <div class="flex gap-2 mb-3">
+                <div class="space-y-3">
+                    <label class="block text-[13px] font-semibold text-slate-700">Daftar Program Studi</label>
+                    <div class="flex gap-2">
                         <input type="text" id="tagInputField"
                                placeholder="Contoh: Teknik Informatika"
-                               class="input flex-1"
+                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();addTag();}">
                         <button type="button" onclick="addTag()"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-xl transition shrink-0">
-                            + Tambah
+                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-lg transition shrink-0 shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                            Tambah
                         </button>
                     </div>
-                    <div id="tagContainer" class="flex flex-wrap gap-2 min-h-[40px]">
+                    <div id="tagContainer" class="flex flex-wrap gap-2 min-h-[40px] pt-1">
                         @php
                             $existingTags = is_array($univ['tags'] ?? null) ? $univ['tags'] : [];
                         @endphp
@@ -376,28 +389,33 @@
                             </span>
                         @endforeach
                     </div>
-                    <p class="text-[11.5px] text-slate-400 mt-2">Tekan Enter atau klik tombol Tambah untuk menambahkan program studi. Klik × untuk menghapus.</p>
+                    <p class="text-[11.5px] text-slate-400">Tekan Enter atau klik tombol Tambah untuk menambahkan program studi. Klik × untuk menghapus.</p>
                 </div>
             </div>
 
             {{-- Card 4: Campus Gallery --}}
-            <div class="card">
-                <div class="flex items-center justify-between mb-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-2.5 text-slate-900">
-                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                            <rect x="3" y="3" width="18" height="18" rx="3"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
-                        </svg>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                            </svg>
+                        </div>
                         <div>
-                            <h2 class="text-[17px] font-bold text-slate-900">Galeri Kampus</h2>
-                            <p class="text-[12px] text-slate-500">Unggah foto suasana kampus, laboratorium, dan fasilitas</p>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-[16px] font-bold text-slate-900">Galeri Kampus</h2>
+                                <span id="galleryCountBadge" class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">0 / 4 Foto</span>
+                            </div>
+                            <p class="text-[12px] text-slate-500">Unggah foto suasana kampus, laboratorium, dan fasilitas (Maksimal 4 foto)</p>
                         </div>
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-xl transition cursor-pointer">
-                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                         </svg>
                         Tambah Foto
@@ -412,7 +430,7 @@
                     @endphp
 
                     @foreach($existingPhotos as $index => $photoUrl)
-                        <div class="gallery-item relative aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group shadow-xs">
+                        <div class="gallery-item relative aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group shadow-xs" data-type="existing">
                             <img src="{{ $photoUrl }}" alt="Galeri Kampus" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                             <input type="hidden" name="existing_gallery[]" value="{{ $photoUrl }}">
                             <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
@@ -426,7 +444,7 @@
                     @endforeach
 
                     {{-- Add Photo Slot Card --}}
-                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-[#f0f4f9] hover:bg-[#e4ebf5] border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
+                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -444,10 +462,17 @@
         <div class="lg:col-span-4 space-y-6">
 
             {{-- Card 1: Logo & Branding --}}
-            <div class="card flex flex-col items-center text-center">
-                <div class="w-full flex items-center justify-between mb-4">
-                    <h2 class="text-[17px] font-bold text-slate-900">Logo & Profil</h2>
-                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Format Gambar</span>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col items-center text-center">
+                <div class="w-full flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Logo & Profil</h2>
+                    </div>
+                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Format Gambar</span>
                 </div>
 
                 {{-- Logo Preview Box --}}
@@ -497,9 +522,17 @@
             </div>
 
             {{-- Card 2: Interactive Real-time Map Location (Strictly Indonesia) --}}
-            <div class="card space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-[17px] font-bold text-slate-900">Peta Lokasi Kampus</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Peta Lokasi Kampus</h2>
+                    </div>
                     <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200/60">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Indonesia Saja
@@ -509,7 +542,7 @@
                 {{-- Address Input with Live Suggestions Dropdown --}}
                 <div class="relative">
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-[12.5px] font-semibold text-slate-700">Alamat Lengkap</label>
+                        <label class="block text-[13px] font-semibold text-slate-700">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
                     <textarea name="address" 
@@ -517,7 +550,7 @@
                               rows="2"
                               autocomplete="off"
                               placeholder="Ketik alamat jalan di Indonesia..."
-                              class="input p-4 leading-relaxed resize-none">{{ old('address', $univ['address'] ?? '') }}</textarea>
+                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address', $univ['address'] ?? '') }}</textarea>
 
                     {{-- Autocomplete Suggestions Dropdown for Address --}}
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
@@ -685,67 +718,145 @@
 
     if (logoInput) {
         logoInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
+            const file = e.target.files && e.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    logoPreviewImg.src = evt.target.result;
+                const previewUrl = URL.createObjectURL(file);
+
+                if (logoPreviewImg) {
+                    logoPreviewImg.src = previewUrl;
                     logoPreviewImg.classList.remove('hidden');
-                    if (logoDefaultPlaceholder) {
-                        logoDefaultPlaceholder.classList.add('hidden');
+                    logoPreviewImg.style.display = 'block';
+                }
+                if (logoDefaultPlaceholder) {
+                    logoDefaultPlaceholder.classList.remove('flex');
+                    logoDefaultPlaceholder.classList.add('hidden');
+                    logoDefaultPlaceholder.style.display = 'none';
+                }
+                if (logoFileName) {
+                    logoFileName.textContent = file.name;
+                }
+
+                // Update avatar di header navbar seketika jika ada di halaman
+                const userBtn = document.getElementById('admin-user-btn');
+                if (userBtn) {
+                    let navAvatar = userBtn.querySelector('img');
+                    if (!navAvatar) {
+                        const fallbackDiv = userBtn.querySelector('.rounded-full.bg-brand-600, .rounded-full');
+                        if (fallbackDiv && !fallbackDiv.tagName.toLowerCase().includes('svg')) {
+                            navAvatar = document.createElement('img');
+                            navAvatar.className = 'w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shadow-sm ring-2 ring-slate-100 group-hover:ring-brand-200 transition-all';
+                            navAvatar.alt = file.name;
+                            fallbackDiv.replaceWith(navAvatar);
+                        }
                     }
-                    if (logoFileName) {
-                        logoFileName.textContent = file.name;
+                    if (navAvatar) {
+                        navAvatar.src = previewUrl;
                     }
-                };
-                reader.readAsDataURL(file);
+                }
             }
         });
     }
 
     // -------------------------------------------------------------
-    // 2. CAMPUS GALLERY UPLOAD & PREVIEW
+    // 2. CAMPUS GALLERY UPLOAD & PREVIEW (Maksimal 4 foto & sinkronisasi file)
     // -------------------------------------------------------------
     const galleryInput = document.getElementById('galleryInput');
     const galleryContainer = document.getElementById('galleryContainer');
     const addPhotoSlot = document.getElementById('addPhotoSlot');
+    const galleryBtnTrigger = document.getElementById('galleryBtnTrigger');
+    const galleryCountBadge = document.getElementById('galleryCountBadge');
+    let galleryDataTransfer = new DataTransfer();
+
+    function updateGalleryUI() {
+        if (!galleryContainer) return;
+        const total = galleryContainer.querySelectorAll('.gallery-item').length;
+        if (galleryCountBadge) {
+            galleryCountBadge.textContent = `${total} / 4 Foto`;
+        }
+        if (total >= 4) {
+            if (addPhotoSlot) addPhotoSlot.style.display = 'none';
+            if (galleryBtnTrigger) {
+                galleryBtnTrigger.classList.add('opacity-50', 'pointer-events-none');
+            }
+        } else {
+            if (addPhotoSlot) addPhotoSlot.style.display = 'flex';
+            if (galleryBtnTrigger) {
+                galleryBtnTrigger.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+    }
 
     if (galleryInput) {
         galleryInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            if (files.length > 0) {
-                files.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        const card = document.createElement('div');
-                        card.className = 'gallery-item relative aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group shadow-xs animate-fade-in';
-                        card.innerHTML = `
-                            <img src="${evt.target.result}" alt="Preview Foto" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                            <div class="absolute top-2 right-2">
-                                <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">Baru</span>
-                            </div>
-                            <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                                <button type="button" onclick="removeGalleryItem(this)" class="p-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white shadow-md transition" title="Hapus foto ini">
-                                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        `;
-                        galleryContainer.insertBefore(card, addPhotoSlot);
-                    };
-                    reader.readAsDataURL(file);
-                });
+            const files = Array.from(e.target.files || []);
+            if (!files.length) return;
+
+            const currentTotal = galleryContainer.querySelectorAll('.gallery-item').length;
+            const remaining = 4 - currentTotal;
+
+            if (remaining <= 0) {
+                alert('Maksimal hanya 4 foto yang diperbolehkan di galeri.');
+                galleryInput.files = galleryDataTransfer.files;
+                return;
             }
+
+            let validFiles = files.filter(f => f.type.startsWith('image/'));
+            if (validFiles.length > remaining) {
+                alert(`Hanya ${remaining} foto yang dapat ditambahkan karena batas maksimal 4 foto.`);
+                validFiles = validFiles.slice(0, remaining);
+            }
+
+            validFiles.forEach(file => {
+                galleryDataTransfer.items.add(file);
+
+                const card = document.createElement('div');
+                card.className = 'gallery-item relative aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group shadow-xs animate-fade-in';
+                card.dataset.type = 'new';
+                card.fileReference = file;
+
+                const previewUrl = URL.createObjectURL(file);
+                card.innerHTML = `
+                    <img src="${previewUrl}" alt="Preview Foto" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <div class="absolute top-2 right-2">
+                        <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">Baru</span>
+                    </div>
+                    <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                        <button type="button" onclick="removeGalleryItem(this)" class="p-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white shadow-md transition" title="Hapus foto ini">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                galleryContainer.insertBefore(card, addPhotoSlot);
+            });
+
+            galleryInput.files = galleryDataTransfer.files;
+            updateGalleryUI();
         });
     }
 
     function removeGalleryItem(button) {
         const item = button.closest('.gallery-item');
-        if (item) {
-            item.remove();
+        if (!item) return;
+
+        if (item.dataset.type === 'new' && item.fileReference) {
+            const newDT = new DataTransfer();
+            for (let i = 0; i < galleryDataTransfer.files.length; i++) {
+                const f = galleryDataTransfer.files[i];
+                if (f !== item.fileReference) {
+                    newDT.items.add(f);
+                }
+            }
+            galleryDataTransfer = newDT;
+            if (galleryInput) galleryInput.files = galleryDataTransfer.files;
         }
+
+        item.remove();
+        updateGalleryUI();
     }
+
+    updateGalleryUI();
 
     // -------------------------------------------------------------
     // 3. REAL-TIME INTERACTIVE LEAFLET MAP (STRICTLY INDONESIA)

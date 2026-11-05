@@ -141,7 +141,7 @@ class AdminSchoolController extends Controller
                 $gallery[] = Storage::url($path);
             }
         }
-        $data['gallery'] = $gallery;
+        $data['gallery'] = array_values(array_slice($gallery, 0, 4));
 
         if (empty($data['logo_text'])) {
             $data['logo_text'] = mb_substr($data['name'], 0, 8);
@@ -229,9 +229,7 @@ class AdminSchoolController extends Controller
             }
         }
 
-        if ($request->has('existing_gallery') || $request->hasFile('gallery')) {
-            $data['gallery'] = array_values($gallery);
-        }
+        $data['gallery'] = array_values(array_slice($gallery, 0, 4));
 
         if (empty($data['logo_text'])) {
             $data['logo_text'] = mb_substr($data['name'], 0, 8);
@@ -380,9 +378,9 @@ class AdminSchoolController extends Controller
             'tags.*' => ['string', 'max:50'],
             'competencies' => ['nullable', 'array'],
             'competencies.*' => ['string', 'max:100'],
-            'gallery' => ['nullable', 'array'],
+            'gallery' => ['nullable', 'array', 'max:4'],
             'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
-            'existing_gallery' => ['nullable', 'array'],
+            'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'total_students' => ['nullable', 'integer', 'min:0'],
             'industry_partners' => ['nullable', 'integer', 'min:0'],

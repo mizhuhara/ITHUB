@@ -11,7 +11,7 @@ class IndustryController extends Controller
     public function index(Request $request)
     {
         // Fetch active companies from the database
-        $companies = Company::whereIn('status', ['Active', 'active'])->get()->map(function (Company $c) {
+        $companies = Company::publiclyVisible()->whereIn('status', ['Active', 'active'])->get()->map(function (Company $c) {
             // Determine badge class based on industry (slug)
             $categorySlug = Str::slug($c->industry ?? '');
             $badgeClass = explode('-', $categorySlug)[0] ?? $categorySlug;

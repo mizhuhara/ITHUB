@@ -55,8 +55,9 @@ class AuthController extends Controller
         }
 
         $status = $role === 'user' ? 'active' : 'pending';
+        $isInstitution = in_array($role, $institutionRoles, true);
 
-        $user = DB::transaction(function () use ($data, $role, $status, $orgDocPath) {
+        $user = DB::transaction(function () use ($data, $role, $status, $orgDocPath, $isInstitution) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -68,6 +69,11 @@ class AuthController extends Controller
                 'org_phone' => $data['org_phone'] ?? null,
                 'org_address' => $data['org_address'] ?? null,
                 'org_doc' => $orgDocPath,
+                'membership_status' => $isInstitution ? 'trial' : 'active',
+                'membership_plan' => $isInstitution ? 'trial_1_month' : null,
+                'membership_started_at' => $isInstitution ? now() : null,
+                'membership_expires_at' => $isInstitution ? now()->addMonth() : null,
+                'is_premium_active' => true,
             ]);
 
             if ($role === 'user' && ! $user->hasVerifiedEmail()) {

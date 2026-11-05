@@ -157,9 +157,9 @@ class AdminCompanyController extends Controller
             'status' => [$user->role === 'company' ? 'nullable' : 'required', 'string'],
             'map_link' => ['nullable', 'string', 'max:1000'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'gallery' => ['nullable', 'array'],
+            'gallery' => ['nullable', 'array', 'max:4'],
             'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'existing_gallery' => ['nullable', 'array'],
+            'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
         ], [
             'name.required' => 'Nama perusahaan wajib diisi.',
@@ -189,6 +189,7 @@ class AdminCompanyController extends Controller
                 $galleryPaths[] = Storage::url($path);
             }
         }
+        $galleryPaths = array_values(array_slice($galleryPaths, 0, 4));
 
         // Normalize Google Maps embed url if link provided or build from coordinates
         $mapLink = $this->formatMapLink($validated['map_link'] ?? null);
@@ -313,9 +314,9 @@ class AdminCompanyController extends Controller
             'status' => [$request->user()->role === 'company' ? 'nullable' : 'required', 'string'],
             'map_link' => ['nullable', 'string', 'max:1000'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'gallery' => ['nullable', 'array'],
+            'gallery' => ['nullable', 'array', 'max:4'],
             'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'existing_gallery' => ['nullable', 'array'],
+            'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'remove_gallery' => ['nullable', 'array'],
         ], [
@@ -395,9 +396,7 @@ class AdminCompanyController extends Controller
             }
         }
 
-        if ($request->has('existing_gallery') || $request->hasFile('gallery')) {
-            $payload['gallery'] = array_values($gallery);
-        }
+        $payload['gallery'] = array_values(array_slice($gallery, 0, 4));
 
         $company->update($payload);
 
