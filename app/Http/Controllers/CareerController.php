@@ -6,6 +6,7 @@ use App\Models\Internship;
 use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\JobSeeker;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,7 @@ class CareerController extends Controller
 
         // "Siap Kerja" tab — show job seekers directory
         if ($tab === 'kerja') {
-            $seekerQuery = JobSeeker::where('status', 'aktif');
+            $seekerQuery = JobSeeker::with('user')->where('status', 'aktif');
 
             if ($request->filled('q')) {
                 $keyword = trim($request->query('q'));
@@ -82,7 +83,7 @@ class CareerController extends Controller
             $jobs = $this->getInternships($request);
         } else {
             // All other tabs — fetch from JobListing model
-            $query = JobListing::query()
+            $query = JobListing::with(['user.company'])
                 ->where('is_active', true)
                 ->where('status', '!=', 'Draft');
 
@@ -181,13 +182,24 @@ class CareerController extends Controller
             'portfolio_url' => ['nullable', 'url', 'max:300'],
             'linkedin_url' => ['nullable', 'url', 'max:300'],
             'availability' => ['required', 'in:Segera,Bulan Depan,> 1 Bulan'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ]);
 
         $skillsArray = ! empty($validated['skills'])
             ? array_map('trim', explode(',', $validated['skills']))
             : [];
 
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('job-seekers', 'public');
+        } elseif (auth()->check() && auth()->user()->avatar) {
+            $photoPath = auth()->user()->avatar;
+        }
+
+        $userId = auth()->id() ?? User::where('email', $validated['email'])->value('id');
+
         $seeker = JobSeeker::create([
+            'user_id' => $userId,
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
@@ -199,6 +211,7 @@ class CareerController extends Controller
             'about' => $validated['about'] ?? null,
             'portfolio_url' => $validated['portfolio_url'] ?? null,
             'linkedin_url' => $validated['linkedin_url'] ?? null,
+            'photo_url' => $photoPath,
             'availability' => $validated['availability'],
             'status' => 'aktif',
         ]);

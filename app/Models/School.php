@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -27,5 +28,28 @@ class School extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        if (! AppSetting::isPremiumFeatureEnabled()) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $subQuery) {
+            $subQuery->whereNull('user_id')
+                ->orWhereHas('user', function (Builder $userQuery) {
+                    $userQuery->where('is_premium_active', true)
+                        ->where(function (Builder $q) {
+                            $q->whereNull('membership_expires_at')
+                                ->orWhere('membership_expires_at', '>=', now());
+                        });
+                });
+        });
     }
 }

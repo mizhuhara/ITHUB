@@ -7,19 +7,35 @@
         default      => 'jobs',
     };
     $tagLabel = $tabs[$job['category']] ?? 'Pekerjaan';
+    $logoUrl = $job->logo_url ?? $job['logo_url'] ?? null;
+    $bannerImage = $job->image ?? $job['image'] ?? null;
+    if ($bannerImage === $logoUrl) {
+        $bannerImage = null;
+    }
 @endphp
 
 <article class="cr-card" id="job-{{ $job['id'] }}">
-    @if (!empty($job['image']) || !empty($job['logo_url']))
-        <img src="{{ $job['image'] ?? $job['logo_url'] }}" alt="Logo {{ $job['company'] }}" class="cr-card-image">
+    @if (!empty($bannerImage))
+        <img src="{{ $bannerImage }}" alt="Banner {{ $job['company'] }}" class="cr-card-image">
     @endif
     <div class="cr-card-top">
-        <div class="cr-logo" style="background: {{ $job['logo_color'] }}">{{ $job['logo_text'] }}</div>
+        @if (!empty($logoUrl))
+            <img src="{{ $logoUrl }}" alt="Logo {{ $job['company'] }}" class="cr-logo" style="object-fit:cover; border-radius:6px;">
+        @else
+            <div class="cr-logo" style="background: {{ $job['logo_color'] }}">{{ $job['logo_text'] }}</div>
+        @endif
         <span class="cr-tag {{ $tagClass }}">{{ $tagLabel }}</span>
     </div>
 
     <h3 class="cr-card-title">{{ $job['title'] }}</h3>
-    <p class="cr-card-company">{{ $job['company'] }}</p>
+    <p class="cr-card-company">
+        {{ $job['company'] }}
+        @if(isset($job->user) && $job->user)
+            <span title="Diposting oleh mitra resmi {{ $job->user->name }}" style="display:inline-flex;align-items:center;vertical-align:middle;margin-left:4px;color:#2563eb;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" /></svg>
+            </span>
+        @endif
+    </p>
 
     <div class="cr-meta">
         <span class="cr-meta-item">
