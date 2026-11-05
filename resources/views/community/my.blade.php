@@ -117,13 +117,20 @@
                         </div>
 
                         <div class="cmty-card-badges">
-                            @if($community->status === 'active')
-                                <span class="cmty-badge-aktif">
-                                    <span class="cmty-pulse-dot"></span> Aktif
+                            {{-- Approval Status Badges --}}
+                            @if($community->approval_status === 'pending')
+                                <span class="cmty-badge-pending">
+                                    <span class="cmty-pulse-dot-pending"></span> Menunggu Persetujuan
+                                </span>
+                            @elseif($community->approval_status === 'rejected')
+                                <span class="cmty-badge-rejected">
+                                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    Ditolak
                                 </span>
                             @else
-                                <span class="cmty-badge-inaktif">
-                                    Nonaktif
+                                <span class="cmty-badge-approved">
+                                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    Disetujui
                                 </span>
                             @endif
 
@@ -132,6 +139,9 @@
                                 <span class="cmty-badge cmty-badge-type">
                                     {{ $community->type === 'private' ? 'Privat' : 'Publik' }}
                                 </span>
+                                <span class="cmty-badge cmty-badge-mode">
+                                    {{ $community->formatted_mode }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -139,25 +149,64 @@
                     {{-- Title & Meta --}}
                     <div>
                         <h3 class="cmty-card-title">
-                            <a href="{{ route('community.show', $community) }}">{{ $community->name }}</a>
+                            @if($community->approval_status === 'approved')
+                                <a href="{{ route('community.show', $community) }}">{{ $community->name }}</a>
+                            @else
+                                <span>{{ $community->name }}</span>
+                            @endif
                         </h3>
                         <p class="cmty-card-desc">
                             {{ Str::limit($community->description ?: 'Belum ada deskripsi untuk komunitas ini.', 120) }}
                         </p>
+                        @if(!empty($community->tags))
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                @foreach($community->tags as $tag)
+                                    <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">#{{ $tag }}</span>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
+
+                    {{-- Rejection Box if Rejected --}}
+                    @if($community->approval_status === 'rejected')
+                        <div class="cmty-reject-box">
+                            <div class="cmty-reject-title">
+                                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                <span>Alasan Penolakan:</span>
+                            </div>
+                            <p class="cmty-reject-reason">{{ $community->rejection_reason }}</p>
+                            <div class="cmty-reject-footer">
+                                <span class="cmty-reject-date">Ditolak {{ $community->rejected_at?->diffForHumans() }}</span>
+                                <div class="cmty-reject-actions">
+                                    <a href="{{ route('community.manage', $community) }}" class="cmty-btn-edit-fix">
+                                        Perbaiki Informasi
+                                    </a>
+                                    <button type="button"
+                                            onclick="openResubmitModal({{ $community->id }}, '{{ addslashes($community->name) }}', '{{ addslashes($community->rejection_reason ?? '') }}')"
+                                            class="cmty-btn-resubmit">
+                                        Ajukan Kembali
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @elseif($community->approval_status === 'pending')
+                        <div class="cmty-pending-notice">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Menunggu persetujuan Super Admin sebelum tampil publik.</span>
+                        </div>
+                        @if($community->resubmit_notes)
+                            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 12px; margin-top: 10px; font-size: 11.5px; color: #92400e;">
+                                <div style="font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 5px;">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    <span>Catatan Perbaikan yang Diajukan:</span>
+                                </div>
+                                <div style="line-height: 1.45; color: #78350f;">{{ $community->resubmit_notes }}</div>
+                            </div>
+                        @endif
+                    @endif
 
                     {{-- Community Info Pills --}}
                     <div class="cmty-card-meta-pills">
-                        @if($community->location)
-                            <span class="cmty-meta-pill">
-                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                </svg>
-                                {{ $community->location }}
-                            </span>
-                        @endif
-
                         @if($community->language)
                             <span class="cmty-meta-pill">
                                 <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -187,25 +236,39 @@
 
                     {{-- Actions: Lihat Komunitas, Chat, & Kelola Komunitas --}}
                     <div class="cmty-card-actions">
-                        {{-- Lihat Komunitas --}}
-                        <a href="{{ route('community.show', $community) }}"
-                           class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition"
-                           title="Lihat Komunitas" aria-label="Lihat Komunitas">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            <span class="cmty-tooltip">Lihat Komunitas</span>
-                        </a>
-                        {{-- Chat Komunitas --}}
-                        <a href="{{ route('community.chat', $community) }}"
-                           class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-blue-600 hover:bg-blue-50 hover:border-blue-200 shadow-sm transition"
-                           title="Chat Komunitas" aria-label="Chat Komunitas">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                            </svg>
-                            <span class="cmty-tooltip">Chat Komunitas</span>
-                        </a>
+                        @if($community->approval_status === 'approved')
+                            {{-- Lihat Komunitas --}}
+                            <a href="{{ route('community.show', $community) }}"
+                               class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition"
+                               title="Lihat Komunitas" aria-label="Lihat Komunitas">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                <span class="cmty-tooltip">Lihat Komunitas</span>
+                            </a>
+                            {{-- Chat Komunitas --}}
+                            <a href="{{ route('community.chat', $community) }}"
+                               class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-blue-600 hover:bg-blue-50 hover:border-blue-200 shadow-sm transition"
+                               title="Chat Komunitas" aria-label="Chat Komunitas">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                                <span class="cmty-tooltip">Chat Komunitas</span>
+                            </a>
+                        @else
+                            {{-- Pratinjau Komunitas --}}
+                            <a href="{{ route('community.show', $community) }}"
+                               class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100 shadow-sm transition"
+                               title="Pratinjau Komunitas" aria-label="Pratinjau Komunitas">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <span class="cmty-tooltip">Pratinjau Komunitas</span>
+                            </a>
+                        @endif
+
                         {{-- Kelola Komunitas --}}
                         <a href="{{ route('community.manage', $community) }}"
                            class="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 shadow-sm transition"
@@ -499,6 +562,142 @@
     align-items: flex-end;
     gap: 6px;
 }
+.cmty-badge-pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b45309;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+.cmty-pulse-dot-pending {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f59e0b;
+    animation: cmty-pulse 2s infinite;
+}
+.cmty-badge-approved {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #15803d;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+.cmty-badge-rejected {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+.cmty-badge-mode {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+.cmty-pending-notice {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    color: #92400e;
+    font-weight: 500;
+}
+.cmty-reject-box {
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.cmty-reject-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #991b1b;
+}
+.cmty-reject-reason {
+    font-size: 12px;
+    color: #7f1d1d;
+    line-height: 1.5;
+    margin: 0;
+    padding-left: 20px;
+}
+.cmty-reject-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px dashed #fca5a5;
+    flex-wrap: wrap;
+}
+.cmty-reject-date {
+    font-size: 10.5px;
+    color: #b91c1c;
+    font-weight: 500;
+}
+.cmty-reject-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.cmty-btn-edit-fix {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.cmty-btn-edit-fix:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+.cmty-btn-resubmit {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+    background: #dc2626;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.cmty-btn-resubmit:hover {
+    background: #b91c1c;
+}
 .cmty-badge-aktif {
     display: inline-flex;
     align-items: center;
@@ -662,6 +861,98 @@ a:hover > .cmty-tooltip {
     justify-content: center;
 }
 </style>
+
+{{-- ========================================================================= --}}
+{{-- MODAL POP-UP: AJUKAN KEMBALI KOMUNITAS BESERTA CATATAN PERBAIKAN --}}
+{{-- ========================================================================= --}}
+<div id="modal-resubmit-community" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-[2px] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 text-left relative animate-in fade-in zoom-in-95 duration-150">
+        {{-- Close Button --}}
+        <button type="button" onclick="closeResubmitModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition" aria-label="Tutup">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="flex items-start gap-3.5 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-200 mt-0.5">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1 pr-6">
+                <h3 class="text-base font-extrabold text-slate-900">Ajukan Kembali Komunitas</h3>
+                <p id="resubmit-community-name" class="text-xs text-blue-600 font-bold mt-0.5 truncate"></p>
+            </div>
+        </div>
+
+        {{-- Alasan Penolakan Sebelumnya --}}
+        <div class="bg-rose-50/90 border border-rose-200/90 rounded-2xl p-3.5 mb-4 text-xs text-rose-800">
+            <div class="font-bold flex items-center gap-1.5 text-rose-900 mb-1">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span>Catatan Penolakan Super Admin:</span>
+            </div>
+            <p id="resubmit-rejection-reason" class="text-rose-700 leading-relaxed pl-5 font-normal"></p>
+        </div>
+
+        {{-- Form Resubmit --}}
+        <form id="form-resubmit-community" method="POST" action="">
+            @csrf
+            <div class="space-y-1.5 mb-5">
+                <label for="resubmit-notes-input" class="block text-xs font-bold text-slate-900">
+                    Catatan / Keterangan Perbaikan Komunitas <span class="text-red-500">*</span>
+                </label>
+                <p class="text-[11.5px] text-slate-500 leading-relaxed">
+                    Tuliskan penjelasan mengenai apa saja yang telah Anda perbaiki sesuai alasan penolakan di atas agar Super Admin dapat meninjaunya kembali.
+                </p>
+                <textarea id="resubmit-notes-input"
+                          name="resubmit_notes"
+                          rows="4"
+                          class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition leading-relaxed placeholder:text-slate-400"
+                          placeholder="Contoh: Kami telah memperbarui deskripsi komunitas, melengkapi aturan tata tertib anggota, dan mengganti logo agar sesuai panduan..."
+                          required></textarea>
+            </div>
+
+            <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
+                <button type="button" onclick="closeResubmitModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+                    Batal
+                </button>
+                <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition flex items-center gap-1.5">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>Kirim Pengajuan Ulang</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openResubmitModal(communityId, communityName, rejectionReason) {
+    const modal = document.getElementById('modal-resubmit-community');
+    const form = document.getElementById('form-resubmit-community');
+    form.action = `{{ url('/community') }}/${communityId}/resubmit`;
+    document.getElementById('resubmit-community-name').textContent = communityName;
+    document.getElementById('resubmit-rejection-reason').textContent = rejectionReason || 'Tidak ada catatan penolakan spesifik.';
+    document.getElementById('resubmit-notes-input').value = '';
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    setTimeout(() => document.getElementById('resubmit-notes-input').focus(), 100);
+}
+
+function closeResubmitModal() {
+    const modal = document.getElementById('modal-resubmit-community');
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeResubmitModal();
+    }
+});
+</script>
 
 @endsection
 

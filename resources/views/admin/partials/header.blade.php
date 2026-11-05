@@ -153,6 +153,19 @@
                     $title = 'Community Management';
                     $breadcrumb = 'Community Management';
                     $subtitle = 'Kelola ruang diskusi publik dan forum interaksi pengguna.';
+                } elseif (request()->routeIs('admin.community-approvals.*')) {
+                    $parentRoute = route('admin.community-approvals.index');
+                    $parentName = 'Approval Komunitas';
+                    if (request()->routeIs('admin.community-approvals.show')) {
+                        $title = 'Detail Pengajuan Komunitas';
+                        $breadcrumb = 'Detail Pengajuan';
+                        $subtitle = 'Tinjau informasi detail komunitas sebelum menyetujui atau menolak.';
+                    } else {
+                        $title = 'Approval Komunitas';
+                        $breadcrumb = 'Approval Komunitas';
+                        $subtitle = 'Verifikasi dan kelola persetujuan pengajuan komunitas baru.';
+                        $parentName = null;
+                    }
                 } elseif (request()->routeIs('admin.articles.*')) {
                     $parentRoute = route('admin.articles.index');
                     $parentName = 'Articles';

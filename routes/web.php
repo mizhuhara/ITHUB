@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminApplicationController;
 use App\Http\Controllers\AdminArticleController;
 use App\Http\Controllers\AdminBannerController;
+use App\Http\Controllers\AdminCommunityApprovalController;
 use App\Http\Controllers\AdminCommunityController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminEventController;
@@ -100,10 +101,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/community/my', [CommunityController::class, 'my'])->name('community.my');
     Route::get('/community/{community}/manage', [CommunityController::class, 'manage'])->name('community.manage');
     Route::put('/community/{community}/manage', [CommunityController::class, 'updateSettings'])->name('community.manage.update');
+    Route::patch('/community/{community}/members/{user}/role', [CommunityController::class, 'updateMemberRole'])->name('community.manage.member.role');
     Route::delete('/community/{community}/members/{user}/kick', [CommunityController::class, 'kickMember'])->name('community.manage.kick');
     Route::post('/community/{community}/members/{user}/toggle-ban', [CommunityController::class, 'toggleBanMember'])->name('community.manage.ban');
     Route::patch('/community/{community}/posts/{post}/moderate', [CommunityController::class, 'moderatePost'])->name('community.manage.post.moderate');
     Route::post('/community/{community}/posts', [CommunityController::class, 'storePost'])->name('community.posts.store')->middleware('throttle:20,1');
+    Route::post('/community/{community}/resubmit', [CommunityController::class, 'resubmit'])->name('community.resubmit');
 
     // Community Chat Routes
     Route::get('/chat', [CommunityChatController::class, 'all'])->name('chat.index');
@@ -181,6 +184,12 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/community/{id}/edit', [AdminCommunityController::class, 'edit'])->name('admin.community.edit');
     Route::put('/admin/community/{id}', [AdminCommunityController::class, 'update'])->name('admin.community.update');
     Route::delete('/admin/community/{id}', [AdminCommunityController::class, 'destroy'])->name('admin.community.destroy');
+
+    // Admin Community Approvals (Super Admin Only)
+    Route::get('/admin/community-approvals', [AdminCommunityApprovalController::class, 'index'])->name('admin.community-approvals.index');
+    Route::get('/admin/community-approvals/{community}', [AdminCommunityApprovalController::class, 'show'])->name('admin.community-approvals.show');
+    Route::post('/admin/community-approvals/{community}/approve', [AdminCommunityApprovalController::class, 'approve'])->name('admin.community-approvals.approve');
+    Route::post('/admin/community-approvals/{community}/reject', [AdminCommunityApprovalController::class, 'reject'])->name('admin.community-approvals.reject');
 
     // Admin Jobs Management
     Route::get('/admin/jobs', [AdminJobController::class, 'index'])->name('admin.jobs.index');

@@ -17,20 +17,36 @@ class CommunityController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Community::where('status', 'active');
+        $query = Community::where('status', 'active')
+            ->where('approval_status', 'approved');
 
         if ($request->filled('q')) {
             $search = trim($request->query('q'));
             $query->where(function ($sub) use ($search) {
                 $sub->where('name', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('category', 'like', "%{$search}%");
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('tags', 'like', "%{$search}%");
             });
         }
 
-        $activeCategory = $request->input('category', 'all');
-        if ($activeCategory !== 'all') {
-            $query->where('category', $activeCategory);
+        /** @var array<string,string> Map slug → TitleCase category stored in DB */
+        $categoryMap = [
+            'technology' => 'Technology',
+            'design' => 'Design',
+            'business' => 'Business',
+            'education' => 'Education',
+            'science' => 'Science',
+            'other' => 'Other',
+        ];
+
+        $rawCategory = $request->input('category', 'all');
+        $activeCategory = $rawCategory;
+
+        if ($rawCategory !== 'all') {
+            // Resolve slug (e.g. "technology") or exact TitleCase (e.g. "Technology") to DB value
+            $dbCategory = $categoryMap[strtolower($rawCategory)] ?? $rawCategory;
+            $query->where('category', $dbCategory);
         }
 
         $sort = $request->input('sort', 'members_desc');
@@ -43,8 +59,8 @@ class CommunityController extends Controller
 
         return view('community.index', [
             'communities' => $query->paginate(6)->withQueryString(),
-            'totalMembers' => Community::where('status', 'active')->sum('members'),
-            'totalGroups' => Community::where('status', 'active')->count(),
+            'totalMembers' => Community::where('status', 'active')->where('approval_status', 'approved')->sum('members'),
+            'totalGroups' => Community::where('status', 'active')->where('approval_status', 'approved')->count(),
             'activeSort' => $sort,
             'activeCategory' => $activeCategory,
         ]);
@@ -68,9 +84,11 @@ class CommunityController extends Controller
             'logo' => ['required', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:4096'],
             'type' => ['required', 'in:public,private,publik,privat'],
-            'location' => ['required', 'string', 'max:255'],
+            'mode' => ['nullable', 'in:online,offline,hybrid,Online,Offline,Hybrid'],
+            'location' => ['nullable', 'string', 'max:255'],
             'language' => ['required', 'string', 'max:100'],
             'rules' => ['nullable', 'string', 'max:3000'],
+            'tags' => ['nullable'],
         ], [
             'name.required' => 'Nama komunitas wajib diisi.',
             'category.required' => 'Kategori komunitas wajib dipilih.',
@@ -81,7 +99,6 @@ class CommunityController extends Controller
             'banner.image' => 'Banner harus berupa berkas gambar (JPG, PNG, WebP, SVG).',
             'banner.max' => 'Ukuran berkas banner maksimal 4MB.',
             'type.required' => 'Jenis komunitas wajib dipilih.',
-            'location.required' => 'Lokasi kegiatan wajib diisi.',
             'language.required' => 'Bahasa utama wajib diisi.',
         ]);
 
@@ -98,6 +115,12 @@ class CommunityController extends Controller
         }
 
         $normalizedType = in_array(strtolower($validated['type']), ['privat', 'private'], true) ? 'private' : 'public';
+        $normalizedMode = strtolower($validated['mode'] ?? 'online');
+        if (! in_array($normalizedMode, ['online', 'offline', 'hybrid'], true)) {
+            $normalizedMode = 'online';
+        }
+
+        $tags = $this->parseTags($request->input('tags'));
 
         $community = Community::create([
             'user_id' => $request->user()?->id,
@@ -107,10 +130,13 @@ class CommunityController extends Controller
             'logo_url' => $logoUrl,
             'cover_url' => $coverUrl,
             'type' => $normalizedType,
-            'location' => $validated['location'],
+            'mode' => $normalizedMode,
+            'location' => $validated['location'] ?? null,
             'language' => $validated['language'],
             'rules' => $validated['rules'] ?? null,
-            'status' => 'active',
+            'tags' => $tags,
+            'status' => 'pending',
+            'approval_status' => 'pending',
             'members' => $request->user() ? 1 : 0,
         ]);
 
@@ -121,8 +147,8 @@ class CommunityController extends Controller
             ]);
         }
 
-        return redirect()->route('community.show', $community)
-            ->with('success', "Komunitas \"{$community->name}\" berhasil dibuat!");
+        return redirect()->route('community.my')
+            ->with('success', "Komunitas \"{$community->name}\" berhasil diajukan dan sedang menunggu persetujuan Super Admin.");
     }
 
     public function my(Request $request): View
@@ -140,10 +166,13 @@ class CommunityController extends Controller
     public function manage(Request $request, Community $community): View
     {
         abort_unless(
-            $community->user_id === $request->user()->id,
+            $community->canModerate($request->user()),
             403,
             'Anda tidak memiliki hak akses untuk mengelola komunitas ini.'
         );
+
+        $isOwner = $community->isOwner($request->user());
+        $userRole = $community->getUserRole($request->user());
 
         $members = $community->members()
             ->orderByPivot('role')
@@ -161,6 +190,8 @@ class CommunityController extends Controller
             'members' => $members,
             'posts' => $posts,
             'categories' => $categories,
+            'isOwner' => $isOwner,
+            'userRole' => $userRole,
         ]);
     }
 
@@ -176,11 +207,14 @@ class CommunityController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:1500'],
-            'status' => ['required', 'in:active,inactive'],
+            'status' => ['required', 'in:active,inactive,pending,rejected'],
             'type' => ['required', 'in:public,private,publik,privat'],
-            'location' => ['required', 'string', 'max:255'],
+            'mode' => ['nullable', 'in:online,offline,hybrid,Online,Offline,Hybrid'],
+            'location' => ['nullable', 'string', 'max:255'],
             'language' => ['required', 'string', 'max:100'],
             'rules' => ['nullable', 'string', 'max:3000'],
+            'resubmit_notes' => ['nullable', 'string', 'max:2000'],
+            'tags' => ['nullable'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:4096'],
         ]);
@@ -196,12 +230,31 @@ class CommunityController extends Controller
         }
 
         $validated['type'] = in_array(strtolower($validated['type']), ['privat', 'private'], true) ? 'private' : 'public';
+        if (! empty($validated['mode'])) {
+            $validated['mode'] = strtolower($validated['mode']);
+        }
 
-        unset($validated['logo'], $validated['banner']);
+        if ($request->has('tags')) {
+            $validated['tags'] = $this->parseTags($request->input('tags'));
+        }
+
+        if ($request->boolean('resubmit') || $request->input('action') === 'resubmit') {
+            $validated['approval_status'] = 'pending';
+            $validated['status'] = 'pending';
+            $validated['resubmit_notes'] = $request->input('resubmit_notes');
+            $validated['rejected_by'] = null;
+            $validated['rejected_at'] = null;
+        }
+
+        unset($validated['logo'], $validated['banner'], $validated['resubmit'], $validated['action']);
 
         $community->update($validated);
 
-        return back()->with('success', "Pengaturan komunitas \"{$community->name}\" berhasil diperbarui.");
+        $msg = ($community->approval_status === 'pending')
+            ? "Komunitas \"{$community->name}\" berhasil diajukan kembali dan sedang menunggu persetujuan Super Admin."
+            : "Pengaturan komunitas \"{$community->name}\" berhasil diperbarui.";
+
+        return back()->with('success', $msg);
     }
 
     public function kickMember(Request $request, Community $community, User $user): RedirectResponse|JsonResponse
@@ -257,12 +310,47 @@ class CommunityController extends Controller
         );
     }
 
+    public function updateMemberRole(Request $request, Community $community, User $user): RedirectResponse
+    {
+        abort_unless(
+            $community->canAssignRoles($request->user()),
+            403,
+            'Hanya pemilik komunitas yang dapat mengubah peran (role) anggota.'
+        );
+
+        if ($user->id === $community->user_id) {
+            return back()->with('error', 'Role pemilik komunitas tidak dapat diubah.');
+        }
+
+        $validated = $request->validate([
+            'role' => ['required', 'string', 'in:member,moderator,admin'],
+        ]);
+
+        $member = $community->members()->where('user_id', $user->id)->first();
+        if (! $member) {
+            return back()->with('error', 'Pengguna tersebut bukan anggota komunitas ini.');
+        }
+
+        $community->members()->updateExistingPivot($user->id, [
+            'role' => $validated['role'],
+        ]);
+
+        $roleLabels = [
+            'member' => 'Anggota',
+            'moderator' => 'Moderator',
+            'admin' => 'Admin',
+        ];
+        $roleName = $roleLabels[$validated['role']] ?? $validated['role'];
+
+        return back()->with('success', "Role {$user->name} berhasil diubah menjadi {$roleName}.");
+    }
+
     public function toggleBanMember(Request $request, Community $community, User $user): RedirectResponse
     {
         abort_unless(
-            $community->user_id === $request->user()->id,
+            $community->canBanMember($request->user(), $user),
             403,
-            'Anda tidak memiliki hak akses untuk mengelola komunitas ini.'
+            'Anda tidak memiliki hak akses untuk memblokir anggota ini.'
         );
 
         if ($user->id === $community->user_id) {
@@ -292,9 +380,9 @@ class CommunityController extends Controller
     public function moderatePost(Request $request, Community $community, CommunityPost $post): RedirectResponse
     {
         abort_unless(
-            $community->user_id === $request->user()->id,
+            $community->canModerate($request->user()),
             403,
-            'Anda tidak memiliki hak akses untuk mengelola komunitas ini.'
+            'Anda tidak memiliki hak akses untuk memoderasi postingan ini.'
         );
         abort_unless($post->community_id === $community->id, 404);
 
@@ -317,7 +405,7 @@ class CommunityController extends Controller
 
     public function storePost(Request $request, Community $community): RedirectResponse
     {
-        abort_unless($community->status === 'active', 404);
+        abort_unless($community->status === 'active' && $community->approval_status === 'approved', 404);
 
         $membership = $community->members()->where('user_id', $request->user()->id)->first();
         if ($membership && $membership->pivot->is_banned) {
@@ -341,13 +429,19 @@ class CommunityController extends Controller
 
     public function show(Request $request, Community $community): View
     {
-        abort_unless($community->status === 'active', 404);
+        $isApproved = $community->status === 'active' && $community->approval_status === 'approved';
+        $canPreview = $request->user() && ($request->user()->role === 'super_admin' || $community->user_id === $request->user()->id);
+
+        abort_unless($isApproved || $canPreview, 404);
 
         $isMember = $request->user()
             && $community->members()->whereKey($request->user()->id)->exists();
 
         $isOwnerOrAdmin = $request->user()
             && $community->isOwnerOrAdmin($request->user());
+
+        $canModerate = $request->user()
+            && $community->canModerate($request->user());
 
         $posts = $community->posts()
             ->where('status', 'published')
@@ -359,6 +453,7 @@ class CommunityController extends Controller
             'community' => $community,
             'isMember' => $isMember,
             'isOwnerOrAdmin' => $isOwnerOrAdmin,
+            'canModerate' => $canModerate,
             'posts' => $posts,
             'memberUsers' => $community->members()
                 ->orderByDesc('community_user.created_at')
@@ -369,7 +464,7 @@ class CommunityController extends Controller
 
     public function join(Request $request, Community $community): RedirectResponse
     {
-        abort_unless($community->status === 'active', 404);
+        abort_unless($community->status === 'active' && $community->approval_status === 'approved', 404);
 
         $isBanned = $community->members()
             ->where('user_id', $request->user()->id)
@@ -403,6 +498,11 @@ class CommunityController extends Controller
 
     public function leave(Request $request, Community $community): RedirectResponse
     {
+        // Pemilik/pembuat komunitas tidak boleh keluar dari komunitasnya sendiri
+        if ($community->user_id === $request->user()->id) {
+            return back()->with('error', 'Sebagai pemilik komunitas, Anda tidak dapat keluar dari komunitas ini.');
+        }
+
         $left = DB::transaction(function () use ($request, $community) {
             $locked = Community::whereKey($community->id)->lockForUpdate()->firstOrFail();
             $detached = $locked->members()->detach($request->user()->id);
@@ -420,5 +520,59 @@ class CommunityController extends Controller
                 ? "Anda keluar dari \"{$community->name}\"."
                 : 'Anda belum menjadi anggota komunitas ini.'
         );
+    }
+
+    public function resubmit(Request $request, Community $community): RedirectResponse
+    {
+        abort_unless(
+            $community->user_id === $request->user()->id,
+            403,
+            'Anda tidak memiliki hak akses untuk mengajukan kembali komunitas ini.'
+        );
+
+        $validated = $request->validate([
+            'resubmit_notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $community->update([
+            'approval_status' => 'pending',
+            'status' => 'pending',
+            'resubmit_notes' => $validated['resubmit_notes'] ?? null,
+            'rejected_by' => null,
+            'rejected_at' => null,
+        ]);
+
+        return redirect()->route('community.my')
+            ->with('success', "Pengajuan komunitas \"{$community->name}\" berhasil dikirim ulang beserta catatan perbaikan dan sedang menunggu persetujuan Super Admin.");
+    }
+
+    /**
+     * Parse and clean tags input into an array of trimmed tags.
+     *
+     * @return array<int, string>|null
+     */
+    protected function parseTags(mixed $tagsInput): ?array
+    {
+        if (empty($tagsInput)) {
+            return null;
+        }
+
+        if (is_string($tagsInput)) {
+            $tags = array_values(array_filter(array_map(
+                fn ($t) => trim(ltrim(trim($t), '#')),
+                explode(',', $tagsInput)
+            )));
+        } elseif (is_array($tagsInput)) {
+            $tags = array_values(array_filter(array_map(
+                fn ($t) => trim(ltrim(trim((string) $t), '#')),
+                $tagsInput
+            )));
+        } else {
+            return null;
+        }
+
+        $tags = array_slice($tags, 0, 10);
+
+        return ! empty($tags) ? $tags : null;
     }
 }
