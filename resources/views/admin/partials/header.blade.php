@@ -174,6 +174,23 @@
                     $title = 'Report Management';
                     $breadcrumb = 'Reports';
                     $subtitle = 'Laporan statistik dan analitik menyeluruh.';
+                } elseif (request()->routeIs('admin.banners.*')) {
+                    $parentRoute = route('admin.banners.index');
+                    $parentName = 'Banner';
+                    if (request()->routeIs('admin.banners.create')) {
+                        $title = 'Tambah Banner Baru';
+                        $breadcrumb = 'Tambah Banner';
+                        $subtitle = 'Unggah dan atur banner slider baru untuk beranda.';
+                    } elseif (request()->routeIs('admin.banners.edit')) {
+                        $title = 'Edit Banner';
+                        $breadcrumb = 'Edit Banner';
+                        $subtitle = 'Perbarui gambar, tautan, dan urutan tampilan banner.';
+                    } else {
+                        $title = 'Banner Management';
+                        $breadcrumb = 'Banner Management';
+                        $subtitle = 'Kelola banner slider yang tampil di halaman beranda.';
+                        $parentName = null;
+                    }
                 }
             @endphp
             <div class="flex flex-col">
