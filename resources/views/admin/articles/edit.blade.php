@@ -319,13 +319,35 @@
 
             {{-- Publish Status --}}
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                @php
+                    $isSuperAdmin = in_array(auth()->user()?->role, ['super_admin', 'admin'], true);
+                @endphp
+
+                @if(!$isSuperAdmin)
+                    <div class="bg-amber-50 border border-amber-200/90 rounded-xl p-3.5 mb-3.5">
+                        <div class="flex items-start gap-2.5">
+                            <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/></svg>
+                            <p class="text-[12px] text-amber-800 leading-relaxed font-medium">
+                                Status saat ini: <strong>{{ ucfirst($article->status) }}</strong>. Artikel yang dikirim untuk tayang wajib disetujui (Approved) oleh Super Admin terlebih dahulu.
+                            </p>
+                        </div>
+                    </div>
+                @endif
+
                 <label for="status" class="block text-[13.5px] font-semibold text-slate-800 mb-2">Status Publikasi <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <select id="status" name="status"
                             class="w-full h-11 px-3.5 pr-9 rounded-lg border border-slate-300 bg-white text-[14px] text-slate-900 appearance-none outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        @foreach (['published' => 'Published (Tayang)', 'draft' => 'Draft (Draf)', 'archived' => 'Archived (Arsip)'] as $val => $label)
-                            <option value="{{ $val }}" {{ old('status', $article->status) === $val ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
+                        @if(!$isSuperAdmin)
+                            <option value="published" {{ in_array(old('status', $article->status), ['published', 'pending']) ? 'selected' : '' }}>Kirim untuk Approval (Pending)</option>
+                            <option value="draft" {{ old('status', $article->status) === 'draft' ? 'selected' : '' }}>Simpan Sebagai Draf (Draft)</option>
+                        @else
+                            <option value="published" {{ old('status', $article->status) === 'published' ? 'selected' : '' }}>Published (Tayang)</option>
+                            <option value="pending"   {{ old('status', $article->status) === 'pending' ? 'selected' : '' }}>Pending (Menunggu Persetujuan)</option>
+                            <option value="draft"     {{ old('status', $article->status) === 'draft' ? 'selected' : '' }}>Draft (Draf)</option>
+                            <option value="rejected"  {{ old('status', $article->status) === 'rejected' ? 'selected' : '' }}>Rejected (Ditolak)</option>
+                            <option value="archived"  {{ old('status', $article->status) === 'archived' ? 'selected' : '' }}>Archived (Arsip)</option>
+                        @endif
                     </select>
                     <svg class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 10 4 4 4-4"/></svg>
                 </div>
