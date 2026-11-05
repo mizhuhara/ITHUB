@@ -109,10 +109,6 @@
                                 <span class="cmty-stat-label">Anggota Terdaftar</span>
                             </div>
                             <div class="cmty-stat-item">
-                                <span class="cmty-stat-value">{{ $posts->count() }}</span>
-                                <span class="cmty-stat-label">Postingan Diskusi</span>
-                            </div>
-                            <div class="cmty-stat-item">
                                 <span class="cmty-stat-value">{{ $community->created_at?->format('d M Y') }}</span>
                                 <span class="cmty-stat-label">Tanggal Dibuat</span>
                             </div>
@@ -138,12 +134,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                 </svg>
                 Kelola Anggota ({{ $members->count() }})
-            </button>
-            <button type="button" class="cmty-tab-btn" onclick="showManageTab('posts', this)">
-                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-                Moderasi Postingan ({{ $posts->count() }})
             </button>
         </div>
 
@@ -412,21 +402,25 @@
                                                     <div class="cmty-action-buttons">
                                                         {{-- Kick Button --}}
                                                         @if($canKick)
-                                                            <form data-async data-async-reload action="{{ route('community.manage.kick', [$community, $m]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengeluarkan {{ $m->name }} dari komunitas?');">
+                                                            <form data-async data-async-reload action="{{ route('community.manage.kick', [$community, $m]) }}" method="POST"
+                                                                  id="kick-form-{{ $m->id }}">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="cmty-btn-kick" title="Keluarkan anggota">
-                                                                    Kick
+                                                                <button type="button" class="cmty-btn-kick" title="Keluarkan anggota"
+                                                                        onclick="openConfirmModal('kick', '{{ $m->id }}', '{{ e($m->name) }}', false)">
+                                                                    Keluarkan
                                                                 </button>
                                                             </form>
                                                         @endif
 
                                                         {{-- Ban / Unban Toggle Button --}}
                                                         @if($canBan)
-                                                            <form data-async data-async-reload action="{{ route('community.manage.ban', [$community, $m]) }}" method="POST" onsubmit="return confirm('{{ $isBanned ? "Buka blokir untuk {$m->name}?" : "Blokir {$m->name} dari komunitas?" }}');">
+                                                            <form data-async data-async-reload action="{{ route('community.manage.ban', [$community, $m]) }}" method="POST"
+                                                                  id="ban-form-{{ $m->id }}">
                                                                 @csrf
-                                                                <button type="submit" class="cmty-btn-ban {{ $isBanned ? 'unban' : '' }}">
-                                                                    {{ $isBanned ? 'Buka Blokir' : 'Ban' }}
+                                                                <button type="button" class="cmty-btn-ban {{ $isBanned ? 'unban' : '' }}" title="{{ $isBanned ? 'Buka blokir anggota' : 'Blokir anggota' }}"
+                                                                        onclick="openConfirmModal('ban', '{{ $m->id }}', '{{ e($m->name) }}', {{ $isBanned ? 'true' : 'false' }})">
+                                                                    {{ $isBanned ? 'Buka Blokir' : 'Blokir' }}
                                                                 </button>
                                                             </form>
                                                         @endif
@@ -440,95 +434,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        {{-- ============================================================ --}}
-        {{-- TAB 3: MODERASI POSTINGAN DISKUSI                             --}}
-        {{-- ============================================================ --}}
-        <div id="tab-posts" class="cmty-tab-pane">
-            <div class="cmty-pane-card">
-                <div class="cmty-pane-header">
-                    <h2>Moderasi Postingan Komunitas</h2>
-                    <p>Pantau semua diskusi yang diterbitkan oleh anggota. Anda dapat menyembunyikan atau menghapus postingan yang tidak sesuai aturan.</p>
-                </div>
-
-                @if($posts->isEmpty())
-                    <div class="cmty-empty-box-small">
-                        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="mx-auto text-slate-400 mb-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                        </svg>
-                        <p class="font-semibold text-slate-700">Belum ada postingan diskusi</p>
-                        <p class="text-xs text-slate-500 mt-1">Postingan yang dikirim oleh anggota di halaman komunitas akan muncul di sini untuk dimoderasi.</p>
-                    </div>
-                @else
-                    <div class="cmty-posts-list">
-                        @foreach($posts as $p)
-                            <div class="cmty-post-card {{ $p->status === 'hidden' ? 'is-hidden' : '' }}">
-                                <div class="cmty-post-header">
-                                    <div class="cmty-post-author">
-                                        <div class="cmty-post-avatar">
-                                            {{ strtoupper(substr($p->user?->name ?: 'U', 0, 2)) }}
-                                        </div>
-                                        <div>
-                                            <p class="cmty-post-author-name">{{ $p->user?->name ?: 'Pengguna' }}</p>
-                                            <span class="cmty-post-time">{{ $p->created_at?->diffForHumans() }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        @if($p->status === 'published')
-                                            <span class="cmty-status-pill active">Diterbitkan</span>
-                                        @elseif($p->status === 'hidden')
-                                            <span class="cmty-status-pill banned">Disembunyikan</span>
-                                        @else
-                                            <span class="cmty-status-pill member">{{ ucfirst($p->status) }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                @if($p->title)
-                                    <h3 class="cmty-post-title">{{ $p->title }}</h3>
-                                @endif
-
-                                <div class="cmty-post-body">
-                                    {{ $p->content }}
-                                </div>
-
-                                <div class="cmty-post-actions-bar">
-                                    @if($p->status === 'published')
-                                        <form data-async data-async-reload action="{{ route('community.manage.post.moderate', [$community, $p]) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="action" value="hide">
-                                            <button type="submit" class="cmty-btn-sm warning" title="Sembunyikan dari publik">
-                                                Sembunyikan
-                                            </button>
-                                        </form>
-                                    @else
-                                        <form data-async data-async-reload action="{{ route('community.manage.post.moderate', [$community, $p]) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="action" value="publish">
-                                            <button type="submit" class="cmty-btn-sm success" title="Tampilkan kembali ke publik">
-                                                Tampilkan
-                                            </button>
-                                        </form>
-                                    @endif
-
-                                    <form data-async data-async-reload action="{{ route('community.manage.post.moderate', [$community, $p]) }}" method="POST" onsubmit="return confirm('Hapus permanen postingan ini?');">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="action" value="delete">
-                                        <button type="submit" class="cmty-btn-sm danger" title="Hapus permanen">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @endforeach
                     </div>
                 @endif
             </div>
@@ -1162,7 +1067,210 @@ function showManageTab(tabId, btn) {
     }
     if (btn) {
         btn.classList.add('active');
+    } else {
+        const foundBtn = document.querySelector(`.cmty-tab-btn[onclick*="'${tabId}'"]`);
+        if (foundBtn) {
+            foundBtn.classList.add('active');
+        }
     }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    const hash = window.location.hash ? window.location.hash.replace('#tab-', '').replace('#', '') : null;
+    const activeTab = tabParam || hash;
+    if (activeTab && document.getElementById('tab-' + activeTab)) {
+        showManageTab(activeTab);
+    }
+});
+</script>
+
+{{-- ============================================================ --}}
+{{-- MODAL KONFIRMASI KICK / BAN                                --}}
+{{-- ============================================================ --}}
+<div id="cmty-confirm-modal" class="cmty-modal-backdrop" style="display:none;" onclick="closeConfirmModal(event)">
+    <div class="cmty-modal-box" onclick="event.stopPropagation()">
+        <div class="cmty-modal-icon-wrap" id="modal-icon-wrap">
+            {{-- icon diisi JS --}}
+        </div>
+        <h3 class="cmty-modal-title" id="modal-title">Konfirmasi</h3>
+        <p class="cmty-modal-desc" id="modal-desc"></p>
+        <div class="cmty-modal-actions">
+            <button type="button" class="cmty-modal-cancel" onclick="closeConfirmModal()">Batal</button>
+            <button type="button" class="cmty-modal-confirm" id="modal-confirm-btn" onclick="submitConfirmedAction()">Konfirmasi</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ---- CONFIRM MODAL ---- */
+.cmty-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(3px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: modalFadeIn 0.18s ease;
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.cmty-modal-box {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 36px 32px 28px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    animation: modalSlideUp 0.2s ease;
+}
+@keyframes modalSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+.cmty-modal-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+}
+.cmty-modal-icon-wrap.kick { background: #fff1f2; }
+.cmty-modal-icon-wrap.ban  { background: #fff7ed; }
+.cmty-modal-icon-wrap.unban{ background: #f0fdf4; }
+.cmty-modal-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 10px;
+}
+.cmty-modal-desc {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0 0 28px;
+}
+.cmty-modal-desc strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+.cmty-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.cmty-modal-cancel {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.cmty-modal-cancel:hover {
+    background: #e2e8f0;
+    color: #334155;
+}
+.cmty-modal-confirm {
+    flex: 1;
+    padding: 11px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: #fff;
+}
+.cmty-modal-confirm.kick  { background: #dc2626; }
+.cmty-modal-confirm.kick:hover  { background: #b91c1c; }
+.cmty-modal-confirm.ban   { background: #ea580c; }
+.cmty-modal-confirm.ban:hover   { background: #c2410c; }
+.cmty-modal-confirm.unban { background: #16a34a; }
+.cmty-modal-confirm.unban:hover { background: #15803d; }
+</style>
+
+<script>
+let _modalAction = null;
+let _modalMemberId = null;
+
+function openConfirmModal(type, memberId, memberName, isBanned) {
+    _modalAction   = type === 'kick' ? 'kick' : (isBanned ? 'unban' : 'ban');
+    _modalMemberId = memberId;
+
+    const iconWrap = document.getElementById('modal-icon-wrap');
+    const title    = document.getElementById('modal-title');
+    const desc     = document.getElementById('modal-desc');
+    const btn      = document.getElementById('modal-confirm-btn');
+
+    iconWrap.className = 'cmty-modal-icon-wrap ' + _modalAction;
+    btn.className      = 'cmty-modal-confirm ' + _modalAction;
+
+    const iconKick = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 17l5-5-5-5"/>
+        <path d="M21 12H9"/>
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    </svg>`;
+
+    const iconBan = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+    </svg>`;
+
+    const iconUnban = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <polyline points="9 12 11 14 15 10"/>
+    </svg>`;
+
+    if (_modalAction === 'kick') {
+        iconWrap.innerHTML = iconKick;
+        title.textContent  = 'Keluarkan Anggota?';
+        desc.innerHTML     = `Apakah Anda yakin ingin mengeluarkan <strong>${memberName}</strong> dari komunitas? Mereka dapat bergabung kembali jika komunitas bersifat publik.`;
+        btn.textContent    = 'Ya, Keluarkan';
+    } else if (_modalAction === 'ban') {
+        iconWrap.innerHTML = iconBan;
+        title.textContent  = 'Blokir Anggota?';
+        desc.innerHTML     = `Apakah Anda yakin ingin memblokir <strong>${memberName}</strong>? Mereka tidak akan bisa bergabung kembali ke komunitas ini.`;
+        btn.textContent    = 'Ya, Blokir';
+    } else {
+        iconWrap.innerHTML = iconUnban;
+        title.textContent  = 'Buka Blokir Anggota?';
+        desc.innerHTML     = `Apakah Anda yakin ingin membuka blokir <strong>${memberName}</strong>? Mereka akan bisa bergabung kembali ke komunitas ini.`;
+        btn.textContent    = 'Ya, Buka Blokir';
+    }
+
+    document.getElementById('cmty-confirm-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeConfirmModal(event) {
+    if (event && event.target !== document.getElementById('cmty-confirm-modal')) return;
+    document.getElementById('cmty-confirm-modal').style.display = 'none';
+    document.body.style.overflow = '';
+    _modalAction   = null;
+    _modalMemberId = null;
+}
+
+function submitConfirmedAction() {
+    if (! _modalAction || ! _modalMemberId) return;
+    const formId = (_modalAction === 'kick' ? 'kick' : 'ban') + '-form-' + _modalMemberId;
+    const form   = document.getElementById(formId);
+    if (form) { form.submit(); }
+    document.getElementById('cmty-confirm-modal').style.display = 'none';
+    document.body.style.overflow = '';
 }
 </script>
 

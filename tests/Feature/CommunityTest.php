@@ -214,7 +214,6 @@ class CommunityTest extends TestCase
         $response->assertSee('Kelola Komunitas');
         $response->assertSee('Pengaturan Komunitas');
         $response->assertSee('Kelola Anggota');
-        $response->assertSee('Moderasi Postingan');
     }
 
     public function test_non_creator_cannot_access_manage_community_page(): void
@@ -365,12 +364,12 @@ class CommunityTest extends TestCase
             ]);
         }
 
-        $response = $this->get(route('community.index'));
+        $response = $this->get(route('community.index', ['sort' => 'members_desc']));
         $response->assertOk();
         $response->assertSee('cmty-pagination');
         $response->assertSee('Komunitas Tech 8');
 
-        $pageTwo = $this->get(route('community.index', ['page' => 2]));
+        $pageTwo = $this->get(route('community.index', ['page' => 2, 'sort' => 'members_desc']));
         $pageTwo->assertOk();
         $pageTwo->assertSee('Komunitas Tech 2');
         $pageTwo->assertSee('Komunitas Tech 1');

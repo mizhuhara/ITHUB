@@ -23,19 +23,34 @@
                 komunitas aktif, dan peluang karir digital di Indonesia.
             </p>
 
-            {{-- Search Bar --}}
-            <form action="{{ route('career.index') }}" method="GET" class="mx-auto mt-8 flex max-w-xl overflow-hidden rounded-full border border-slate-200 bg-white p-1.5 shadow-md">
-                <div class="flex flex-1 items-center pl-4">
-                    <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input type="text" name="q" placeholder="Cari kampus, sekolah, perusahaan, lowongan, magang, event..."
-                           class="w-full border-none bg-transparent px-3 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none">
+            {{-- Search Bar with Live Autocomplete --}}
+            <div class="relative mx-auto mt-8 max-w-xl text-left">
+                <form id="hero-search-form" action="{{ route('search') }}" method="GET" class="flex overflow-hidden rounded-full border border-slate-200 bg-white p-1.5 shadow-md shadow-slate-100 transition-all focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+                    <div class="flex flex-1 items-center pl-4">
+                        <svg class="h-5 w-5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" id="hero-search-input" name="q" autocomplete="off" placeholder="Cari kampus, sekolah, perusahaan, lowongan, magang, event..."
+                               class="w-full border-none bg-transparent px-3 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none">
+                    </div>
+                    <button type="submit" class="shrink-0 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700">
+                        Cari
+                    </button>
+                </form>
+
+                {{-- Live Dropdown Results --}}
+                <div id="hero-search-dropdown" class="absolute left-0 right-0 top-full z-50 mt-2 hidden max-h-96 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+                    <div id="hero-search-loading" class="hidden p-4 text-center text-xs text-slate-400">
+                        Mencari di seluruh ekosistem...
+                    </div>
+                    <div id="hero-search-list" class="space-y-1"></div>
+                    <div id="hero-search-footer" class="border-t border-slate-100 p-2 text-center">
+                        <a id="hero-search-all-link" href="{{ route('search') }}" class="text-xs font-bold text-blue-600 hover:text-blue-700">
+                            Lihat semua hasil &rarr;
+                        </a>
+                    </div>
                 </div>
-                <button type="submit" class="shrink-0 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700">
-                    Cari
-                </button>
-            </form>
+            </div>
 
             {{-- Category Shortcuts --}}
             @php
@@ -301,4 +316,78 @@
             </a>
         </div>
     </section>
+    {{-- Live Search Autocomplete Script --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('hero-search-input');
+            const dropdown = document.getElementById('hero-search-dropdown');
+            const list = document.getElementById('hero-search-list');
+            const loading = document.getElementById('hero-search-loading');
+            const allLink = document.getElementById('hero-search-all-link');
+            let debounceTimer = null;
+
+            if (searchInput && dropdown && list) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    clearTimeout(debounceTimer);
+
+                    if (query.length < 2) {
+                        dropdown.classList.add('hidden');
+                        return;
+                    }
+
+                    dropdown.classList.remove('hidden');
+                    loading.classList.remove('hidden');
+                    list.innerHTML = '';
+                    allLink.href = "{{ route('search') }}?q=" + encodeURIComponent(query);
+                    allLink.textContent = `Lihat semua hasil untuk "${query}" →`;
+
+                    debounceTimer = setTimeout(() => {
+                        fetch("{{ route('search') }}?format=json&q=" + encodeURIComponent(query), {
+                            headers: { 'Accept': 'application/json' }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            loading.classList.add('hidden');
+                            if (!data.results || data.results.length === 0) {
+                                list.innerHTML = `<div class="p-3 text-center text-xs text-slate-500">Tidak ada hasil instan. Tekan tombol Cari untuk mencari lebih detail.</div>`;
+                                return;
+                            }
+                            const iconSvg = {
+                                'Kampus': '<svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>',
+                                'SMK / Vokasi': '<svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+                                'Industri': '<svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>',
+                                'Lowongan': '<svg class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>',
+                                'Event IT': '<svg class="w-4 h-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+                                'Komunitas': '<svg class="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
+                            };
+                            const defaultSvg = '<svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+
+                            list.innerHTML = data.results.map(item => `
+                                <a href="${item.url}" class="flex items-center gap-3 rounded-xl p-2.5 transition hover:bg-slate-50 text-left">
+                                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 border border-slate-100">${iconSvg[item.type] || defaultSvg}</span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-600">${item.type}</span>
+                                            <p class="truncate text-xs font-bold text-slate-800">${item.title}</p>
+                                        </div>
+                                        <p class="truncate text-[11px] text-slate-400 mt-0.5">${item.subtitle || ''}</p>
+                                    </div>
+                                </a>
+                            `).join('');
+                        })
+                        .catch(() => {
+                            loading.classList.add('hidden');
+                        });
+                    }, 250);
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('#hero-search-input') && !e.target.closest('#hero-search-dropdown')) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

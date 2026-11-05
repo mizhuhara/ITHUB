@@ -49,12 +49,13 @@ class CommunityController extends Controller
             $query->where('category', $dbCategory);
         }
 
-        $sort = $request->input('sort', 'members_desc');
+        $sort = $request->input('sort', 'random');
         match ($sort) {
             'name_asc' => $query->orderBy('name'),
             'name_desc' => $query->orderByDesc('name'),
             'newest' => $query->orderByDesc('created_at'),
-            default => $query->orderByDesc('members'),
+            'members_desc' => $query->orderByDesc('members'),
+            default => $query->inRandomOrder(),
         };
 
         return view('community.index', [
@@ -178,17 +179,11 @@ class CommunityController extends Controller
             ->orderByPivot('role')
             ->get();
 
-        $posts = $community->posts()
-            ->with('user')
-            ->latest()
-            ->get();
-
         $categories = ['Technology', 'Design', 'Business', 'Education', 'Science', 'Other'];
 
         return view('community.manage', [
             'community' => $community,
             'members' => $members,
-            'posts' => $posts,
             'categories' => $categories,
             'isOwner' => $isOwner,
             'userRole' => $userRole,
@@ -345,7 +340,7 @@ class CommunityController extends Controller
         return back()->with('success', "Role {$user->name} berhasil diubah menjadi {$roleName}.");
     }
 
-    public function toggleBanMember(Request $request, Community $community, User $user): RedirectResponse
+    public function toggleBanMember(Request $request, Community $community, User $user): JsonResponse|RedirectResponse
     {
         abort_unless(
             $community->canBanMember($request->user(), $user),
@@ -354,6 +349,10 @@ class CommunityController extends Controller
         );
 
         if ($user->id === $community->user_id) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Pembuat komunitas tidak dapat diblokir.'], 403);
+            }
+
             return back()->with('error', 'Pembuat komunitas tidak dapat diblokir.');
         }
 
@@ -364,14 +363,22 @@ class CommunityController extends Controller
                 'is_banned' => $newBan,
             ]);
             $msg = $newBan
-                ? "Pengguna {$user->name} berhasil diblokir (banned) dari komunitas."
+                ? "Pengguna {$user->name} berhasil diblokir dari komunitas."
                 : "Blokir untuk {$user->name} telah dicabut.";
         } else {
             $community->members()->attach($user->id, [
                 'role' => 'member',
                 'is_banned' => true,
             ]);
-            $msg = "Pengguna {$user->name} berhasil diblokir (banned) dari komunitas.";
+            $msg = "Pengguna {$user->name} berhasil diblokir dari komunitas.";
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $msg,
+                'members_count' => $community->fresh()->members()->wherePivot('is_banned', false)->count(),
+            ]);
         }
 
         return back()->with('success', $msg);
@@ -443,18 +450,11 @@ class CommunityController extends Controller
         $canModerate = $request->user()
             && $community->canModerate($request->user());
 
-        $posts = $community->posts()
-            ->where('status', 'published')
-            ->with('user')
-            ->latest()
-            ->get();
-
         return view('community.show', [
             'community' => $community,
             'isMember' => $isMember,
             'isOwnerOrAdmin' => $isOwnerOrAdmin,
             'canModerate' => $canModerate,
-            'posts' => $posts,
             'memberUsers' => $community->members()
                 ->orderByDesc('community_user.created_at')
                 ->limit(12)

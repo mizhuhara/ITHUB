@@ -335,7 +335,7 @@
     </div>
 </div>
 
-{{-- ===== MODAL: KONFIRMASI KICK ANGGOTA ===== --}}
+{{-- ===== MODAL: KONFIRMASI BAN ANGGOTA ===== --}}
 <div id="modal-confirm-kick" class="chat-modal" style="display: none; z-index: 130;">
     <div class="chat-modal-backdrop" onclick="closeKickConfirmModal()"></div>
     <div class="chat-modal-content chat-kick-confirm-content">
@@ -345,24 +345,25 @@
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </button>
-        <div class="chat-kick-icon-wrap">
-            <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"/>
+        <div class="chat-kick-icon-wrap" style="background:#fff7ed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
             </svg>
         </div>
-        <h3 class="chat-kick-title">Keluarkan Anggota?</h3>
+        <h3 class="chat-kick-title">Blokir Anggota?</h3>
         <p class="chat-kick-desc">
-            Apakah Anda yakin ingin mengeluarkan <strong id="kick-confirm-user-name" class="text-slate-900">...</strong> dari komunitas <strong>{{ $community->name }}</strong>?
+            Apakah Anda yakin ingin memblokir <strong id="kick-confirm-user-name" class="text-slate-900">...</strong> dari komunitas <strong>{{ $community->name }}</strong>?
         </p>
         <div class="chat-kick-warning-box">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="flex-shrink-0 mt-0.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
-            <span>Anggota ini akan langsung kehilangan akses ke ruang chat dan berkas privat komunitas. Riwayat pesan terdahulu tetap tersimpan.</span>
+            <span>Anggota ini akan diblokir dan tidak bisa bergabung kembali ke komunitas ini.</span>
         </div>
         <div class="chat-kick-actions">
             <button type="button" class="chat-btn-cancel-kick" onclick="closeKickConfirmModal()">Batal</button>
-            <button type="button" id="btn-confirm-kick" class="chat-btn-confirm-kick">Ya, Keluarkan</button>
+            <button type="button" id="btn-confirm-kick" class="chat-btn-confirm-kick" style="background:#ea580c;">Ya, Blokir</button>
         </div>
     </div>
 </div>
@@ -421,9 +422,10 @@
     </button>
     <button type="button" class="chat-context-item chat-context-item-danger" id="ctx-btn-kick" style="display: none;">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
         </svg>
-        <span>Keluarkan dari Grup</span>
+        <span>Blokir dari Grup</span>
     </button>
 </div>
 
@@ -477,9 +479,10 @@
             <div class="chat-info-actions">
                 <button type="button" id="info-modal-kick-btn" class="chat-info-btn-kick" style="display: none;">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
                     </svg>
-                    Keluarkan dari Grup
+                    Blokir dari Grup
                 </button>
                 <button type="button" id="info-modal-leave-btn" class="chat-info-btn-leave" style="display: none;" onclick="openChatLeaveModal()">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -3211,10 +3214,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
 
             btnConfirmKick.disabled = true;
-            btnConfirmKick.textContent = 'Mengeluarkan...';
+            btnConfirmKick.textContent = 'Memblokir...';
 
-            fetch(`${config.endpoints.kickMemberBase}/${targetId}/kick`, {
-                method: 'DELETE',
+            fetch(`${config.endpoints.kickMemberBase}/${targetId}/toggle-ban`, {
+                method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
@@ -3224,11 +3227,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(res => res.json().then(data => ({ status: res.status, ok: res.ok, data })))
             .then(({ ok, data }) => {
                 btnConfirmKick.disabled = false;
-                btnConfirmKick.textContent = 'Ya, Keluarkan';
+                btnConfirmKick.textContent = 'Ya, Blokir';
                 closeKickConfirmModal();
 
                 if (ok && data.success) {
-                    showToast(data.message || `Pengguna ${targetName} berhasil dikeluarkan.`, 'success');
+                    showToast(data.message || `Pengguna ${targetName} berhasil diblokir.`, 'success');
 
                     // Smoothly remove item from DOM
                     const itemEl = document.getElementById(`member-item-${targetId}`);
@@ -3249,15 +3252,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         updateMemberCount(communityMembers.length);
                     }
                 } else {
-                    showToast(data.message || 'Gagal mengeluarkan anggota.', 'error');
+                    showToast(data.message || 'Gagal memblokir anggota.', 'error');
                 }
             })
             .catch(err => {
                 btnConfirmKick.disabled = false;
-                btnConfirmKick.textContent = 'Ya, Keluarkan';
+                btnConfirmKick.textContent = 'Ya, Blokir';
                 closeKickConfirmModal();
                 showToast('Terjadi kesalahan saat memproses permintaan.', 'error');
-                console.error('Kick error:', err);
+                console.error('Ban error:', err);
             });
         });
     }
