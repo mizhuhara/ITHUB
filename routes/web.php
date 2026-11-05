@@ -252,6 +252,8 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::post('/admin/articles', [AdminArticleController::class, 'store'])->name('admin.articles.store');
     Route::get('/admin/articles/{id}/edit', [AdminArticleController::class, 'edit'])->name('admin.articles.edit');
     Route::put('/admin/articles/{id}', [AdminArticleController::class, 'update'])->name('admin.articles.update');
+    Route::post('/admin/articles/{id}/approve', [AdminArticleController::class, 'approve'])->name('admin.articles.approve');
+    Route::post('/admin/articles/{id}/reject', [AdminArticleController::class, 'reject'])->name('admin.articles.reject');
     Route::delete('/admin/articles/{id}', [AdminArticleController::class, 'destroy'])->name('admin.articles.destroy');
 
     // Admin Banners (super_admin only)

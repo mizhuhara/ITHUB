@@ -23,24 +23,24 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     @php
         $stats = [
-            ['label' => 'Total Artikel', 'value' => $totalArticles,  'icon' => 'articles'],
-            ['label' => 'Tayang (Published)', 'value' => $publishedCount, 'icon' => 'check'],
-            ['label' => 'Draf (Drafts)',      'value' => $draftCount,     'icon' => 'draft'],
-            ['label' => 'Total Dilihat',      'value' => $totalViews,     'icon' => 'views'],
+            ['label' => 'Total Artikel', 'value' => $totalArticles,  'icon' => 'articles', 'bg' => 'bg-blue-50 text-[#0b57d0]'],
+            ['label' => 'Menunggu Approval', 'value' => $pendingCount, 'icon' => 'pending', 'bg' => 'bg-amber-50 text-amber-600'],
+            ['label' => 'Tayang (Published)', 'value' => $publishedCount, 'icon' => 'check', 'bg' => 'bg-emerald-50 text-emerald-600'],
+            ['label' => 'Draf & Ditolak', 'value' => number_format((int)str_replace(',', '', $draftCount) + (int)str_replace(',', '', $rejectedCount)), 'icon' => 'draft', 'bg' => 'bg-slate-100 text-slate-600'],
         ];
     @endphp
     @foreach ($stats as $s)
         <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
             <div class="flex items-start justify-between">
-                <div class="w-10 h-10 rounded-lg bg-blue-50 text-[#0b57d0] flex items-center justify-center">
+                <div class="w-10 h-10 rounded-lg {{ $s['bg'] }} flex items-center justify-center">
                     @if ($s['icon'] === 'articles')
                         <svg width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 12h6"/></svg>
+                    @elseif ($s['icon'] === 'pending')
+                        <svg width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
                     @elseif ($s['icon'] === 'check')
                         <svg width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>
                     @elseif ($s['icon'] === 'draft')
                         <svg width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4a1 1 0 0 0 1 1h4M6 21h12a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2zm4-6h4"/></svg>
-                    @elseif ($s['icon'] === 'views')
-                        <svg width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                     @endif
                 </div>
             </div>
@@ -64,8 +64,10 @@
             <select name="tab" onchange="this.form.submit()"
                     class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-[13px] text-slate-600 focus:outline-none focus:border-blue-500">
                 <option value="all"      {{ $currentTab === 'all'      ? 'selected' : '' }}>Semua Status</option>
+                <option value="pending"  {{ $currentTab === 'pending'  ? 'selected' : '' }}>Menunggu Approval ({{ $pendingCount }})</option>
                 <option value="published"{{ $currentTab === 'published' ? 'selected' : '' }}>Tayang (Published)</option>
                 <option value="draft"    {{ $currentTab === 'draft'    ? 'selected' : '' }}>Draf (Draft)</option>
+                <option value="rejected" {{ $currentTab === 'rejected' ? 'selected' : '' }}>Ditolak (Rejected)</option>
                 <option value="archived" {{ $currentTab === 'archived' ? 'selected' : '' }}>Arsip (Archived)</option>
             </select>
             <button type="submit" class="h-9 px-3 rounded-lg bg-brand-600 text-white text-[13px] font-semibold hover:bg-blue-700 transition">Cari</button>
@@ -89,18 +91,25 @@
                     @php
                         $initials = collect(explode(' ', $article->author_name))->take(2)->map(fn($w) => strtoupper(substr($w,0,1)))->implode('');
                         $statusCfg = match($article->status) {
-                            'published' => 'bg-emerald-50 text-emerald-600 before:bg-emerald-500',
-                            'archived'  => 'bg-slate-100 text-slate-600 before:bg-slate-400',
-                            default     => 'bg-orange-50 text-orange-600 before:bg-orange-500',
+                            'published' => 'bg-emerald-50 text-emerald-700 border-emerald-200/80 before:bg-emerald-500',
+                            'pending'   => 'bg-amber-50 text-amber-700 border-amber-200/80 before:bg-amber-500',
+                            'rejected'  => 'bg-rose-50 text-rose-700 border-rose-200/80 before:bg-rose-500',
+                            'archived'  => 'bg-slate-100 text-slate-600 border-slate-200 before:bg-slate-400',
+                            default     => 'bg-slate-100 text-slate-700 border-slate-200 before:bg-slate-400',
                         };
                         $statusLabel = match($article->status) {
                             'published' => 'Tayang',
+                            'pending'   => 'Pending Approval',
+                            'rejected'  => 'Ditolak',
                             'archived'  => 'Arsip',
                             default     => 'Draf',
                         };
+                        $isSuperAdmin = in_array(auth()->user()->role, ['super_admin', 'admin'], true);
                     @endphp
                     <tr class="hover:bg-slate-50/70 transition">
-                        <td class="px-5 py-4 font-medium text-slate-900 max-w-[280px] truncate">{{ $article->title }}</td>
+                        <td class="px-5 py-4 font-medium text-slate-900 max-w-[280px] truncate">
+                            <span class="block truncate" title="{{ $article->title }}">{{ $article->title }}</span>
+                        </td>
                         <td class="px-5 py-4 text-slate-600">{{ $article->category }}</td>
                         <td class="px-5 py-4">
                             <span class="inline-flex items-center gap-2">
@@ -110,19 +119,42 @@
                         </td>
                         <td class="px-5 py-4 text-slate-500">{{ $article->formatted_date }}</td>
                         <td class="px-5 py-4">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-semibold {{ $statusCfg }} before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full">{{ $statusLabel }}</span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-semibold border {{ $statusCfg }} before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full">{{ $statusLabel }}</span>
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-1.5">
+                                @if($isSuperAdmin && $article->status !== 'published')
+                                    <form action="{{ route('admin.articles.approve', $article->id) }}" method="POST" data-async data-async-reload class="inline">
+                                        @csrf
+                                        <button type="submit" title="Setujui dan Publikasikan Artikel"
+                                                class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition shadow-2xs">
+                                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
+                                            <span>Approve</span>
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if($isSuperAdmin && $article->status === 'pending')
+                                    <form action="{{ route('admin.articles.reject', $article->id) }}" method="POST" data-async data-async-reload class="inline">
+                                        @csrf
+                                        <button type="submit" title="Tolak Artikel"
+                                                class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/90 font-bold text-xs px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition shadow-2xs">
+                                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+                                            <span>Reject</span>
+                                        </button>
+                                    </form>
+                                @endif
+
                                 <a href="{{ route('admin.articles.edit', $article->id) }}"
-                                   class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition" aria-label="Edit">
+                                   class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition" aria-label="Edit" title="Edit Artikel">
                                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                                 </a>
+
                                 <form method="POST" action="{{ route('admin.articles.destroy', $article->id) }}"
                                       onsubmit="return confirm('Hapus artikel ini? Tindakan tidak bisa dibatalkan.')" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" aria-label="Delete">
+                                    <button type="submit" class="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" aria-label="Delete" title="Hapus Artikel">
                                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6m4-6v6"/></svg>
                                     </button>
                                 </form>

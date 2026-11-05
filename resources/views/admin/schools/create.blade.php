@@ -301,59 +301,64 @@
         <div class="lg:col-span-8 space-y-6">
 
             {{-- Card 1: Informasi Dasar --}}
-            <div class="card">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
                 {{-- Card Header with Blue Icon --}}
-                <div class="flex items-center gap-2.5 mb-6 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <rect x="3" y="4" width="18" height="16" rx="3"/>
-                        <path stroke-linecap="round" d="M7 8h10M7 12h4m-4 4h7"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Informasi Dasar</h2>
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="16" rx="3"/>
+                            <path stroke-linecap="round" d="M7 8h10M7 12h4m-4 4h7"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Informasi Dasar</h2>
+                        <p class="text-[12px] text-slate-500">Identitas utama dan kontak sekolah</p>
+                    </div>
                 </div>
 
                 {{-- Fields Grid (2 cols) --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {{-- Nama Sekolah --}}
                     <div>
-                        <label class="form-label">Nama Sekolah</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nama Sekolah</label>
                         <input type="text" 
                                name="name" 
                                id="schoolNameInput"
                                value="{{ old('name') }}" 
                                required
                                placeholder="Contoh: SMK Telkom Jakarta"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- NPSN --}}
                     <div>
-                        <label class="form-label">NPSN</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
                         <input type="text" 
                                name="npsn" 
                                value="{{ old('npsn') }}" 
                                required
                                placeholder="Contoh: 20109988"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('npsn')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Jenis Institusi --}}
                     <div>
-                        <label class="form-label">Jenis Institusi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Jenis Institusi</label>
                         <div class="relative">
                             <select name="institution_type" 
-                                    class="input appearance-none cursor-pointer pr-10">
+                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="SMK IT" {{ old('institution_type') == 'SMK IT' ? 'selected' : '' }}>SMK IT</option>
                                 <option value="SMK" {{ old('institution_type') == 'SMK' ? 'selected' : '' }}>SMK</option>
                                 <option value="SMA IT" {{ old('institution_type') == 'SMA IT' ? 'selected' : '' }}>SMA IT</option>
                                 <option value="Vokasi IT" {{ old('institution_type') == 'Vokasi IT' ? 'selected' : '' }}>Vokasi IT</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
                             </div>
                         </div>
@@ -361,89 +366,99 @@
 
                     {{-- Lokasi --}}
                     <div>
-                        <label class="form-label">Lokasi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Lokasi</label>
                         <input type="text" 
                                name="location" 
                                id="schoolLocationInput"
                                value="{{ old('location') }}" 
                                required
                                placeholder="Contoh: Jakarta Barat, DKI Jakarta"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('location')
-                            <p class="form-error">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
             </div>
 
             {{-- Card 2: Deskripsi Sekolah --}}
-            <div class="card">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
                 {{-- Card Header with Blue Icon --}}
-                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Deskripsi Sekolah</h2>
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Deskripsi Sekolah</h2>
+                        <p class="text-[12px] text-slate-500">Profil lengkap, visi-misi, dan kurikulum kejuruan</p>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="form-label">Profil & Detail Kurikulum</label>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-2">Profil & Detail Kurikulum</label>
                     <textarea name="description" 
                               id="schoolDescription">{{ old('description') }}</textarea>
                     @error('description')
-                        <p class="form-error">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
             {{-- Card 3: Kompetensi Keahlian --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
-                    </svg>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                        </svg>
+                    </div>
                     <div>
-                        <h2 class="text-[17px] font-bold text-slate-900">Kompetensi Keahlian</h2>
+                        <h2 class="text-[16px] font-bold text-slate-900">Kompetensi Keahlian</h2>
                         <p class="text-[12px] text-slate-500">Tambahkan program keahlian / jurusan yang tersedia di sekolah ini</p>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Daftar Kompetensi Keahlian</label>
-                    <div class="flex gap-2 mb-3">
+                <div class="space-y-3">
+                    <label class="block text-[13px] font-semibold text-slate-700">Daftar Kompetensi Keahlian</label>
+                    <div class="flex gap-2">
                         <input type="text" id="competencyInputField"
                                placeholder="Contoh: Teknik Komputer & Jaringan"
-                               class="input flex-1"
+                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();addCompetency();}">
                         <button type="button" onclick="addCompetency()"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-xl transition shrink-0">
-                            + Tambah
+                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-lg transition shrink-0 shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                            Tambah
                         </button>
                     </div>
-                    <div id="competencyTags" class="flex flex-wrap gap-2 min-h-[40px]"></div>
-                    <p class="text-[11.5px] text-slate-400 mt-2">Tekan Enter atau klik tombol Tambah untuk menambahkan kompetensi. Klik × untuk menghapus.</p>
+                    <div id="competencyTags" class="flex flex-wrap gap-2 min-h-[40px] pt-1"></div>
+                    <p class="text-[11.5px] text-slate-400">Tekan Enter atau klik tombol Tambah untuk menambahkan kompetensi. Klik × untuk menghapus.</p>
                 </div>
             </div>
 
             {{-- Card 4: Galeri Sekolah --}}
-            <div class="card">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
                 {{-- Card Header with Action --}}
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-2.5 text-slate-900">
-                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                            <rect x="3" y="3" width="18" height="18" rx="3"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
-                        </svg>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                            </svg>
+                        </div>
                         <div>
-                            <h2 class="text-[17px] font-bold text-slate-900">Galeri Sekolah</h2>
+                            <h2 class="text-[16px] font-bold text-slate-900">Galeri Sekolah</h2>
                             <p class="text-[12px] text-slate-500">Unggah foto suasana sekolah, laboratorium IT, dan fasilitas pembelajaran</p>
                         </div>
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-xl transition cursor-pointer">
-                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                         </svg>
                         Tambah Foto
@@ -454,7 +469,7 @@
                 {{-- Gallery Grid Container --}}
                 <div id="galleryContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
                     {{-- Add Photo Slot Card --}}
-                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-[#f0f4f9] hover:bg-[#e4ebf5] border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
+                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -472,10 +487,17 @@
         <div class="lg:col-span-4 space-y-6">
 
             {{-- Card 1: Logo & Profil --}}
-            <div class="card flex flex-col items-center text-center">
-                <div class="w-full flex items-center justify-between mb-4">
-                    <h2 class="text-[17px] font-bold text-slate-900">Logo & Profil</h2>
-                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Format Gambar</span>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col items-center text-center">
+                <div class="w-full flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Logo & Profil</h2>
+                    </div>
+                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Format Gambar</span>
                 </div>
 
                 {{-- Logo Preview Box --}}
@@ -521,9 +543,17 @@
             </div>
 
             {{-- Card 2: Map Location --}}
-            <div class="card space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-[17px] font-bold text-slate-900">Peta Lokasi Sekolah</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Peta Lokasi Sekolah</h2>
+                    </div>
                     <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200/60">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Indonesia Saja
@@ -533,15 +563,15 @@
                 {{-- Address Input with Live Suggestions --}}
                 <div class="relative">
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-[12.5px] font-semibold text-slate-700">Alamat Lengkap</label>
+                        <label class="block text-[13px] font-semibold text-slate-700">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
                     <textarea name="address" 
-                              id="schoolAddressInput"
-                              rows="2"
-                              autocomplete="off"
-                              placeholder="Ketik alamat jalan di Indonesia..."
-                              class="input p-3 text-[13px] leading-relaxed resize-none">{{ old('address') }}</textarea>
+                              id="schoolAddressInput" 
+                              rows="2" 
+                              autocomplete="off" 
+                              placeholder="Ketik alamat jalan di Indonesia..." 
+                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address') }}</textarea>
 
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
                     <div id="locationStatus" class="hidden text-xs mt-1.5 font-medium flex items-center gap-1.5"></div>

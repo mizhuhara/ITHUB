@@ -309,26 +309,32 @@
         <div class="lg:col-span-8 space-y-6">
 
             {{-- Card 1: Basic Information --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-6 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <rect x="4" y="3" width="16" height="18" rx="2"/>
-                        <path stroke-linecap="round" d="M9 7h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2M9 21v-3h6v3"/>
-                    </svg>
-                    <h2 class="text-[17px] font-bold text-slate-900">Informasi Dasar Perusahaan</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+                <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                            <rect x="4" y="3" width="16" height="18" rx="2"/>
+                            <path stroke-linecap="round" d="M9 7h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2M9 21v-3h6v3"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block leading-tight">Informasi Dasar Perusahaan</span>
+                        <span class="text-[12px] font-normal text-slate-400">Identitas resmi, legalitas, dan bidang usaha perusahaan</span>
+                    </div>
                 </div>
 
                 {{-- Fields Grid (2 cols) --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     {{-- Company Name --}}
                     <div>
-                        <label class="form-label">Nama Perusahaan <span class="text-red-500">*</span></label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Nama Perusahaan <span class="text-red-500">*</span></label>
                         <input type="text" 
                                name="name" 
                                id="companyNameInput"
                                value="{{ old('name', $company['name'] ?? '') }}" 
                                required
-                               class="input">
+                               placeholder="Nama resmi perusahaan"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
                             <p class="form-error">{{ $message }}</p>
                         @enderror
@@ -336,26 +342,27 @@
 
                     {{-- Company Code --}}
                     <div>
-                        <label class="form-label">Kode Perusahaan / NIB</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Kode Perusahaan / NIB</label>
                         <input type="text" 
                                name="npsn" 
                                value="{{ old('npsn', $company['npsn'] ?? '') }}" 
-                               class="input">
+                               placeholder="Nomor Induk Berusaha / Kode"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     {{-- Company Type --}}
                     <div>
-                        <label class="form-label">Tipe Perusahaan <span class="text-red-500">*</span></label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tipe Perusahaan <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <select name="type" 
                                     required
-                                    class="input appearance-none cursor-pointer pr-10">
+                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer appearance-none pr-10">
                                 <option value="Swasta" {{ old('type', $company['type'] ?? '') == 'Swasta' ? 'selected' : '' }}>Swasta</option>
                                 <option value="BUMN" {{ old('type', $company['type'] ?? '') == 'BUMN' ? 'selected' : '' }}>BUMN</option>
                                 <option value="Multinasional" {{ old('type', $company['type'] ?? '') == 'Multinasional' ? 'selected' : '' }}>Multinasional</option>
                                 <option value="Startup" {{ old('type', $company['type'] ?? '') == 'Startup' ? 'selected' : '' }}>Startup</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
                             </div>
                         </div>
@@ -363,13 +370,13 @@
 
                     {{-- Industry --}}
                     <div>
-                        <label class="form-label">Bidang Industri <span class="text-red-500">*</span></label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Bidang Industri <span class="text-red-500">*</span></label>
                         <input type="text" 
                                name="industry" 
                                value="{{ old('industry', $company['industry'] ?? '') }}" 
                                required
                                placeholder="mis. Teknologi Informasi, Software House"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('industry')
                             <p class="form-error">{{ $message }}</p>
                         @enderror
@@ -377,68 +384,68 @@
 
                     {{-- City --}}
                     <div>
-                        <label class="form-label">Kota / Kabupaten</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Kota / Kabupaten</label>
                         <input type="text" 
                                name="city" 
                                value="{{ old('city', $company['city'] ?? '') }}" 
                                placeholder="mis. Denpasar atau Jakarta Selatan"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     {{-- Province --}}
                     <div>
-                        <label class="form-label">Provinsi</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Provinsi</label>
                         <input type="text" 
                                name="province" 
                                value="{{ old('province', $company['province'] ?? '') }}" 
                                placeholder="mis. Bali atau DKI Jakarta"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     {{-- Location Summary --}}
                     <div class="sm:col-span-2">
-                        <label class="form-label">Ringkasan Wilayah (Location)</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Ringkasan Wilayah (Location)</label>
                         <input type="text" 
                                name="location" 
                                id="companyLocationInput"
                                value="{{ old('location', $company['location'] ?? '') }}" 
                                placeholder="Contoh: Denpasar, Bali atau Jakarta Selatan, DKI Jakarta"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     {{-- Employees, Founded & Portfolio --}}
                     <div>
-                        <label class="form-label">Jumlah Karyawan</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Jumlah Karyawan</label>
                         <input type="number" 
                                name="total_employees" 
                                value="{{ old('total_employees', $company['total_employees'] ?? '') }}" 
                                placeholder="Contoh: 100"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     <div>
-                        <label class="form-label">Tahun Berdiri</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tahun Berdiri</label>
                         <input type="number" 
                                name="founded" 
                                value="{{ old('founded', $company['founded'] ?? '') }}" 
                                placeholder="Contoh: 2018"
-                               class="input">
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     <div class="sm:col-span-2">
-                        <label class="form-label">Portofolio / Proyek Selesai</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Portofolio / Proyek Selesai</label>
                         <input type="text" 
                                name="projects_completed" 
                                value="{{ old('projects_completed', $company['projects_completed'] ?? '') }}" 
                                placeholder="Contoh: 100+ Proyek atau 25 Proyek Web & Mobile"
-                               class="input">
-                        <p class="text-[11.5px] text-slate-400 mt-1">Ditampilkan pada ringkasan metrik portofolio perusahaan.</p>
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <p class="text-[12px] text-slate-400 mt-1">Ditampilkan pada ringkasan metrik portofolio perusahaan.</p>
                     </div>
 
                     {{-- Status --}}
                     @if (auth()->user()->role === 'company')
                         <div class="sm:col-span-2">
-                            <label class="form-label">Status Kemitraan</label>
+                            <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Status Kemitraan</label>
                             @php
                                 $currentStatus = strtolower($company['status'] ?? 'pending');
                             @endphp
@@ -449,7 +456,7 @@
                         </div>
                     @else
                         <div class="sm:col-span-2">
-                            <label class="form-label">Status Kemitraan</label>
+                            <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Status Kemitraan</label>
                             <div class="flex items-center gap-6">
                                 @php
                                     $currentStatus = strtolower($company['status'] ?? 'active');
@@ -474,22 +481,24 @@
             </div>
 
             {{-- Card 2: Company Description with Summernote --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-5 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
-                    </svg>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                        </svg>
+                    </div>
                     <div>
-                        <h2 class="text-[17px] font-bold text-slate-900">Deskripsi Perusahaan</h2>
-                        <p class="text-[12px] text-slate-500">Profil, visi misi, produk/layanan, dan budaya kerja perusahaan</p>
+                        <span class="block leading-tight">Deskripsi Perusahaan</span>
+                        <span class="text-[12px] font-normal text-slate-400">Profil, visi misi, produk/layanan, dan budaya kerja perusahaan</span>
                     </div>
                 </div>
 
                 <div>
-                    <label class="form-label">Profil & Detail Bisnis</label>
+                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Profil & Detail Bisnis</label>
                     <textarea name="description" 
                               id="companyDescription"
-                              class="input p-4 leading-relaxed">{{ old('description', $company['description'] ?? '') }}</textarea>
+                              class="w-full p-4 rounded-xl border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed">{{ old('description', $company['description'] ?? '') }}</textarea>
                     @error('description')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
@@ -497,30 +506,33 @@
             </div>
 
             {{-- Card 3: Layanan Utama & Keunggulan --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-4 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
                     <div>
-                        <h2 class="text-[17px] font-bold text-slate-900">Layanan Utama & Keunggulan</h2>
-                        <p class="text-[12px] text-slate-500">Tambahkan poin keunggulan, spesialisasi, atau layanan utama yang ditawarkan perusahaan</p>
+                        <span class="block leading-tight">Layanan Utama & Keunggulan</span>
+                        <span class="text-[12px] font-normal text-slate-400">Tambahkan poin keunggulan, spesialisasi, atau layanan utama yang ditawarkan</span>
                     </div>
                 </div>
 
-                <div class="mb-2">
-                    <div class="flex gap-2 mb-3">
+                <div>
+                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Layanan / Keunggulan</label>
+                    <div class="flex gap-2">
                         <input type="text" id="specialtyInputField"
                                placeholder="Contoh: Pengembangan Sistem Terdistribusi & Cloud"
-                               class="input flex-1"
+                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();addSpecialty();}">
                         <button type="button" onclick="addSpecialty()"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-xl transition shrink-0">
-                            + Tambah
+                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0">
+                            Tambah
                         </button>
                     </div>
 
-                    <div id="specialtiesContainer" class="flex flex-wrap gap-2 min-h-[40px]">
+                    <div id="specialtiesContainer" class="flex flex-wrap gap-2 mt-3 min-h-[32px]">
                         @php
                             $existingSpecialties = is_array($company['specialties'] ?? null) ? $company['specialties'] : (is_array($company['tags'] ?? null) ? $company['tags'] : []);
                         @endphp
@@ -534,35 +546,38 @@
                             </span>
                         @endforeach
                     </div>
-                    <p class="text-[11.5px] text-slate-400 mt-2">Tekan Enter atau klik Tambah. Poin-poin ini akan tampil di bagian "Layanan Utama & Keunggulan" pada kartu profil perusahaan.</p>
+                    <p class="text-[12px] text-slate-400 mt-2">Tekan Enter atau klik Tambah. Poin-poin ini akan tampil pada bagian Layanan Utama di profil perusahaan.</p>
                 </div>
             </div>
 
             {{-- Card 4: Teknologi & Tech Stack --}}
-            <div class="card">
-                <div class="flex items-center gap-2.5 mb-4 text-slate-900">
-                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#4f46e5" stroke-width="2" class="shrink-0">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
-                    </svg>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                        </svg>
+                    </div>
                     <div>
-                        <h2 class="text-[17px] font-bold text-slate-900">Teknologi & Tech Stack</h2>
-                        <p class="text-[12px] text-slate-500">Bahasa pemrograman, framework, database, dan teknologi yang digunakan di perusahaan</p>
+                        <span class="block leading-tight">Teknologi & Tech Stack</span>
+                        <span class="text-[12px] font-normal text-slate-400">Bahasa pemrograman, framework, database, dan teknologi kerja</span>
                     </div>
                 </div>
 
-                <div class="mb-2">
-                    <div class="flex gap-2 mb-3">
+                <div>
+                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Tag Teknologi</label>
+                    <div class="flex gap-2">
                         <input type="text" id="techStackInputField"
                                placeholder="Contoh: Laravel, React, Flutter, Docker, AWS"
-                               class="input flex-1"
+                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();addTechStack();}">
                         <button type="button" onclick="addTechStack()"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-xl transition shrink-0">
-                            + Tambah
+                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0">
+                            Tambah
                         </button>
                     </div>
 
-                    <div id="techStackContainer" class="flex flex-wrap gap-2 min-h-[40px]">
+                    <div id="techStackContainer" class="flex flex-wrap gap-2 mt-3 min-h-[32px]">
                         @php
                             $existingTechStack = is_array($company['tech_stack'] ?? null) ? $company['tech_stack'] : [];
                         @endphp
@@ -577,27 +592,29 @@
                             </span>
                         @endforeach
                     </div>
-                    <p class="text-[11.5px] text-slate-400 mt-2">Tekan Enter atau klik Tambah. Tag teknologi akan ditampilkan di bagian "Teknologi & Tech Stack" pada profil perusahaan.</p>
+                    <p class="text-[12px] text-slate-400 mt-2">Tekan Enter atau klik Tambah. Tag teknologi akan ditampilkan pada profil perusahaan.</p>
                 </div>
             </div>
 
-            {{-- Card 3: Galeri Perusahaan (Identik seperti di Sekolah) --}}
-            <div class="card">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2.5 text-slate-900">
-                        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2" class="shrink-0">
-                            <rect x="3" y="3" width="18" height="18" rx="3"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
-                        </svg>
+            {{-- Card 5: Galeri Perusahaan (Identik seperti di Sekolah) --}}
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px]">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                            </svg>
+                        </div>
                         <div>
-                            <h2 class="text-[17px] font-bold text-slate-900">Galeri Perusahaan</h2>
-                            <p class="text-[12px] text-slate-500">Unggah foto kantor, suasana kerja, kegiatan tim, dan fasilitas perusahaan</p>
+                            <span class="block leading-tight">Galeri Perusahaan</span>
+                            <span class="text-[12px] font-normal text-slate-400">Foto kantor, suasana kerja, kegiatan tim, dan fasilitas</span>
                         </div>
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-xl transition cursor-pointer">
+                    <label for="galleryInput" class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
                         <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                         </svg>
@@ -627,7 +644,7 @@
                     @endforeach
 
                     {{-- Add Photo Slot Card --}}
-                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-[#f0f4f9] hover:bg-[#e4ebf5] border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
+                    <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
@@ -645,14 +662,14 @@
         <div class="lg:col-span-4 space-y-6">
 
             {{-- Card 1: Logo & Profil --}}
-            <div class="card flex flex-col items-center text-center">
-                <div class="w-full flex items-center justify-between mb-4">
-                    <h2 class="text-[17px] font-bold text-slate-900">Logo Perusahaan</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col items-center text-center">
+                <div class="w-full flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                    <h2 class="text-[16px] font-bold text-slate-900">Logo Perusahaan</h2>
                     <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Format Gambar</span>
                 </div>
 
                 {{-- Logo Preview Box --}}
-                <div class="w-full aspect-square max-w-[200px] rounded-2xl bg-[#f0f4f9] border border-slate-200/80 flex items-center justify-center p-4 mb-4 relative overflow-hidden group shadow-inner">
+                <div class="w-full aspect-square max-w-[200px] rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-center p-4 mb-4 relative overflow-hidden group shadow-inner">
                     @php
                         $hasLogo = !empty($company['logo_url']);
                     @endphp
@@ -698,51 +715,72 @@
             </div>
 
             {{-- Card 2: Contact Information --}}
-            <div class="card space-y-4">
-                <h2 class="text-[17px] font-bold text-slate-900 mb-1">Informasi Kontak</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block leading-tight">Informasi Kontak</span>
+                        <span class="text-[12px] font-normal text-slate-400">Saluran komunikasi dan kontak resmi</span>
+                    </div>
+                </div>
 
                 <div>
-                    <label class="form-label">Email Perusahaan</label>
+                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Email Perusahaan</label>
                     <input type="email" 
                            name="email" 
                            value="{{ old('email', $company['email'] ?? '') }}" 
                            placeholder="contact@company.com"
-                           class="input">
+                           class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                 </div>
 
                 <div>
-                    <label class="form-label">Website Perusahaan</label>
+                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Website Perusahaan</label>
                     <input type="url" 
                            name="website" 
                            value="{{ old('website', $company['website'] ?? '') }}" 
                            placeholder="https://company.co.id"
-                           class="input">
+                           class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                 </div>
 
                 <div>
-                    <label class="form-label">Nomor Telepon / WhatsApp</label>
+                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Nomor Telepon / WhatsApp</label>
                     <input type="text" 
                            name="phone" 
                            value="{{ old('phone', $company['phone'] ?? '') }}" 
                            placeholder="081234567890"
-                           class="input">
+                           class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                 </div>
             </div>
 
             {{-- Card 3: Interactive Real-time Map Location (Strictly Indonesia) --}}
-            <div class="card space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-[17px] font-bold text-slate-900">Peta Lokasi Perusahaan</h2>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px]">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="block leading-tight">Peta Lokasi Perusahaan</span>
+                            <span class="text-[12px] font-normal text-slate-400">Titik koordinat dan peta interaktif</span>
+                        </div>
+                    </div>
                     <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 border border-emerald-200/60">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Indonesia Saja
+                        Indonesia
                     </span>
                 </div>
 
                 {{-- Address Input with Live Suggestions Dropdown --}}
                 <div class="relative">
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-[12.5px] font-semibold text-slate-700">Alamat Lengkap</label>
+                        <label class="block text-[13.5px] font-semibold text-slate-800">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
                     <textarea name="address" 
@@ -750,7 +788,7 @@
                               rows="2"
                               autocomplete="off"
                               placeholder="Ketik alamat kantor di Indonesia..."
-                              class="input p-3 text-[13px] leading-relaxed resize-none">{{ old('address', $company['address'] ?? '') }}</textarea>
+                              class="w-full p-3 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address', $company['address'] ?? '') }}</textarea>
 
                     {{-- Autocomplete Suggestions Dropdown for Address --}}
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
