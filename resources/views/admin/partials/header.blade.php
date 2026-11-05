@@ -354,8 +354,8 @@
                     <span>Dashboard</span>
                 </a>
 
-                {{-- Only show "Profil Saya" if NOT role school, university, or company --}}
-                @if(!in_array(Auth::user()->role, ['school', 'university', 'company'], true))
+                {{-- Only show "Profil Saya" if NOT role school, university, company, or super_admin --}}
+                @if(!in_array(Auth::user()->role, ['school', 'university', 'company', 'super_admin'], true))
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-600 transition-colors">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 21a8 8 0 0 1 16 0"/></svg>
                         <span>Profil Saya</span>

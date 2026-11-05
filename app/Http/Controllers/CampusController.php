@@ -14,7 +14,7 @@ class CampusController extends Controller
                 ->orWhereNull('status')
                 ->orWhere('status', '!=', 'Inactive');
         })
-            ->latest()
+            ->inRandomOrder()
             ->get()
             ->map(fn (University $university) => $this->mapCampus($university))
             ->all();
@@ -76,8 +76,7 @@ class CampusController extends Controller
             'latitude' => $university->latitude,
             'longitude' => $university->longitude,
             'map_link' => $university->map_link ?: 'https://maps.google.com/?q='.urlencode($university->name),
-            'about' => $university->description ?: "{$university->name} adalah perguruan tinggi di {$university->location}.",
-            'mission' => 'Menyelenggarakan pendidikan, penelitian, dan pengabdian masyarakat di bidang teknologi informasi.',
+            'about' => $university->description ?: 'Belum ada deskripsi profil untuk universitas ini.',
             'stats' => [
                 'Mahasiswa Aktif' => $university->total_students ? number_format($university->total_students) : '-',
                 'Fakultas / Prodi' => (string) ($university->total_faculties ?? '-'),
