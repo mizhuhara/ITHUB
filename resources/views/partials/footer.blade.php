@@ -104,6 +104,7 @@
         {{-- Bottom Bar --}}
         <div class="it-footer-bottom">
             <p class="it-footer-copy">© {{ date('Y') }} IndoTech · Menghubungkan Pendidikan &amp; Industri IT Indonesia</p>
+            <div id="google_translate_element" class="it-lang"></div>
             <div class="it-footer-legal">
                 <a href="#">Kebijakan Privasi</a>
                 <a href="#">Syarat &amp; Ketentuan</a>
