@@ -20,6 +20,262 @@
 
         {{-- Actions --}}
         <div id="it-actions">
+            {{-- Custom Language Selector (Dropdown with Flag & 10 Languages) --}}
+            <div class="it-lang-menu-wrap" id="it-lang-dropdown-wrap">
+                <button type="button" id="it-lang-btn" class="it-lang-btn" aria-haspopup="true" aria-expanded="false" title="Pilih Bahasa">
+                    <span id="it-lang-btn-flag" class="it-lang-btn-flag">
+                        <svg class="it-flag-svg" viewBox="0 0 24 16">
+                            <rect width="24" height="8" fill="#e11d48"/>
+                            <rect y="8" width="24" height="8" fill="#ffffff"/>
+                        </svg>
+                    </span>
+                    <span id="it-lang-btn-code" class="it-lang-btn-code">ID</span>
+                    <svg class="it-lang-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                </button>
+
+                <div id="it-lang-dropdown" class="it-lang-dropdown" hidden>
+                    <div class="it-lang-header">
+                        <span class="it-lang-header-title">PILIH BAHASA</span>
+                        <span class="it-lang-badge">10 Bahasa</span>
+                    </div>
+
+                    <div class="it-lang-list">
+                        {{-- 1. Bahasa Indonesia --}}
+                        <button type="button" class="it-lang-item it-lang-active" data-lang="id" data-code="ID" data-name="Bahasa Indonesia">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="8" fill="#e11d48"/>
+                                        <rect y="8" width="24" height="8" fill="#ffffff"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">Bahasa Indonesia</span>
+                                    <span class="it-lang-item-sub">Indonesia</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 2. English --}}
+                        <button type="button" class="it-lang-item" data-lang="en" data-code="EN" data-name="English">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 60 30">
+                                        <clipPath id="uk-clip-nav"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+                                        <clipPath id="uk-diag-nav"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+                                        <g clip-path="url(#uk-clip-nav)">
+                                            <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                                            <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                                            <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-diag-nav)" stroke="#C8102E" stroke-width="4"/>
+                                            <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                                            <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">English</span>
+                                    <span class="it-lang-item-sub">Global</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 3. 日本語 (Japanese) --}}
+                        <button type="button" class="it-lang-item" data-lang="ja" data-code="JA" data-name="日本語">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="16" fill="#ffffff"/>
+                                        <circle cx="12" cy="8" r="4.8" fill="#bc002d"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">日本語</span>
+                                    <span class="it-lang-item-sub">Japan</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 4. 한국어 (Korean) --}}
+                        <button type="button" class="it-lang-item" data-lang="ko" data-code="KO" data-name="한국어">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="16" fill="#ffffff"/>
+                                        <circle cx="12" cy="8" r="4" fill="#c60c30"/>
+                                        <path d="M12,4 a4,4 0 0,0 0,8 a2,2 0 0,1 0,-4 a2,2 0 0,0 0,-4" fill="#003478"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">한국어</span>
+                                    <span class="it-lang-item-sub">Korea</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 5. 中文 (简体) (Chinese) --}}
+                        <button type="button" class="it-lang-item" data-lang="zh-CN" data-code="ZH" data-name="中文 (简体)">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="16" fill="#de2910"/>
+                                        <polygon points="4,2 4.8,4.5 2.6,3 5.4,3 3.2,4.5" fill="#ffde00"/>
+                                        <circle cx="7" cy="2" r="0.6" fill="#ffde00"/>
+                                        <circle cx="8.5" cy="3.5" r="0.6" fill="#ffde00"/>
+                                        <circle cx="8.5" cy="5.5" r="0.6" fill="#ffde00"/>
+                                        <circle cx="7" cy="7" r="0.6" fill="#ffde00"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">中文 (简体)</span>
+                                    <span class="it-lang-item-sub">China</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 6. العربية (Arabic) --}}
+                        <button type="button" class="it-lang-item" data-lang="ar" data-code="AR" data-name="العربية">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="5.33" fill="#00732f"/>
+                                        <rect y="5.33" width="24" height="5.33" fill="#ffffff"/>
+                                        <rect y="10.66" width="24" height="5.34" fill="#000000"/>
+                                        <rect width="6" height="16" fill="#ff0000"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">العربية</span>
+                                    <span class="it-lang-item-sub">Arab</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 7. Deutsch (German) --}}
+                        <button type="button" class="it-lang-item" data-lang="de" data-code="DE" data-name="Deutsch">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="5.33" fill="#000000"/>
+                                        <rect y="5.33" width="24" height="5.33" fill="#dd0000"/>
+                                        <rect y="10.66" width="24" height="5.34" fill="#ffce00"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">Deutsch</span>
+                                    <span class="it-lang-item-sub">Germany</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 8. Français (French) --}}
+                        <button type="button" class="it-lang-item" data-lang="fr" data-code="FR" data-name="Français">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="8" height="16" fill="#002395"/>
+                                        <rect x="8" width="8" height="16" fill="#ffffff"/>
+                                        <rect x="16" width="8" height="16" fill="#ed2939"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">Français</span>
+                                    <span class="it-lang-item-sub">France</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 9. Русский (Russian) --}}
+                        <button type="button" class="it-lang-item" data-lang="ru" data-code="RU" data-name="Русский">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="5.33" fill="#ffffff"/>
+                                        <rect y="5.33" width="24" height="5.33" fill="#0039a6"/>
+                                        <rect y="10.66" width="24" height="5.34" fill="#d52b1e"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">Русский</span>
+                                    <span class="it-lang-item-sub">Russia</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        {{-- 10. Español (Spanish) --}}
+                        <button type="button" class="it-lang-item" data-lang="es" data-code="ES" data-name="Español">
+                            <div class="it-lang-item-left">
+                                <span class="it-flag-icon">
+                                    <svg class="it-flag-svg" viewBox="0 0 24 16">
+                                        <rect width="24" height="4" fill="#aa151b"/>
+                                        <rect y="4" width="24" height="8" fill="#f1bf00"/>
+                                        <rect y="12" width="24" height="4" fill="#aa151b"/>
+                                    </svg>
+                                </span>
+                                <div class="it-lang-item-info">
+                                    <span class="it-lang-item-name">Español</span>
+                                    <span class="it-lang-item-sub">Spain</span>
+                                </div>
+                            </div>
+                            <span class="it-lang-check">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Hidden Google Translate Element Target --}}
+                <div id="google_translate_element" style="display:none !important; visibility:hidden !important; position:absolute !important; left:-9999px !important;"></div>
+            </div>
+
             @auth
                 @php
                     $unreadTotal = $navbarChatSummary['total_unread_count'] ?? 0;

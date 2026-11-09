@@ -1015,33 +1015,262 @@
         .it-footer-legal a { font-size: 12.5px; color: #94a3b8; text-decoration: none; transition: color 0.15s; }
         .it-footer-legal a:hover { color: #2563eb; }
 
-        /* ---- GOOGLE TRANSLATE ---- */
-        .it-lang { display: inline-flex; align-items: center; flex-shrink: 0; }
-        .it-lang .goog-te-gadget {
-            font-family: 'Plus Jakarta Sans', sans-serif !important;
-            font-size: 0 !important;
-            color: transparent !important;
+        /* ---- CUSTOM LANGUAGE SELECTOR DROPDOWN (Matches user design) ---- */
+        .it-lang-menu-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .it-lang-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            height: 38px;
+            padding: 0 12px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: #0f172a;
+            font-family: inherit;
+        }
+        .it-lang-btn:hover,
+        .it-lang-btn[aria-expanded="true"] {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .it-lang-btn-flag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 15px;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+        .it-lang-btn-flag .it-flag-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .it-lang-btn-code {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: 0.2px;
             line-height: 1;
         }
-        .it-lang .goog-te-gadget .goog-te-combo {
-            height: 32px;
-            margin: 0 !important;
-            padding: 0 8px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 8px;
-            background: #f8fafc;
-            color: #475569;
-            font-family: 'Plus Jakarta Sans', sans-serif !important;
-            font-size: 12.5px !important;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
+
+        .it-lang-chevron {
+            color: #64748b;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
         }
-        .it-lang .goog-te-gadget .goog-te-combo:hover { border-color: #93c5fd; }
-        .it-lang .goog-te-gadget a { display: none !important; }
-        .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-        .goog-text-highlight { background: none !important; box-shadow: none !important; }
-        body { top: 0 !important; }
+        .it-lang-btn[aria-expanded="true"] .it-lang-chevron {
+            transform: rotate(180deg);
+        }
+
+        .it-lang-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 285px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 18px 40px -8px rgba(15, 23, 42, 0.14), 0 4px 14px -2px rgba(15, 23, 42, 0.05);
+            padding: 14px 10px 10px;
+            z-index: 80;
+            animation: itChatDropFade 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .it-lang-dropdown[hidden] {
+            display: none !important;
+        }
+
+        .it-lang-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 6px;
+        }
+        .it-lang-header-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .it-lang-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2563eb;
+            background: #eff6ff;
+            padding: 3px 9px;
+            border-radius: 9999px;
+            line-height: 1;
+        }
+
+        .it-lang-list {
+            max-height: 330px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-right: 2px;
+        }
+        .it-lang-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .it-lang-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+
+        .it-lang-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: transparent;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: left;
+            font-family: inherit;
+        }
+        .it-lang-item:hover {
+            background: #f8fafc;
+        }
+        .it-lang-item.it-lang-active {
+            background: #eff6ff !important;
+        }
+
+        .it-lang-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+        .it-flag-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 16px;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+        .it-flag-icon .it-flag-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .it-lang-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+        }
+        .it-lang-item-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.25;
+            white-space: nowrap;
+        }
+        .it-lang-active .it-lang-item-name {
+            color: #1d4ed8;
+        }
+        .it-lang-item-sub {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: #94a3b8;
+            line-height: 1.2;
+        }
+
+        .it-lang-check {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #2563eb;
+        }
+        .it-lang-active .it-lang-check {
+            display: inline-flex;
+        }
+
+        @media (max-width: 768px) {
+            .it-lang-btn {
+                height: 36px;
+                padding: 0 9px;
+                gap: 5px;
+            }
+            .it-lang-btn-code {
+                font-size: 12px;
+            }
+            .it-lang-dropdown {
+                position: fixed;
+                top: 64px;
+                right: 12px;
+                left: 12px;
+                width: auto;
+                max-width: 320px;
+                margin-left: auto;
+            }
+        }
+
+        /* ---- HIDE TOP GOOGLE TRANSLATE BANNER FRAME, TOOLTIPS & OVERLAYS ---- */
+        .goog-te-banner-frame,
+        .goog-te-banner-frame.skiptranslate,
+        iframe.goog-te-banner-frame,
+        iframe.skiptranslate,
+        iframe[id*=":1.container"],
+        iframe[id*=":2.container"],
+        .VIpgJd-ZVi9od-ORHb-OEVmcd,
+        .VIpgJd-ZVi9od-ORHb-OEVmcd-ti6hGc,
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+        #goog-gt-tt,
+        .goog-te-balloon-frame {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            z-index: -9999 !important;
+        }
+        body {
+            top: 0px !important;
+            position: static !important;
+            margin-top: 0px !important;
+        }
+        .goog-text-highlight {
+            background: none !important;
+            box-shadow: none !important;
+        }
 
         /* Tablet Responsive (561px - 960px) */
         @media (min-width: 561px) and (max-width: 960px) {
@@ -1515,6 +1744,171 @@
                     autoDisplay: false
                 }, 'google_translate_element');
             }
+
+            // Custom Language Switcher Dropdown Controller (Matches User Design)
+            document.addEventListener('DOMContentLoaded', function() {
+                var langWrap = document.getElementById('it-lang-dropdown-wrap');
+                if (!langWrap) return;
+
+                var langBtn = document.getElementById('it-lang-btn');
+                var langDropdown = document.getElementById('it-lang-dropdown');
+                var btnFlag = document.getElementById('it-lang-btn-flag');
+                var btnCode = document.getElementById('it-lang-btn-code');
+                var langItems = langDropdown.querySelectorAll('.it-lang-item');
+
+                function toggleDropdown(open) {
+                    var isExpanded = open !== undefined ? open : langDropdown.hasAttribute('hidden');
+                    if (isExpanded) {
+                        langDropdown.removeAttribute('hidden');
+                        langBtn.setAttribute('aria-expanded', 'true');
+                    } else {
+                        langDropdown.setAttribute('hidden', '');
+                        langBtn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+
+                langBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var userMenu = document.getElementById('it-user-menu');
+                    if (userMenu) userMenu.setAttribute('hidden', '');
+                    var chatDrop = document.getElementById('it-chat-dropdown');
+                    if (chatDrop) chatDrop.setAttribute('hidden', '');
+                    toggleDropdown();
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!langWrap.contains(e.target)) {
+                        toggleDropdown(false);
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && !langDropdown.hasAttribute('hidden')) {
+                        toggleDropdown(false);
+                    }
+                });
+
+                function getSavedLang() {
+                    var match = document.cookie.match(/googtrans=\/id\/([a-zA-Z\-]+)/);
+                    if (match && match[1]) {
+                        return match[1];
+                    }
+                    return localStorage.getItem('it_selected_lang') || 'id';
+                }
+
+                function updateLanguageUI(langCode) {
+                    var matchedItem = null;
+                    langItems.forEach(function(item) {
+                        if (item.getAttribute('data-lang') === langCode) {
+                            item.classList.add('it-lang-active');
+                            matchedItem = item;
+                        } else {
+                            item.classList.remove('it-lang-active');
+                        }
+                    });
+
+                    if (matchedItem) {
+                        var code = matchedItem.getAttribute('data-code');
+                        var flagSvg = matchedItem.querySelector('.it-flag-icon').innerHTML;
+                        if (btnCode) btnCode.textContent = code;
+                        if (btnFlag) btnFlag.innerHTML = flagSvg;
+                    }
+                }
+
+                function applyTranslation(langCode) {
+                    if (langCode === 'id') {
+                        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname + ";";
+                        document.cookie = "googtrans=/id/id; path=/;";
+                        document.cookie = "googtrans=/id/id; path=/; domain=" + window.location.hostname + ";";
+                    } else {
+                        document.cookie = "googtrans=/id/" + langCode + "; path=/;";
+                        document.cookie = "googtrans=/id/" + langCode + "; path=/; domain=" + window.location.hostname + ";";
+                    }
+
+                    localStorage.setItem('it_selected_lang', langCode);
+                    updateLanguageUI(langCode);
+
+                    var combo = document.querySelector('.goog-te-combo');
+                    if (combo) {
+                        combo.value = langCode;
+                        combo.dispatchEvent(new Event('change'));
+                    } else {
+                        window.location.reload();
+                    }
+                }
+
+                langItems.forEach(function(item) {
+                    item.addEventListener('click', function() {
+                        var lang = this.getAttribute('data-lang');
+                        toggleDropdown(false);
+                        applyTranslation(lang);
+                    });
+                });
+
+                var currentLang = getSavedLang();
+                updateLanguageUI(currentLang);
+
+                window.addEventListener('load', function() {
+                    var current = getSavedLang();
+                    updateLanguageUI(current);
+                    if (current && current !== 'id') {
+                        var combo = document.querySelector('.goog-te-combo');
+                        if (combo && combo.value !== current) {
+                            combo.value = current;
+                            combo.dispatchEvent(new Event('change'));
+                        }
+                    }
+                });
+            });
+
+            // Hapus banner bawaan Google Translate di bagian atas dan pulihkan posisi body
+            (function() {
+                function purgeGoogleTranslateBanner() {
+                    var selectors = [
+                        '.goog-te-banner-frame',
+                        'iframe.goog-te-banner-frame',
+                        '.VIpgJd-ZVi9od-ORHb-OEVmcd',
+                        '.VIpgJd-ZVi9od-ORHb-OEVmcd-ti6hGc',
+                        '.VIpgJd-ZVi9od-aZ2wEe-wOHMyf',
+                        '#goog-gt-tt',
+                        '.goog-te-balloon-frame'
+                    ];
+                    selectors.forEach(function(sel) {
+                        document.querySelectorAll(sel).forEach(function(el) {
+                            el.style.setProperty('display', 'none', 'important');
+                            el.style.setProperty('visibility', 'hidden', 'important');
+                            el.style.setProperty('height', '0px', 'important');
+                            el.style.setProperty('opacity', '0', 'important');
+                            el.style.setProperty('pointer-events', 'none', 'important');
+                        });
+                    });
+
+                    if (document.body) {
+                        if (document.body.style.top && document.body.style.top !== '0px') {
+                            document.body.style.setProperty('top', '0px', 'important');
+                        }
+                        if (document.body.style.position && document.body.style.position !== 'static') {
+                            document.body.style.setProperty('position', 'static', 'important');
+                        }
+                    }
+                }
+
+                if (window.MutationObserver) {
+                    var observer = new MutationObserver(function() {
+                        purgeGoogleTranslateBanner();
+                    });
+                    observer.observe(document.documentElement, {
+                        childList: true,
+                        subtree: true,
+                        attributes: true,
+                        attributeFilter: ['style', 'class']
+                    });
+                }
+
+                window.addEventListener('load', purgeGoogleTranslateBanner);
+                document.addEventListener('DOMContentLoaded', purgeGoogleTranslateBanner);
+            })();
         </script>
         <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
     </body>
