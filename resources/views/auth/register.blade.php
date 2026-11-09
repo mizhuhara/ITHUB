@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign Up — IndoTech</title>
+    <title>Sign Up — ITHub</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -26,7 +26,7 @@
 
             <div class="text-center mb-10">
                 <h1 class="text-[32px] font-bold text-slate-900">What role are you joining as?</h1>
-                <p class="mt-2 text-[15px] text-slate-600">Choose your primary role to customize your IndoTech experience.</p>
+                <p class="mt-2 text-[15px] text-slate-600">Choose your primary role to customize your ITHub experience.</p>
             </div>
 
             <div id="role-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -88,7 +88,7 @@
 
             {{-- Header --}}
             <div class="text-center">
-                <span class="text-2xl font-extrabold tracking-tight text-blue-700">IndoTech</span>
+                <span class="text-2xl font-extrabold tracking-tight text-slate-900 notranslate" translate="no">IT<span class="text-blue-600">Hub</span></span>
                 <h1 class="mt-3 text-[26px] font-bold text-gray-900">Create Your Account</h1>
                 <p class="mt-1.5 text-[14px] text-gray-500">Join us in bridging Indonesian Education and Global IT.</p>
             </div>

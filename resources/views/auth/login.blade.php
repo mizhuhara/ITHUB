@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign In — IndoTech</title>
+    <title>Sign In — ITHub</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -24,7 +24,7 @@
 
         {{-- Logo --}}
         <div class="text-center">
-            <span class="text-2xl font-extrabold tracking-tight text-slate-900">IndoTech</span>
+            <span class="text-2xl font-extrabold tracking-tight text-slate-900 notranslate" translate="no">IT<span class="text-blue-600">Hub</span></span>
         </div>
 
         {{-- Heading --}}

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Lamar — ' . $job['title'] . ' · IndoTech')
+@section('title', 'Lamar — ' . $job['title'] . ' · ITHub')
 
 @section('content')
 <style>
@@ -652,7 +652,7 @@
                             <span>
                                 Saya menyetujui bahwa data yang saya berikan akurat dan setuju data ini
                                 digunakan untuk proses rekrutmen sesuai
-                                <a href="#" style="color:#2563eb;font-weight:600;">Kebijakan Privasi</a> IndoTech.
+                                <a href="#" style="color:#2563eb;font-weight:600;">Kebijakan Privasi</a> ITHub.
                             </span>
                         </label>
 

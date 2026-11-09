@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
-        <title>@yield('title', config('app.name', 'IndoTech'))</title>
+        <title>@yield('title', config('app.name', 'ITHub'))</title>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -1733,9 +1733,81 @@
 
         @stack('scripts')
 
-        {{-- Google Translate Widget --}}
+        {{-- Google Translate Widget with Protected Filtering & Adaptive Auth Buttons --}}
         <script>
+            // Translation Dictionary for Navbar Auth Buttons (Per Language)
+            var authTranslations = {
+                'id': { signin: 'Masuk', signup: 'Daftar' },
+                'en': { signin: 'Login', signup: 'Register' },
+                'ja': { signin: 'ログイン', signup: '新規登録' },
+                'ko': { signin: '로그인', signup: '회원가입' },
+                'zh-CN': { signin: '登录', signup: '注册' },
+                'ar': { signin: 'تسجيل الدخول', signup: 'إنشاء حساب' },
+                'de': { signin: 'Anmelden', signup: 'Registrieren' },
+                'fr': { signin: 'Connexion', signup: "S'inscrire" },
+                'es': { signin: 'Iniciar sesión', signup: 'Registrarse' },
+                'ru': { signin: 'Войти', signup: 'Регистрация' }
+            };
+
+            function updateAuthNavButtons(langCode) {
+                var t = authTranslations[langCode] || authTranslations['id'];
+                var signinBtn = document.getElementById('it-nav-signin');
+                var signupBtn = document.getElementById('it-nav-signup');
+                var mSigninBtn = document.getElementById('it-mnav-signin');
+                var mSignupBtn = document.getElementById('it-mnav-signup');
+
+                if (signinBtn) signinBtn.textContent = t.signin;
+                if (signupBtn) signupBtn.textContent = t.signup;
+                if (mSigninBtn) mSigninBtn.textContent = t.signin;
+                if (mSignupBtn) mSignupBtn.textContent = t.signup;
+            }
+
+            // Filter & Protect Sensitive Elements from Google Translate (Brand Logo, Tech Tags, Code, Auth)
+            function applyTranslateProtection() {
+                var protectSelectors = [
+                    '#it-logo',
+                    '.it-f-brand',
+                    '#it-lang-dropdown-wrap',
+                    '#it-lang-dropdown',
+                    '#it-lang-btn',
+                    '#it-user-btn',
+                    '#it-user-menu',
+                    '.it-mobile-user-card',
+                    '#it-nav-signin',
+                    '#it-nav-signup',
+                    '#it-mnav-signin',
+                    '#it-mnav-signup',
+                    'code',
+                    'pre',
+                    'kbd',
+                    'samp',
+                    '.cr-chip',
+                    '.sks-chip',
+                    '.cr-logo',
+                    '.sks-avatar',
+                    '.it-status-dot',
+                    'a[href^="mailto:"]',
+                    'a[href^="tel:"]',
+                    'a[href*="wa.me"]',
+                    '.notranslate'
+                ];
+
+                protectSelectors.forEach(function(sel) {
+                    try {
+                        document.querySelectorAll(sel).forEach(function(el) {
+                            if (!el.classList.contains('notranslate')) {
+                                el.classList.add('notranslate');
+                            }
+                            if (el.getAttribute('translate') !== 'no') {
+                                el.setAttribute('translate', 'no');
+                            }
+                        });
+                    } catch (e) {}
+                });
+            }
+
             function googleTranslateElementInit() {
+                applyTranslateProtection();
                 if (!document.getElementById('google_translate_element')) {
                     return;
                 }
@@ -1743,10 +1815,13 @@
                     pageLanguage: 'id',
                     autoDisplay: false
                 }, 'google_translate_element');
+                applyTranslateProtection();
             }
 
-            // Custom Language Switcher Dropdown Controller (Matches User Design)
+            // Custom Language Switcher Dropdown Controller
             document.addEventListener('DOMContentLoaded', function() {
+                applyTranslateProtection();
+
                 var langWrap = document.getElementById('it-lang-dropdown-wrap');
                 if (!langWrap) return;
 
@@ -1813,6 +1888,10 @@
                         if (btnCode) btnCode.textContent = code;
                         if (btnFlag) btnFlag.innerHTML = flagSvg;
                     }
+
+                    // Dynamically adapt Login & Register buttons in Navbar
+                    updateAuthNavButtons(langCode);
+                    applyTranslateProtection();
                 }
 
                 function applyTranslation(langCode) {
@@ -1828,6 +1907,7 @@
 
                     localStorage.setItem('it_selected_lang', langCode);
                     updateLanguageUI(langCode);
+                    applyTranslateProtection();
 
                     var combo = document.querySelector('.goog-te-combo');
                     if (combo) {
@@ -1852,6 +1932,7 @@
                 window.addEventListener('load', function() {
                     var current = getSavedLang();
                     updateLanguageUI(current);
+                    applyTranslateProtection();
                     if (current && current !== 'id') {
                         var combo = document.querySelector('.goog-te-combo');
                         if (combo && combo.value !== current) {
@@ -1860,6 +1941,14 @@
                         }
                     }
                 });
+
+                // Observe DOM changes to re-protect newly rendered nodes (AJAX/Modals)
+                if (window.MutationObserver) {
+                    var observer = new MutationObserver(function() {
+                        applyTranslateProtection();
+                    });
+                    observer.observe(document.body, { childList: true, subtree: true });
+                }
             });
 
             // Hapus banner bawaan Google Translate di bagian atas dan pulihkan posisi body

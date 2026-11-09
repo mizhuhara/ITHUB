@@ -18,7 +18,7 @@ class CareerController extends Controller
     /** @var array<string, string> */
     private array $tabs = [
         'jobs' => 'Pekerjaan',
-        'kerja' => 'Siap Kerja',
+        'kerja' => 'Job Seeker',
         'internship' => 'Magang',
         'freelance' => 'Freelance',
         'remote' => 'Kerja Remote',
@@ -241,7 +241,7 @@ class CareerController extends Controller
     {
         $job = $this->resolveJob($type, $id);
 
-        if ($job instanceof JobListing) {
+        if ($job instanceof JobListing || $job instanceof Internship) {
             $job->increment('total_views');
         }
 

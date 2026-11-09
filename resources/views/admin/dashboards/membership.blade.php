@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Status Membership & Perpanjangan — IndoTech')
+@section('title', 'Status Membership & Perpanjangan — ITHub')
 @section('header_title', 'Status Keanggotaan & Perpanjangan Membership')
 @section('header_subtitle', 'Pantau masa aktif keanggotaan institusi, informasi rekening pembayaran, dan ajukan perpanjangan keanggotaan.')
 
@@ -216,11 +216,11 @@
 
         {{-- Kolom Kiri: Informasi Rekening --}}
         <div class="space-y-4">
-            {{-- Card Rekening Resmi IndoTech --}}
+            {{-- Card Rekening Resmi ITHub --}}
             <div class="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-xs space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-800">
                     <span class="text-[11px] font-bold tracking-wider uppercase text-slate-400">Rekening Resmi</span>
-                    <span class="text-[11px] font-semibold text-blue-400">IndoTech</span>
+                    <span class="text-[11px] font-semibold text-blue-400">ITHub</span>
                 </div>
 
                 <div>
@@ -278,7 +278,7 @@
                     </div>
                 </div>
                 @php
-                    $waMsg = rawurlencode("Halo Admin IndoTech, saya dari {$user->name} ingin bertanya perihal pembayaran perpanjangan membership.");
+                    $waMsg = rawurlencode("Halo Admin ITHub, saya dari {$user->name} ingin bertanya perihal pembayaran perpanjangan membership.");
                 @endphp
                 <a href="https://wa.me/6281234567890?text={{ $waMsg }}" target="_blank" rel="noopener" class="mt-4 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-[12.5px] border border-slate-200 transition">
                     Chat WhatsApp Support

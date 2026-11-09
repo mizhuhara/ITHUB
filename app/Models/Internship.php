@@ -19,6 +19,11 @@ class Internship extends Model
         'start_date',
         'end_date',
         'status',
+        'total_views',
+    ];
+
+    protected $casts = [
+        'total_views' => 'integer',
     ];
 
     protected $appends = [
@@ -27,6 +32,7 @@ class Internship extends Model
         'logo_text',
         'logo_color',
         'logo_url',
+        'total_views',
         'date_posted',
         'salary_range',
         'experience',
@@ -43,6 +49,11 @@ class Internship extends Model
     public function applications()
     {
         return $this->hasMany(JobApplication::class);
+    }
+
+    public function getTotalViewsAttribute(): int
+    {
+        return (int) ($this->attributes['total_views'] ?? 0);
     }
 
     public function getApplyTypeAttribute(): string
