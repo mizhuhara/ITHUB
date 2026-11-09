@@ -35,6 +35,12 @@ class CampusController extends Controller
             })
             ->firstOrFail();
 
+        $sessionKey = 'viewed_campus_'.$university->id;
+        if (! session()->has($sessionKey)) {
+            $university->increment('views');
+            session()->put($sessionKey, true);
+        }
+
         return view('education.campus.show', [
             'campus' => $this->mapCampus($university),
         ]);
@@ -59,6 +65,7 @@ class CampusController extends Controller
             'id' => $university->npsn ?: (string) $university->id,
             'name' => $university->name,
             'verified' => in_array(strtolower($university->status ?? ''), ['active', 'verified'], true) || empty($university->status),
+            'views' => (int) ($university->views ?? 0),
             'category_badge' => $isPublic ? 'Perguruan Tinggi Negeri' : 'Perguruan Tinggi Swasta',
             'location' => $university->location ?: trim("{$university->city}, {$university->province}", ', '),
             'location_full' => $university->address ?: trim("{$university->location}, Indonesia", ', '),

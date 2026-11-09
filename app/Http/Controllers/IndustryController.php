@@ -46,6 +46,7 @@ class IndustryController extends Controller
                 'rating' => null,
                 'projects_completed' => ! empty($c->projects_completed) ? $c->projects_completed : '100+ Proyek',
                 'verified' => true,
+                'views' => (int) ($c->views ?? 0),
                 'logo_image' => $c->logo_url ?? '',
                 'cover_image' => '',
                 'specialties' => ! empty($c->specialties) ? $c->specialties : ($c->tags ?? []),
@@ -56,5 +57,19 @@ class IndustryController extends Controller
         })->toArray();
 
         return view('industry.industry', compact('companies'));
+    }
+
+    public function incrementView(Request $request, Company $company)
+    {
+        $sessionKey = 'viewed_company_'.$company->id;
+        if (! $request->session()->has($sessionKey)) {
+            $company->increment('views');
+            $request->session()->put($sessionKey, true);
+        }
+
+        return response()->json([
+            'success' => true,
+            'views' => (int) $company->fresh()->views,
+        ]);
     }
 }
