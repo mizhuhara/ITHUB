@@ -260,6 +260,8 @@
         {{-- Notifications --}}
         @php
             $isAdminArea = in_array($headerUserRole, ['super_admin', 'admin'], true);
+            $isCompanyArea = $headerUserRole === 'company';
+
             $pendingVerifications = $isAdminArea
                 ? \App\Models\User::whereIn('role', ['school', 'university', 'company'])->where('status', 'pending')->count()
                 : 0;
@@ -267,14 +269,35 @@
                 ? \App\Models\Event::where('status', 'Pending')->count()
                 : 0;
             $pendingApplications = $isAdminArea
-                ? \App\Models\JobApplication::where('status', 'pending')->count()
+                ? \App\Models\JobApplication::where('status', 'pending')
+                    ->where(function ($q) {
+                        $q->whereNull('job_listing_id')
+                            ->orWhereHas('jobListing', function ($jq) {
+                                $jq->whereNull('user_id')
+                                    ->orWhereHas('user', function ($uq) {
+                                        $uq->whereIn('role', ['super_admin', 'admin']);
+                                    });
+                            });
+                    })
+                    ->count()
                 : 0;
             $pendingReports = $isAdminArea
                 ? \App\Models\UserReport::where('status', 'pending')->count()
                 : 0;
-            $notificationTotal = $pendingVerifications + $pendingEvents + $pendingApplications + $pendingReports;
+
+            $companyPendingApplications = 0;
+            if ($isCompanyArea) {
+                $companyJobIds = \App\Models\JobListing::where('user_id', Auth::id())->pluck('id');
+                $companyPendingApplications = \App\Models\JobApplication::whereIn('job_listing_id', $companyJobIds)
+                    ->where('status', 'pending')
+                    ->count();
+            }
+
+            $notificationTotal = $isAdminArea
+                ? ($pendingVerifications + $pendingEvents + $pendingApplications + $pendingReports)
+                : ($isCompanyArea ? $companyPendingApplications : 0);
         @endphp
-        @if($isAdminArea)
+        @if($isAdminArea || $isCompanyArea)
             <div class="relative" id="admin-notif-nav">
                 <button type="button" id="admin-notif-btn" aria-haspopup="true" aria-expanded="false" class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 transition" aria-label="Notifications">
                     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -293,6 +316,17 @@
 
                     @if($notificationTotal === 0)
                         <p class="px-3.5 py-6 text-center text-[12.5px] text-slate-500">Tidak ada notifikasi baru.</p>
+                    @elseif($isCompanyArea)
+                        <a href="{{ route('admin.jobs.index') }}" class="flex items-start gap-2.5 px-3.5 py-2.5 hover:bg-slate-50 transition-colors">
+                            <span class="mt-0.5 w-7 h-7 shrink-0 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Zm0 0v6h6"/></svg>
+                            </span>
+                            <span class="min-w-0 flex-1">
+                                <span class="block text-[13px] font-semibold text-slate-800">Lamaran Pelamar</span>
+                                <span class="block text-[11.5px] text-slate-500">{{ $companyPendingApplications }} pelamar menunggu ditinjau</span>
+                            </span>
+                            @if($companyPendingApplications > 0)<span class="mt-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold leading-[18px] text-center">{{ $companyPendingApplications }}</span>@endif
+                        </a>
                     @else
                         <a href="{{ route('admin.verification.index') }}" class="flex items-start gap-2.5 px-3.5 py-2.5 hover:bg-slate-50 transition-colors">
                             <span class="mt-0.5 w-7 h-7 shrink-0 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">

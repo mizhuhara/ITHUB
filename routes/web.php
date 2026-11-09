@@ -202,6 +202,8 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::post('/admin/jobs', [AdminJobController::class, 'store'])->name('admin.jobs.store');
     Route::get('/admin/jobs/export', [AdminJobController::class, 'export'])->name('admin.jobs.export');
     Route::get('/admin/jobs/{id}', [AdminJobController::class, 'show'])->name('admin.jobs.show');
+    Route::get('/admin/jobs/{job}/applications/{application}/resume', [AdminJobController::class, 'downloadResume'])->name('admin.jobs.applications.resume');
+    Route::patch('/admin/jobs/{job}/applications/{application}/status', [AdminJobController::class, 'updateApplicationStatus'])->name('admin.jobs.applications.status');
     Route::get('/admin/jobs/{id}/edit', [AdminJobController::class, 'edit'])->name('admin.jobs.edit');
     Route::put('/admin/jobs/{id}', [AdminJobController::class, 'update'])->name('admin.jobs.update');
     Route::delete('/admin/jobs/{id}', [AdminJobController::class, 'destroy'])->name('admin.jobs.destroy');

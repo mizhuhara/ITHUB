@@ -119,40 +119,49 @@ class JobListing extends Model
         return $this->type ?? 'Full-time';
     }
 
-    public function getLogoUrlAttribute(?string $value): ?string
+    public function getCompanyLogoAttribute(): ?string
     {
-        if (! empty($value)) {
-            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
-                return $value;
-            }
-
-            return asset('storage/'.ltrim($value, '/'));
-        }
-
-        // Try getting company logo or user avatar from poster user
-        if ($this->relationLoaded('user') ? $this->user : $this->user()->first()) {
-            $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();
-            if ($user?->company && ! empty($user->company->logo_url)) {
-                $compLogo = $user->company->logo_url;
+        if ($this->user_id) {
+            $company = Company::where('user_id', $this->user_id)->first();
+            if ($company && ! empty($company->logo_url)) {
+                $compLogo = $company->logo_url;
                 if (str_starts_with($compLogo, 'http://') || str_starts_with($compLogo, 'https://')) {
                     return $compLogo;
                 }
 
-                return asset('storage/'.ltrim($compLogo, '/'));
-            }
-
-            if ($user?->avatar_url) {
-                return $user->avatar_url;
+                return asset(ltrim($compLogo, '/'));
             }
         }
 
-        if (! empty($this->attributes['image'])) {
-            $img = $this->attributes['image'];
-            if (str_starts_with($img, 'http://') || str_starts_with($img, 'https://')) {
-                return $img;
+        if (! empty($this->company)) {
+            $company = Company::where('name', $this->company)->first();
+            if ($company && ! empty($company->logo_url)) {
+                $compLogo = $company->logo_url;
+                if (str_starts_with($compLogo, 'http://') || str_starts_with($compLogo, 'https://')) {
+                    return $compLogo;
+                }
+
+                return asset(ltrim($compLogo, '/'));
+            }
+        }
+
+        return null;
+    }
+
+    public function getLogoUrlAttribute(?string $value): ?string
+    {
+        $companyLogo = $this->company_logo;
+        if (! empty($companyLogo)) {
+            return $companyLogo;
+        }
+
+        $banner = $this->attributes['image'] ?? null;
+        if (! empty($value) && $value !== $banner) {
+            if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+                return $value;
             }
 
-            return asset('storage/'.ltrim($img, '/'));
+            return asset(ltrim($value, '/'));
         }
 
         return null;

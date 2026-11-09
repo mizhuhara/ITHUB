@@ -26,6 +26,21 @@
         $pendingMembershipPaymentsCount = ($userRole === 'super_admin')
             ? \App\Models\MembershipPayment::where('status', 'pending')->count()
             : 0;
+        $pendingApplicationsCount = ($userRole === 'company')
+            ? \App\Models\JobApplication::whereHas('jobListing', function ($q) {
+                $q->where('user_id', auth()->id());
+            })->where('status', 'pending')->count()
+            : (in_array($userRole, ['super_admin', 'admin'], true)
+                ? \App\Models\JobApplication::where(function ($q) {
+                    $q->whereNull('job_listing_id')
+                        ->orWhereHas('jobListing', function ($jq) {
+                            $jq->whereNull('user_id')
+                                ->orWhereHas('user', function ($uq) {
+                                    $uq->whereIn('role', ['super_admin', 'admin']);
+                                });
+                        });
+                })->where('status', 'pending')->count()
+                : 0);
     @endphp
 
     {{-- Header / Brand --}}
@@ -89,6 +104,14 @@
                     'icon' => 'jobs',
                     'active' => request()->routeIs('admin.jobs.*'),
                     'href' => route('admin.jobs.index'),
+                    'roles' => ['super_admin', 'admin', 'company'],
+                ],
+                [
+                    'label' => in_array($userRole, ['company'], true) ? 'Data Pelamar' : 'Job Applications',
+                    'icon' => 'applications',
+                    'active' => request()->routeIs('admin.applications.*'),
+                    'href' => route('admin.applications.index'),
+                    'badge' => $pendingApplicationsCount,
                     'roles' => ['super_admin', 'admin', 'company'],
                 ],
                 [
@@ -249,6 +272,8 @@
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path stroke-linecap="round" d="M9 7h2m2 0h2m-6 4h2m2 0h2m-6 4h2m2 0h2M9 21v-3h6v3"/></svg>
                         @elseif ($item['icon'] === 'jobs')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18"/></svg>
+                        @elseif ($item['icon'] === 'applications')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
                         @elseif ($item['icon'] === 'internship')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z"/><path stroke-linecap="round" d="M19 8v6m3-3h-6"/></svg>
                         @elseif ($item['icon'] === 'events')

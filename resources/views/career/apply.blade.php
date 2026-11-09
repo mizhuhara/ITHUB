@@ -346,15 +346,28 @@
         {{-- ── sidebar ── --}}
         <aside>
             <div class="ap-job-card">
-                @if (!empty($job['image']) || !empty($job['logo_url']))
+                @php
+                    $companyLogo = $job->company_logo ?? $job->logo_url ?? $job['logo_url'] ?? null;
+                    $bannerImage = $job->image ?? $job['image'] ?? null;
+                    if ($bannerImage === $companyLogo) {
+                        $bannerImage = null;
+                    }
+                @endphp
+                @if (!empty($bannerImage))
                 <img
-                    src="{{ $job['image'] ?? $job['logo_url'] }}"
+                    src="{{ $bannerImage }}"
                     alt="{{ $job['company'] }}"
                     class="ap-job-img"
                 >
                 @endif
                 <div class="ap-job-body">
-                    <div class="ap-job-logo" style="background: {{ $job['logo_color'] }}">{{ $job['logo_text'] }}</div>
+                    @if (!empty($companyLogo))
+                        <div class="ap-job-logo" style="background: #ffffff; overflow: hidden; border: 1px solid #e2e8f0; padding: 0;">
+                            <img src="{{ $companyLogo }}" alt="Logo {{ $job['company'] }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 9px; display: block;">
+                        </div>
+                    @else
+                        <div class="ap-job-logo" style="background: {{ $job['logo_color'] }}">{{ $job['logo_text'] }}</div>
+                    @endif
                     @php
                         $tagMap   = ['jobs'=>'Jobs','internship'=>'Internship','freelance'=>'Freelance','remote'=>'Remote Work','graduate'=>'Graduate Job'];
                         $tagClass = $job['category'];

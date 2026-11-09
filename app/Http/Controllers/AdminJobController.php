@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\JobApplication;
 use App\Models\JobListing;
+use App\Notifications\ApplicationStatusUpdated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -71,7 +74,8 @@ class AdminJobController extends Controller
             });
         }
 
-        $paginatedJobs = $query->orderByDesc('id')
+        $paginatedJobs = $query->withCount('applications')
+            ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString();
 
@@ -334,10 +338,75 @@ class AdminJobController extends Controller
      */
     public function show(Request $request, int $id): View
     {
-        $job = JobListing::findOrFail($id);
+        $job = JobListing::with([
+            'applications' => function ($query) {
+                $query->with(['statusHistories.changedBy', 'user'])->latest('id');
+            },
+        ])->findOrFail($id);
         $this->authorizeJobAccess($job, $request);
 
         return view('admin.jobs.show', compact('job'));
+    }
+
+    /**
+     * Download applicant resume for this job.
+     */
+    public function downloadResume(Request $request, int $job, int $application): StreamedResponse
+    {
+        $jobListing = JobListing::findOrFail($job);
+        $this->authorizeJobAccess($jobListing, $request);
+
+        $jobApp = $jobListing->applications()->findOrFail($application);
+        abort_unless(Storage::disk('local')->exists($jobApp->resume_path), 404, 'File resume tidak ditemukan.');
+
+        return Storage::disk('local')->download(
+            $jobApp->resume_path,
+            basename($jobApp->resume_path)
+        );
+    }
+
+    /**
+     * Update application status for this job.
+     */
+    public function updateApplicationStatus(Request $request, int $job, int $application): RedirectResponse
+    {
+        $jobListing = JobListing::findOrFail($job);
+        $this->authorizeJobAccess($jobListing, $request);
+
+        $jobApp = $jobListing->applications()->findOrFail($application);
+
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,reviewed,shortlisted,rejected'],
+            'note' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $previousStatus = $jobApp->status;
+        $note = filled($validated['note'] ?? null) ? trim($validated['note']) : null;
+        $statusChanged = $previousStatus !== $validated['status'];
+
+        if (! $statusChanged && $note === null) {
+            return back()->with('info', "Tidak ada perubahan status pada lamaran {$jobApp->full_name}.");
+        }
+
+        DB::transaction(function () use ($jobApp, $validated, $note) {
+            $jobApp->update(['status' => $validated['status']]);
+
+            $jobApp->statusHistories()->create([
+                'status' => $validated['status'],
+                'note' => $note,
+                'changed_by' => auth()->id(),
+            ]);
+        });
+
+        $jobApp->user?->notify(new ApplicationStatusUpdated(
+            $jobApp->fresh(),
+            $previousStatus,
+            $note
+        ));
+
+        $statusLabel = JobApplication::STATUS_LABELS[$validated['status']] ?? ucfirst($validated['status']);
+
+        return back()->with('success', "Status lamaran {$jobApp->full_name} berhasil diperbarui menjadi \"{$statusLabel}\".");
     }
 
     /**
