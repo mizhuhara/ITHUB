@@ -1015,6 +1015,34 @@
         .it-footer-legal a { font-size: 12.5px; color: #94a3b8; text-decoration: none; transition: color 0.15s; }
         .it-footer-legal a:hover { color: #2563eb; }
 
+        /* ---- GOOGLE TRANSLATE ---- */
+        .it-lang { display: inline-flex; align-items: center; flex-shrink: 0; }
+        .it-lang .goog-te-gadget {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 0 !important;
+            color: transparent !important;
+            line-height: 1;
+        }
+        .it-lang .goog-te-gadget .goog-te-combo {
+            height: 32px;
+            margin: 0 !important;
+            padding: 0 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+            color: #475569;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 12.5px !important;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+        .it-lang .goog-te-gadget .goog-te-combo:hover { border-color: #93c5fd; }
+        .it-lang .goog-te-gadget a { display: none !important; }
+        .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+        body { top: 0 !important; }
+
         /* Tablet Responsive (561px - 960px) */
         @media (min-width: 561px) and (max-width: 960px) {
             .it-footer-grid {
@@ -1475,5 +1503,19 @@
         @endunless
 
         @stack('scripts')
+
+        {{-- Google Translate Widget --}}
+        <script>
+            function googleTranslateElementInit() {
+                if (!document.getElementById('google_translate_element')) {
+                    return;
+                }
+                new google.translate.TranslateElement({
+                    pageLanguage: 'id',
+                    autoDisplay: false
+                }, 'google_translate_element');
+            }
+        </script>
+        <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
     </body>
 </html>
