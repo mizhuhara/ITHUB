@@ -137,6 +137,40 @@
 
                 {{-- Institution fields (school/university/company only) --}}
                 <div id="inst-fields" class="hidden space-y-5">
+                    {{-- Logo / Foto Profil Institusi --}}
+                    <div>
+                        <label id="label-logo" for="logo" class="block text-[13.5px] font-semibold text-gray-900">
+                            Foto Profil / Logo Institusi
+                            <span class="text-gray-400 font-normal text-[12px]">(Opsional)</span>
+                        </label>
+                        <div class="mt-2.5 flex items-center gap-4 p-3.5 rounded-xl border border-gray-200 bg-gray-50/60">
+                            <div class="relative w-16 h-16 rounded-2xl border-2 border-dashed border-gray-300 bg-white flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                                <img id="logo-preview-img" src="" alt="Preview Logo" class="hidden w-full h-full object-cover">
+                                <div id="logo-placeholder" class="flex flex-col items-center justify-center text-gray-400">
+                                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <label for="logo" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white border border-gray-300 hover:border-blue-500 hover:bg-blue-50/30 text-[13px] font-semibold text-gray-700 hover:text-blue-600 transition cursor-pointer shadow-xs">
+                                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                        </svg>
+                                        <span id="logo-btn-text">Pilih Foto Profil / Logo</span>
+                                        <input id="logo" name="logo" type="file" accept="image/png,image/jpeg,image/jpg,image/webp" class="sr-only">
+                                    </label>
+                                    <button type="button" id="btn-remove-logo" class="hidden px-2 py-1.5 text-[12px] font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition">
+                                        Hapus
+                                    </button>
+                                </div>
+                                <p class="text-[11.5px] text-gray-500 mt-1.5">Format JPG, PNG, WEBP (maks. 5MB). Langsung sinkron ke profil & logo institusi.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         <label for="org_contact" class="block text-[13.5px] font-semibold text-gray-900">Contact Person &nbsp;<span class="text-gray-400 font-normal">(nama penanggung jawab)</span></label>
                         <div class="relative mt-2">
@@ -250,6 +284,17 @@
                         el.required = isInst;
                     }
                 });
+
+                var logoLabelEl = document.getElementById('label-logo');
+                var logoBtnTextEl = document.getElementById('logo-btn-text');
+                if (logoLabelEl && logoBtnTextEl) {
+                    var roleLogoTitle = 'Foto Profil / Logo Institusi';
+                    if (role === 'company') roleLogoTitle = 'Logo Perusahaan';
+                    else if (role === 'university') roleLogoTitle = 'Logo Perguruan Tinggi / Kampus';
+                    else if (role === 'school') roleLogoTitle = 'Logo Sekolah / SMK';
+                    logoLabelEl.innerHTML = roleLogoTitle + ' <span class="text-gray-400 font-normal text-[12px]">(Opsional)</span>';
+                    logoBtnTextEl.textContent = 'Pilih ' + roleLogoTitle;
+                }
             }
 
             // Check if we should show step-form (on page load after failed submission)
@@ -373,6 +418,38 @@
                     el.addEventListener('input', updateBtn);
                 }
             });
+
+            // Logo preview and remove handler
+            var logoInput = document.getElementById('logo');
+            var logoPreviewImg = document.getElementById('logo-preview-img');
+            var logoPlaceholder = document.getElementById('logo-placeholder');
+            var btnRemoveLogo = document.getElementById('btn-remove-logo');
+
+            if (logoInput) {
+                logoInput.addEventListener('change', function(e) {
+                    var file = e.target.files && e.target.files[0];
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function(evt) {
+                            logoPreviewImg.src = evt.target.result;
+                            logoPreviewImg.classList.remove('hidden');
+                            logoPlaceholder.classList.add('hidden');
+                            btnRemoveLogo.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                if (btnRemoveLogo) {
+                    btnRemoveLogo.addEventListener('click', function() {
+                        logoInput.value = '';
+                        logoPreviewImg.src = '';
+                        logoPreviewImg.classList.add('hidden');
+                        logoPlaceholder.classList.remove('hidden');
+                        btnRemoveLogo.classList.add('hidden');
+                    });
+                }
+            }
 
             // Handle form submission with error handling
             document.getElementById('register-form').addEventListener('submit', function(e) {

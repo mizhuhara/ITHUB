@@ -7,12 +7,14 @@ use App\Models\School;
 use App\Models\University;
 use App\Models\User;
 use App\Notifications\InstitutionVerificationNotification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -28,7 +30,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function register(Request $request): RedirectResponse
+    public function register(Request $request): RedirectResponse|JsonResponse
     {
         $role = $request->input('role');
         $institutionRoles = ['school', 'university', 'company'];
@@ -45,6 +47,7 @@ class AuthController extends Controller
             $rules['org_phone'] = ['required', 'string', 'max:30', 'unique:users,org_phone'];
             $rules['org_address'] = ['required', 'string'];
             $rules['org_doc'] = ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'];
+            $rules['logo'] = ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'];
         }
 
         $data = $request->validate($rules);
@@ -54,10 +57,26 @@ class AuthController extends Controller
             $orgDocPath = $request->file('org_doc')->store('org-docs', 'local');
         }
 
+        $logoPath = null;
+        $logoUrl = null;
+        $logoName = null;
+        if (in_array($role, $institutionRoles, true) && $request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $logoName = $file->getClientOriginalName();
+            $folder = match ($role) {
+                'school' => 'schools/logos',
+                'university' => 'universities/logos',
+                'company' => 'company-logos',
+                default => 'avatars',
+            };
+            $logoPath = $file->store($folder, 'public');
+            $logoUrl = Storage::url($logoPath);
+        }
+
         $status = $role === 'user' ? 'active' : 'pending';
         $isInstitution = in_array($role, $institutionRoles, true);
 
-        $user = DB::transaction(function () use ($data, $role, $status, $orgDocPath, $isInstitution) {
+        $user = DB::transaction(function () use ($data, $role, $status, $orgDocPath, $logoPath, $logoUrl, $logoName, $isInstitution) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -65,6 +84,7 @@ class AuthController extends Controller
                 'role' => $role,
                 'status' => $status,
                 'email_verified_at' => $role === 'user' ? now() : null,
+                'avatar' => $logoPath,
                 'org_contact' => $data['org_contact'] ?? null,
                 'org_phone' => $data['org_phone'] ?? null,
                 'org_address' => $data['org_address'] ?? null,
@@ -90,15 +110,24 @@ class AuthController extends Controller
                     'email' => $data['email'],
                     'phone' => $data['org_phone'] ?? null,
                     'address' => $data['org_address'] ?? null,
+                    'logo_url' => $logoUrl,
+                    'logo_name' => $logoName,
+                    'logo_text' => mb_substr($data['name'], 0, 8),
                     'status' => 'Pending',
                 ]);
             } elseif ($role === 'university') {
+                $words = explode(' ', $data['name']);
+                $logoText = mb_strtoupper(implode('', array_map(fn ($w) => mb_substr($w, 0, 1), array_slice($words, 0, 4))));
                 University::create([
                     'user_id' => $user->id,
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'phone' => $data['org_phone'] ?? null,
                     'address' => $data['org_address'] ?? null,
+                    'logo_url' => $logoUrl,
+                    'logo_name' => $logoName,
+                    'logo_text' => $logoText ?: 'UNIV',
+                    'logo_bg' => 'bg-blue-700',
                     'status' => 'Pending',
                 ]);
             } elseif ($role === 'company') {
@@ -108,6 +137,8 @@ class AuthController extends Controller
                     'email' => $data['email'],
                     'phone' => $data['org_phone'] ?? null,
                     'address' => $data['org_address'] ?? null,
+                    'logo_url' => $logoUrl,
+                    'logo_name' => $logoName,
                     'status' => 'Pending',
                 ]);
             }
@@ -127,6 +158,21 @@ class AuthController extends Controller
             }
         }
 
+        if ($request->wantsJson()) {
+            $redirectUrl = $role === 'user' ? $this->redirectFor($user) : route('register.success', ['user_id' => $user->id]);
+
+            if ($role === 'user') {
+                Auth::login($user);
+                $request->session()->regenerate();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pendaftaran berhasil.',
+                'redirect' => $redirectUrl,
+            ]);
+        }
+
         if ($role === 'user') {
             Auth::login($user);
             $request->session()->regenerate();
@@ -141,7 +187,7 @@ class AuthController extends Controller
 
     public function registerSuccess(Request $request): View
     {
-        $userId = $request->session()->get('user_id');
+        $userId = $request->session()->get('user_id') ?? $request->route('user_id');
         $user = null;
 
         if ($userId) {

@@ -53,6 +53,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAvatarUrlAttribute(): ?string
     {
         if (! $this->avatar) {
+            $instLogo = $this->school?->logo_url ?? $this->university?->logo_url ?? $this->company?->logo_url;
+            if ($instLogo) {
+                if (str_starts_with($instLogo, 'http://') || str_starts_with($instLogo, 'https://')) {
+                    return $instLogo;
+                }
+
+                return asset(ltrim($instLogo, '/'));
+            }
+
             return null;
         }
 
@@ -60,7 +69,11 @@ class User extends Authenticatable implements MustVerifyEmail
             return $this->avatar;
         }
 
-        return asset('storage/'.$this->avatar);
+        if (str_starts_with($this->avatar, '/storage/')) {
+            return asset(ltrim($this->avatar, '/'));
+        }
+
+        return asset('storage/'.ltrim($this->avatar, '/'));
     }
 
     public function getCvUrlAttribute(): ?string
