@@ -13,7 +13,7 @@ class School extends Model
         'address', 'latitude', 'longitude', 'map_link', 'status', 'logo_url', 'logo_name',
         'logo_text', 'logo_bg', 'email', 'website', 'phone', 'description', 'gallery',
         'tags', 'competencies', 'total_students', 'industry_partners', 'placement_rate',
-        'modern_labs', 'founded', 'accreditation',
+        'modern_labs', 'founded', 'accreditation', 'views',
     ];
 
     protected function casts(): array
@@ -22,6 +22,7 @@ class School extends Model
             'tags' => 'array',
             'gallery' => 'array',
             'competencies' => 'array',
+            'views' => 'integer',
         ];
     }
 

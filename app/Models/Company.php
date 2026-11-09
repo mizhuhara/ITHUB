@@ -40,6 +40,7 @@ class Company extends Model
         'latitude',
         'longitude',
         'map_link',
+        'views',
     ];
 
     protected $casts = [
@@ -51,6 +52,7 @@ class Company extends Model
         'founded' => 'integer',
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
+        'views' => 'integer',
     ];
 
     public function user(): BelongsTo

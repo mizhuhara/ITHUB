@@ -83,79 +83,90 @@
                  data-id="{{ $company['id'] }}">
 
                 <div>
-                    <div class="flex items-start gap-3.5 mb-4">
-                        {{-- Logo Box --}}
-                        @if(!empty($company['logo_image']))
-                            <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200 shadow-xs p-0.5 bg-white">
-                                <img src="{{ $company['logo_image'] }}" alt="{{ $company['name'] }}" class="w-full h-full object-cover rounded-lg">
-                            </div>
-                        @else
-                            @if($company['badge_class'] == 'software')
-                                <div class="w-12 h-12 rounded-lg border border-blue-100 bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                            @elseif($company['badge_class'] == 'creative')
-                                <div class="w-12 h-12 rounded-lg border border-emerald-100 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                            {{-- Logo Box --}}
+                            @if(!empty($company['logo_image']))
+                                <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200 shadow-xs p-0.5 bg-white">
+                                    <img src="{{ $company['logo_image'] }}" alt="{{ $company['name'] }}" class="w-full h-full object-cover rounded-lg">
+                                </div>
                             @else
-                                <div class="w-12 h-12 rounded-lg border border-rose-100 bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                            @endif
-                                @if($company['icon_type'] == 'code' || $company['icon_type'] == 'cpu' || $company['icon_type'] == 'cloud' || $company['icon_type'] == 'terminal')
-                                    {{-- Code / Software Icon --}}
-                                    <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="16 18 22 12 16 6"></polyline>
-                                        <polyline points="8 6 2 12 8 18"></polyline>
-                                    </svg>
-                                @elseif($company['icon_type'] == 'palette' || $company['icon_type'] == 'magic' || $company['icon_type'] == 'layers' || $company['icon_type'] == 'camera')
-                                    {{-- Creative / Palette Icon --}}
-                                    <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                    </svg>
-                                @elseif($company['icon_type'] == 'building')
-                                    {{-- Building / Office Icon --}}
-                                    <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-                                        <line x1="9" y1="6" x2="9" y2="6.01"></line>
-                                        <line x1="15" y1="6" x2="15" y2="6.01"></line>
-                                    </svg>
-                                @elseif($company['icon_type'] == 'credit-card')
-                                    {{-- Credit Card / Fintech Icon --}}
-                                    <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                        <line x1="1" y1="10" x2="23" y2="10"></line>
-                                    </svg>
-                                @elseif($company['icon_type'] == 'sparkles')
-                                    {{-- Sparkles AI Icon --}}
-                                    <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
-                                    </svg>
+                                @if($company['badge_class'] == 'software')
+                                    <div class="w-12 h-12 rounded-lg border border-blue-100 bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                @elseif($company['badge_class'] == 'creative')
+                                    <div class="w-12 h-12 rounded-lg border border-emerald-100 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                                 @else
-                                    {{-- Rocket / Startup Icon --}}
-                                    <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71.79-1.81.79-1.81l-1.98-1.98s-1.1.08-1.81.79z"></path>
-                                        <path d="M15 9l-6 6"></path>
-                                        <path d="M16.5 4.5c1.5-1.26 5-2 5-2s-.5 3.74-2 5c-.71.71-1.81.79-1.81.79l-1.98-1.98s.08-1.1.79-1.81z"></path>
-                                    </svg>
+                                    <div class="w-12 h-12 rounded-lg border border-rose-100 bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                                @endif
+                                    @if($company['icon_type'] == 'code' || $company['icon_type'] == 'cpu' || $company['icon_type'] == 'cloud' || $company['icon_type'] == 'terminal')
+                                        {{-- Code / Software Icon --}}
+                                        <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="16 18 22 12 16 6"></polyline>
+                                            <polyline points="8 6 2 12 8 18"></polyline>
+                                        </svg>
+                                    @elseif($company['icon_type'] == 'palette' || $company['icon_type'] == 'magic' || $company['icon_type'] == 'layers' || $company['icon_type'] == 'camera')
+                                        {{-- Creative / Palette Icon --}}
+                                        <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                    @elseif($company['icon_type'] == 'building')
+                                        {{-- Building / Office Icon --}}
+                                        <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                                            <line x1="9" y1="6" x2="9" y2="6.01"></line>
+                                            <line x1="15" y1="6" x2="15" y2="6.01"></line>
+                                        </svg>
+                                    @elseif($company['icon_type'] == 'credit-card')
+                                        {{-- Credit Card / Fintech Icon --}}
+                                        <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                                        </svg>
+                                    @elseif($company['icon_type'] == 'sparkles')
+                                        {{-- Sparkles AI Icon --}}
+                                        <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+                                        </svg>
+                                    @else
+                                        {{-- Rocket / Startup Icon --}}
+                                        <svg class="w-6 h-6 stroke-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71.79-1.81.79-1.81l-1.98-1.98s-1.1.08-1.81.79z"></path>
+                                            <path d="M15 9l-6 6"></path>
+                                            <path d="M16.5 4.5c1.5-1.26 5-2 5-2s-.5 3.74-2 5c-.71.71-1.81.79-1.81.79l-1.98-1.98s.08-1.1.79-1.81z"></path>
+                                        </svg>
+                                    @endif
+                                </div>
+                            @endif
+
+                            {{-- Company Title & Badge --}}
+                            <div class="min-w-0 flex-1">
+                                <h3 class="font-bold text-base text-slate-900 leading-snug truncate mb-1">
+                                    {{ $company['name'] }}
+                                </h3>
+                                @if($company['badge_class'] == 'software')
+                                    <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                                        {{ $company['category'] }}
+                                    </span>
+                                @elseif($company['badge_class'] == 'creative')
+                                    <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
+                                        {{ $company['category'] }}
+                                    </span>
+                                @else
+                                    <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-600">
+                                        {{ $company['category'] }}
+                                    </span>
                                 @endif
                             </div>
-                        @endif
-
-                        {{-- Company Title & Badge --}}
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-bold text-base text-slate-900 leading-snug truncate mb-1">
-                                {{ $company['name'] }}
-                            </h3>
-                            @if($company['badge_class'] == 'software')
-                                <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
-                                    {{ $company['category'] }}
-                                </span>
-                            @elseif($company['badge_class'] == 'creative')
-                                <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
-                                    {{ $company['category'] }}
-                                </span>
-                            @else
-                                <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-600">
-                                    {{ $company['category'] }}
-                                </span>
-                            @endif
                         </div>
+
+                        {{-- Views Count Indicator with Eye Icon --}}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold shrink-0 border border-slate-200/80 shadow-2xs" title="{{ number_format($company['views']) }} orang melihat">
+                            <svg class="w-3.5 h-3.5 text-slate-400 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <span>{{ number_format($company['views']) }}</span>
+                        </span>
                     </div>
 
                     {{-- Description Excerpt --}}

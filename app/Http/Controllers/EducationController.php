@@ -32,6 +32,12 @@ class EducationController extends Controller
             })
             ->firstOrFail();
 
+        $sessionKey = 'viewed_school_'.$school->id;
+        if (! session()->has($sessionKey)) {
+            $school->increment('views');
+            session()->put($sessionKey, true);
+        }
+
         return view('education.show', [
             'school' => $this->mapSchool($school),
         ]);
@@ -60,6 +66,7 @@ class EducationController extends Controller
             'id' => $school->npsn ?: (string) $school->id,
             'name' => $school->name,
             'verified' => $school->status === 'Active',
+            'views' => (int) ($school->views ?? 0),
             'category_badge' => $school->institution_type ?: 'Sekolah Menengah Kejuruan',
             'location' => $school->location ?: trim("{$school->city}, {$school->province}", ', '),
             'location_full' => $school->address ?: trim("{$school->location}, Indonesia", ', '),

@@ -43,6 +43,7 @@ class University extends Model
         'total_faculties',
         'accreditation',
         'founded',
+        'views',
     ];
 
     public function user(): BelongsTo
@@ -83,6 +84,7 @@ class University extends Model
             'total_students' => 'integer',
             'total_faculties' => 'integer',
             'founded' => 'integer',
+            'views' => 'integer',
         ];
     }
 }

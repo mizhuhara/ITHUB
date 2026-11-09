@@ -116,6 +116,15 @@
                     <div class="relative h-48 w-full bg-slate-100 overflow-hidden">
                         <img src="{{ $campus['image'] }}" alt="{{ $campus['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         
+                        {{-- Views Badge (Top Right) --}}
+                        <div class="absolute top-3 right-3 bg-slate-900/60 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm text-white z-10" title="{{ number_format($campus['views']) }} orang melihat">
+                            <svg class="w-3.5 h-3.5 text-slate-200 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                            <span class="text-[11px] font-bold tracking-tight">{{ number_format($campus['views']) }}</span>
+                        </div>
+
                         {{-- Logo Box --}}
                         <div class="absolute bottom-3 left-4 w-12 h-12 rounded-xl bg-white border border-slate-200/80 shadow-md p-0.5 flex items-center justify-center overflow-hidden">
                             @if(!empty($campus['logo_url']))
@@ -170,7 +179,7 @@
 
                 {{-- Bottom Row --}}
                 <div class="px-5 pb-5 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <div>
+                    <div class="flex items-center gap-2">
                         @if($campus['status_badge_type'] == 'green')
                             <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
                                 {{ $campus['status_badge'] }}
@@ -187,7 +196,7 @@
                     </div>
 
                     <a href="{{ route('campus.show', $campus['id']) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
-                        View Profile
+                        Lihat Profil
                     </a>
                 </div>
             </div>
