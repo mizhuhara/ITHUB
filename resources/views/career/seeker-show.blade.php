@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $seeker->name . ' — ' . $seeker->job_title . ' · IndoTech')
+@section('title', $seeker->name . ' — ' . $seeker->job_title . ' · ITHub')
 
 @section('content')
 <style>
@@ -335,7 +335,7 @@
 <div class="sks-wrap">
     {{-- breadcrumb --}}
     <nav class="sks-breadcrumb" aria-label="Breadcrumb">
-        <a href="{{ route('career.index', ['type' => 'kerja']) }}">&#8592; Kembali ke Siap Kerja</a>
+        <a href="{{ route('career.index', ['type' => 'kerja']) }}">&#8592; Kembali ke Job Seeker</a>
         <span>/</span>
         <span>Pencari Kerja</span>
         <span>/</span>
@@ -363,7 +363,7 @@
                     <h2 class="sks-name" style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;">
                         <span>{{ $seeker->name }}</span>
                         @if($seeker->user)
-                            <span title="Akun Terverifikasi IndoTech" style="display:inline-flex;align-items:center;color:#60a5fa;font-size:11px;font-weight:600;background:rgba(255,255,255,0.15);padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,0.25);">
+                            <span title="Akun Terverifikasi ITHub" style="display:inline-flex;align-items:center;color:#60a5fa;font-size:11px;font-weight:600;background:rgba(255,255,255,0.15);padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,0.25);">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-right:3px"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" /></svg>
                                 Terverifikasi
                             </span>
@@ -410,13 +410,13 @@
                     <div style="font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;">Hubungi Kandidat</div>
                     <div class="sks-contact-btns">
                         @if($cleanPhone)
-                            <a href="https://wa.me/{{ $cleanPhone }}?text={{ rawurlencode('Halo ' . $seeker->name . ', kami melihat profil Anda di IndoTech untuk posisi ' . $seeker->job_title . '.') }}"
+                            <a href="https://wa.me/{{ $cleanPhone }}?text={{ rawurlencode('Halo ' . $seeker->name . ', kami melihat profil Anda di ITHub untuk posisi ' . $seeker->job_title . '.') }}"
                                target="_blank" rel="noopener" class="sks-btn-wa">
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.696c1.02.582 1.83.896 2.806.897l.004-.002c3.182 0 5.768-2.587 5.768-5.766.001-3.182-2.585-5.77-5.772-5.772zm3.374 8.243c-.145.409-.837.77-1.164.819-.327.049-.757.067-1.229-.083-.346-.11-1.398-.517-2.404-1.413-1.304-1.16-1.92-2.316-2.065-2.562-.145-.246-.016-.379.107-.502.11-.11.246-.287.369-.431.123-.145.164-.246.246-.41.082-.164.041-.308-.021-.431-.061-.123-.553-1.332-.758-1.825-.199-.48-.401-.415-.553-.423l-.472-.008c-.164 0-.431.061-.656.308-.225.246-.861.841-.861 2.05s.881 2.378 1.004 2.542c.123.164 1.733 2.647 4.2 3.712.587.254 1.045.405 1.402.519.589.187 1.125.161 1.549.097.473-.071 1.455-.594 1.66-1.168.205-.574.205-1.066.144-1.168-.061-.103-.225-.164-.471-.287z"/></svg>
                                 Hubungi via WhatsApp
                             </a>
                         @endif
-                        <a href="mailto:{{ $seeker->email }}?subject={{ rawurlencode('Tawaran Pekerjaan: ' . $seeker->job_title . ' — IndoTech') }}"
+                        <a href="mailto:{{ $seeker->email }}?subject={{ rawurlencode('Tawaran Pekerjaan: ' . $seeker->job_title . ' — ITHub') }}"
                            class="sks-btn-mail">
                             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
                             Kirim Email
@@ -504,7 +504,7 @@
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;">
                     @if($cleanPhone)
-                        <a href="https://wa.me/{{ $cleanPhone }}?text={{ rawurlencode('Halo ' . $seeker->name . ', kami dari [Nama Perusahaan] tertarik dengan profil Anda di IndoTech untuk posisi ' . $seeker->job_title . '.') }}"
+                        <a href="https://wa.me/{{ $cleanPhone }}?text={{ rawurlencode('Halo ' . $seeker->name . ', kami dari [Nama Perusahaan] tertarik dengan profil Anda di ITHub untuk posisi ' . $seeker->job_title . '.') }}"
                            target="_blank" rel="noopener"
                            style="display:inline-flex;align-items:center;gap:6px;background:#16a34a;color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">
                             WhatsApp
@@ -520,7 +520,7 @@
             <div style="margin-top:28px;padding-top:20px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
                 <a href="{{ route('career.index', ['type' => 'kerja']) }}"
                    style="font-size:13.5px;font-weight:600;color:#64748b;text-decoration:none;">
-                    &#8592; Kembali ke Direktori Siap Kerja
+                    &#8592; Kembali ke Direktori Job Seeker
                 </a>
             </div>
         </main>

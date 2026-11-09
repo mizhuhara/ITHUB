@@ -2,7 +2,7 @@
     <div id="it-navbar-inner">
 
         {{-- Logo --}}
-        <a href="/" id="it-logo">Indo<span>Tech</span></a>
+        <a href="/" id="it-logo" class="notranslate" translate="no">IT<span>Hub</span></a>
 
         {{-- Desktop Nav --}}
         <nav id="it-nav">
@@ -21,7 +21,7 @@
         {{-- Actions --}}
         <div id="it-actions">
             {{-- Custom Language Selector (Dropdown with Flag & 10 Languages) --}}
-            <div class="it-lang-menu-wrap" id="it-lang-dropdown-wrap">
+            <div class="it-lang-menu-wrap notranslate" id="it-lang-dropdown-wrap" translate="no">
                 <button type="button" id="it-lang-btn" class="it-lang-btn" aria-haspopup="true" aria-expanded="false" title="Pilih Bahasa">
                     <span id="it-lang-btn-flag" class="it-lang-btn-flag">
                         <svg class="it-flag-svg" viewBox="0 0 24 16">
@@ -365,7 +365,7 @@
                         @else
                             <span class="it-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                         @endif
-                        <span class="it-user-name">{{ Auth::user()->name }}</span>
+                        <span class="it-user-name notranslate" translate="no">{{ Auth::user()->name }}</span>
                         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                     <div id="it-user-menu" class="it-user-menu" hidden>
@@ -401,8 +401,8 @@
                     </div>
                 </div>
             @else
-                <a href="/login" class="it-btn-signin">Masuk</a>
-                <a href="/register" class="it-btn-signup">Daftar</a>
+                <a href="/login" class="it-btn-signin notranslate" id="it-nav-signin" translate="no">Masuk</a>
+                <a href="/register" class="it-btn-signup notranslate" id="it-nav-signup" translate="no">Daftar</a>
             @endauth
 
             <button id="it-mobile-toggle" aria-label="Menu" aria-controls="it-mobile-menu" aria-expanded="false">
@@ -424,7 +424,7 @@
                     <span class="it-avatar" style="width:36px;height:36px;font-size:14px;">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                 @endif
                 <div class="it-mobile-user-info">
-                    <div class="it-mobile-user-name">{{ Auth::user()->name }}</div>
+                    <div class="it-mobile-user-name notranslate" translate="no">{{ Auth::user()->name }}</div>
                     <span class="it-user-role" style="font-size:11px;padding:2px 8px;">
                         {{ $roleLabels[$roleKey] ?? ucfirst(str_replace(['-', '_'], ' ', $roleKey)) }}
                     </span>
@@ -493,8 +493,8 @@
                     <button type="submit" class="it-mbtn-logout">Keluar</button>
                 </form>
             @else
-                <a href="/login" class="it-mbtn-signin">Masuk</a>
-                <a href="/register" class="it-mbtn-signup">Daftar</a>
+                <a href="/login" class="it-mbtn-signin notranslate" id="it-mnav-signin" translate="no">Masuk</a>
+                <a href="/register" class="it-mbtn-signup notranslate" id="it-mnav-signup" translate="no">Daftar</a>
             @endauth
         </div>
     </div>

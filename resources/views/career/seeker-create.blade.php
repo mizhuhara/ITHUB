@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Daftarkan Diri — Siap Kerja · IndoTech')
+@section('title', 'Daftarkan Diri — Job Seeker · ITHub')
 
 @section('content')
 <style>
@@ -229,7 +229,7 @@
 <div class="skc-wrap">
     {{-- breadcrumb --}}
     <nav class="skc-breadcrumb" aria-label="Breadcrumb">
-        <a href="{{ route('career.index', ['type' => 'kerja']) }}">&#8592; Kembali ke Siap Kerja</a>
+        <a href="{{ route('career.index', ['type' => 'kerja']) }}">&#8592; Kembali ke Job Seeker</a>
         <span>/</span>
         <span>Pencari Kerja</span>
         <span>/</span>
@@ -241,8 +241,8 @@
         <aside>
             <div class="skc-sidebar-card">
                 <div class="skc-sidebar-banner">
-                    <h2>Direktori Siap Kerja</h2>
-                    <p>Buka peluang karir impianmu bersama ratusan mitra industri teknologi di IndoTech.</p>
+                    <h2>Direktori Job Seeker</h2>
+                    <p>Buka peluang karir impianmu bersama ratusan mitra industri teknologi di ITHub.</p>
                 </div>
                 <div class="skc-sidebar-body">
                     <ul class="skc-benefit-list">
@@ -307,7 +307,7 @@
                             @endif
                             <div style="flex:1;">
                                 <input id="photo" name="photo" type="file" class="skc-input" accept="image/png,image/jpeg,image/jpg,image/webp" style="padding:8px 12px;height:auto;">
-                                <p class="skc-hint">Format: JPG, JPEG, PNG, WEBP (Maksimal 2MB). @if(auth()->check() && auth()->user()->avatar_url) Biarkan kosong jika ingin otomatis memakai foto profil akun IndoTech Anda. @endif</p>
+                                <p class="skc-hint">Format: JPG, JPEG, PNG, WEBP (Maksimal 2MB). @if(auth()->check() && auth()->user()->avatar_url) Biarkan kosong jika ingin otomatis memakai foto profil akun ITHub Anda. @endif</p>
                             </div>
                         </div>
                     </div>

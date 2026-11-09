@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registrasi Berhasil — IndoTech</title>
+    <title>Registrasi Berhasil — ITHub</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -158,7 +158,7 @@
     </h1>
 
     <p class="text-slate-500 text-sm mb-4">
-        Akun Anda telah terdaftar di IndoTech
+        Akun Anda telah terdaftar di ITHub
     </p>
 
     @if ($user && in_array($user->role, ['school', 'university', 'company']))

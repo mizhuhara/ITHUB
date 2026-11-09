@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Siap Kerja — IndoTech')
+@section('title', 'Job Seeker — ITHub')
 
 @section('content')
 <style>
@@ -507,7 +507,7 @@
     {{-- Hero banner --}}
     <div class="sk-hero">
         <div class="sk-hero-text">
-            <h1>Direktori Pencari Kerja</h1>
+            <h1>Direktori Job Seeker</h1>
             <p>Temukan kandidat berbakat atau daftarkan dirimu agar perusahaan bisa menemukanmu lebih mudah.</p>
         </div>
         <a href="{{ route('career.seeker.create') }}" class="sk-hero-btn" id="btn-daftar-dirimu">
@@ -526,7 +526,7 @@
             <button type="button" class="cr-filter-toggle" id="cr-filter-toggle">Tampilkan Filter</button>
 
             <div class="cr-toolbar">
-                <p class="cr-count"><strong>{{ $seekers->total() }}</strong> pencari kerja tersedia</p>
+                <p class="cr-count"><strong>{{ $seekers->total() }}</strong> job seeker tersedia</p>
                 <form class="cr-search" method="GET" action="{{ route('career.index') }}">
                     <input type="hidden" name="type" value="kerja">
                     @foreach((array) request('experience', []) as $v)
@@ -548,7 +548,7 @@
 
             @if(count($seekers) === 0)
                 <div class="cr-empty">
-                    <h3>Tidak ada pencari kerja yang sesuai</h3>
+                    <h3>Tidak ada job seeker yang sesuai</h3>
                     <p>Hapus filter pencarian atau coba kata kunci lain.</p>
                 </div>
             @else

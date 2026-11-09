@@ -27,7 +27,11 @@
         <span class="cr-tag {{ $tagClass }}">{{ $tagLabel }}</span>
     </div>
 
-    <h3 class="cr-card-title">{{ $job['title'] }}</h3>
+    <h3 class="cr-card-title">
+        <a href="{{ route('career.apply', ['type' => $job['apply_type'], 'id' => $job['id']]) }}" style="color:inherit;text-decoration:none;">
+            {{ $job['title'] }}
+        </a>
+    </h3>
     <p class="cr-card-company">
         {{ $job['company'] }}
         @if(isset($job->user) && $job->user)
@@ -74,7 +78,16 @@
     <p class="cr-desc">{{ $job['description'] }}</p>
 
     <div class="cr-card-bottom">
-        <span class="it-status"><span class="it-status-dot"></span> {{ $job['status'] }}</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span class="it-status"><span class="it-status-dot"></span> {{ $job['status'] }}</span>
+            <span class="cr-views" title="{{ number_format($job['total_views'] ?? 0) }} kali dilihat" style="display:inline-flex;align-items:center;gap:4.5px;font-size:11.5px;color:#64748b;font-weight:600;">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color:#94a3b8;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                </svg>
+                <span>{{ number_format($job['total_views'] ?? 0) }}</span>
+            </span>
+        </div>
         <a href="{{ route('career.apply', ['type' => $job['apply_type'], 'id' => $job['id']]) }}"
            class="cr-apply"
            id="apply-btn-{{ $job['id'] }}">

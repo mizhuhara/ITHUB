@@ -606,7 +606,7 @@
                                                         </a>
                                                     </h3>
                                                     <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200/60 shrink-0">
-                                                        Siap Kerja
+                                                        Job Seeker
                                                     </span>
                                                 </div>
 
@@ -632,7 +632,7 @@
                                         <div class="px-5 pb-5 pt-3 border-t border-slate-100 flex items-center justify-between">
                                             <div>
                                                 <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                                    {{ $sk->availability ?: 'Siap Kerja' }}
+                                                    {{ $sk->availability ?: 'Job Seeker' }}
                                                 </span>
                                             </div>
                                             <a href="{{ route('career.seeker.show', $sk->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">

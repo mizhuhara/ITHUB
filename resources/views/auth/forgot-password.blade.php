@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Forgot Password - IndoTech</title>
+    <title>Forgot Password - ITHub</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -23,7 +23,7 @@
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg px-10 py-12">
 
         <div class="text-center">
-            <span class="text-2xl font-extrabold tracking-tight text-slate-900">IndoTech</span>
+            <span class="text-2xl font-extrabold tracking-tight text-slate-900 notranslate" translate="no">IT<span class="text-blue-600">Hub</span></span>
         </div>
 
         <h1 class="mt-8 text-center text-[28px] font-bold text-gray-900">Forgot Password</h1>

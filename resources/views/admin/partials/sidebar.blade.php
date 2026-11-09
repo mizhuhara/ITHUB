@@ -45,9 +45,9 @@
 
     {{-- Header / Brand --}}
     <div class="h-16 px-6 flex items-center justify-between border-b border-slate-200/80 shrink-0">
-        <a href="{{ $dashboardRoute }}" class="group flex items-center gap-2">
-            <span class="text-[21px] font-black text-slate-900 tracking-tight leading-none group-hover:text-brand-600 transition-colors">
-                Indo<span class="text-brand-600">Tech</span>
+        <a href="{{ $dashboardRoute }}" class="group flex items-center gap-2 notranslate" translate="no">
+            <span class="text-[21px] font-black text-slate-900 tracking-tight leading-none group-hover:text-brand-600 transition-colors notranslate" translate="no">
+                IT<span class="text-brand-600">Hub</span>
             </span>
         </a>
         <button type="button" id="admin-sidebar-close" class="lg:hidden p-1.5 -mr-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="Tutup Sidebar">
