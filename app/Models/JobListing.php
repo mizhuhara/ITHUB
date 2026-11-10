@@ -122,6 +122,11 @@ class JobListing extends Model
     public function getCompanyLogoAttribute(): ?string
     {
         if ($this->user_id) {
+            $user = $this->user;
+            if ($user && ! empty($user->avatar_url)) {
+                return $user->avatar_url;
+            }
+
             $company = Company::where('user_id', $this->user_id)->first();
             if ($company && ! empty($company->logo_url)) {
                 $compLogo = $company->logo_url;
@@ -130,6 +135,26 @@ class JobListing extends Model
                 }
 
                 return asset(ltrim($compLogo, '/'));
+            }
+
+            $university = University::where('user_id', $this->user_id)->first();
+            if ($university && ! empty($university->logo_url)) {
+                $univLogo = $university->logo_url;
+                if (str_starts_with($univLogo, 'http://') || str_starts_with($univLogo, 'https://')) {
+                    return $univLogo;
+                }
+
+                return asset(ltrim($univLogo, '/'));
+            }
+
+            $school = School::where('user_id', $this->user_id)->first();
+            if ($school && ! empty($school->logo_url)) {
+                $schLogo = $school->logo_url;
+                if (str_starts_with($schLogo, 'http://') || str_starts_with($schLogo, 'https://')) {
+                    return $schLogo;
+                }
+
+                return asset(ltrim($schLogo, '/'));
             }
         }
 
@@ -142,6 +167,20 @@ class JobListing extends Model
                 }
 
                 return asset(ltrim($compLogo, '/'));
+            }
+
+            $univ = University::where('name', $this->company)->first();
+            if ($univ && ! empty($univ->logo_url)) {
+                $univLogo = $univ->logo_url;
+
+                return str_starts_with($univLogo, 'http') ? $univLogo : asset(ltrim($univLogo, '/'));
+            }
+
+            $sch = School::where('name', $this->company)->first();
+            if ($sch && ! empty($sch->logo_url)) {
+                $schLogo = $sch->logo_url;
+
+                return str_starts_with($schLogo, 'http') ? $schLogo : asset(ltrim($schLogo, '/'));
             }
         }
 
