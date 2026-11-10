@@ -32,11 +32,7 @@ class EducationController extends Controller
             })
             ->firstOrFail();
 
-        $sessionKey = 'viewed_school_'.$school->id;
-        if (! session()->has($sessionKey)) {
-            $school->increment('views');
-            session()->put($sessionKey, true);
-        }
+        $school->increment('views');
 
         return view('education.show', [
             'school' => $this->mapSchool($school),

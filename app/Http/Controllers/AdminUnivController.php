@@ -272,6 +272,7 @@ class AdminUnivController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
             'total_students' => ['nullable', 'integer', 'min:0'],
+            'views' => ['nullable', 'integer', 'min:0', 'max:100000000'],
             'total_faculties' => ['nullable', 'integer', 'min:0'],
             'founded' => ['nullable', 'integer', 'min:1900', 'max:'.date('Y')],
             'description' => ['nullable', 'string'],
@@ -319,6 +320,11 @@ class AdminUnivController extends Controller
             'status' => 'Active',
             'tags' => array_values(array_filter($validated['tags'] ?? [], fn ($t) => ! empty(trim($t)))),
         ];
+
+        // Jumlah views hanya boleh diubah admin — institusi tidak
+        if (in_array($request->user()->role, ['super_admin', 'admin'], true)) {
+            $data['views'] = $validated['views'] ?? $univ->views;
+        }
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
