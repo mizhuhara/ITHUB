@@ -41,6 +41,11 @@
                         });
                 })->where('status', 'pending')->count()
                 : 0);
+        $pendingEventPaymentsCount = \App\Models\EventRegistration::whereHas('event', function ($q) use ($userRole) {
+            if (in_array($userRole, ['school', 'university', 'company'], true)) {
+                $q->where('user_id', auth()->id());
+            }
+        })->where('payment_status', 'pending')->count();
     @endphp
 
     {{-- Header / Brand --}}
@@ -124,8 +129,30 @@
                 [
                     'label' => 'Event',
                     'icon' => 'events',
-                    'active' => request()->routeIs('admin.events.*'),
+                    'active' => request()->routeIs('admin.events.index') || request()->routeIs('admin.events.create') || request()->routeIs('admin.events.show') || request()->routeIs('admin.events.edit'),
                     'href' => route('admin.events.index'),
+                    'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
+                ],
+                [
+                    'label' => 'Konfirmasi Event',
+                    'icon' => 'confirm-event',
+                    'active' => request()->routeIs('admin.events.confirmations'),
+                    'href' => route('admin.events.confirmations'),
+                    'badge' => $pendingEventPaymentsCount,
+                    'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
+                ],
+                [
+                    'label' => 'Penghasilan Event',
+                    'icon' => 'finance',
+                    'active' => request()->routeIs('admin.events.finance'),
+                    'href' => route('admin.events.finance'),
+                    'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
+                ],
+                [
+                    'label' => 'Rekening Pembayaran',
+                    'icon' => 'bank',
+                    'active' => request()->routeIs('admin.events.bank-account'),
+                    'href' => route('admin.events.bank-account'),
                     'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
                 ],
                 [
@@ -278,6 +305,12 @@
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z"/><path stroke-linecap="round" d="M19 8v6m3-3h-6"/></svg>
                         @elseif ($item['icon'] === 'events')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 3v3m8-3v3M4 8h16M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                        @elseif ($item['icon'] === 'confirm-event')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @elseif ($item['icon'] === 'finance')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        @elseif ($item['icon'] === 'bank')
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
                         @elseif ($item['icon'] === 'articles')
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 12h6"/></svg>
                         @elseif ($item['icon'] === 'community')

@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminCommunityApprovalController;
 use App\Http\Controllers\AdminCommunityController;
 use App\Http\Controllers\AdminCompanyController;
 use App\Http\Controllers\AdminEventController;
+use App\Http\Controllers\AdminEventPaymentController;
 use App\Http\Controllers\AdminInternshipController;
 use App\Http\Controllers\AdminJobController;
 use App\Http\Controllers\AdminMembershipController;
@@ -91,6 +92,9 @@ Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show')
 Route::post('/events/{event}/register', [EventController::class, 'register'])
     ->middleware(['auth', 'verified', 'throttle:10,1'])
     ->name('event.register');
+Route::post('/events/{event}/reupload-proof', [EventController::class, 'reuploadProof'])
+    ->middleware(['auth', 'verified', 'throttle:10,1'])
+    ->name('event.reupload-proof');
 Route::delete('/events/{event}/register', [EventController::class, 'cancel'])
     ->middleware(['auth', 'verified', 'throttle:10,1'])
     ->name('event.unregister');
@@ -235,10 +239,19 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
         return redirect()->route('admin.users.index');
     });
 
-    // Admin Event Verification Routes
+    // Admin Event Verification & Management Routes
     Route::get('/admin/events', [AdminEventController::class, 'index'])->name('admin.events.index');
     Route::get('/admin/events/create', [AdminEventController::class, 'create'])->name('admin.events.create');
     Route::post('/admin/events', [AdminEventController::class, 'store'])->name('admin.events.store');
+
+    // Event Payment, Confirmations, Finance & Bank Settings (Must be before {id})
+    Route::get('/admin/events/confirmations', [AdminEventPaymentController::class, 'confirmations'])->name('admin.events.confirmations');
+    Route::post('/admin/events/registrations/{registration}/confirm', [AdminEventPaymentController::class, 'confirm'])->name('admin.events.registrations.confirm');
+    Route::post('/admin/events/registrations/{registration}/reject', [AdminEventPaymentController::class, 'reject'])->name('admin.events.registrations.reject');
+    Route::get('/admin/events/finance', [AdminEventPaymentController::class, 'finance'])->name('admin.events.finance');
+    Route::get('/admin/events/bank-account', [AdminEventPaymentController::class, 'bankAccount'])->name('admin.events.bank-account');
+    Route::post('/admin/events/bank-account', [AdminEventPaymentController::class, 'updateBankAccount'])->name('admin.events.bank-account.update');
+
     Route::get('/admin/events/{id}', [AdminEventController::class, 'show'])->name('admin.events.show');
     Route::get('/admin/events/{id}/edit', [AdminEventController::class, 'edit'])->name('admin.events.edit');
     Route::put('/admin/events/{id}', [AdminEventController::class, 'update'])->name('admin.events.update');

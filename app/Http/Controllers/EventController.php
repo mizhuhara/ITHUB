@@ -6,6 +6,7 @@ use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -89,12 +90,16 @@ class EventController extends Controller
 
         $event->loadLearningAndSpeakers();
 
-        $registeredCount = $event->registrations()->count();
+        $registeredCount = $event->registrations()
+            ->whereIn('payment_status', ['confirmed', 'free'])
+            ->count();
+
         $registration = $request->user()
             ? $event->registrations()->where('user_id', $request->user()->id)->first()
             : null;
         $isRegistered = $registration !== null;
         $isFull = $event->total_quota > 0 && $registeredCount >= $event->total_quota;
+        $bankAccount = $event->bank_account;
 
         return view('event.show', [
             'event' => $event,
@@ -102,6 +107,7 @@ class EventController extends Controller
             'registration' => $registration,
             'isRegistered' => $isRegistered,
             'isFull' => $isFull,
+            'bankAccount' => $bankAccount,
         ]);
     }
 
@@ -111,13 +117,29 @@ class EventController extends Controller
             abort(404);
         }
 
-        $validated = $request->validate([
+        $isPaid = $event->isPaid();
+
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:30'],
-        ]);
+            'phone' => [$isPaid ? 'required' : 'nullable', 'string', 'max:30'],
+        ];
 
-        $result = DB::transaction(function () use ($event, $request, $validated) {
+        if ($isPaid) {
+            $rules['sender_bank'] = ['nullable', 'string', 'max:100'];
+            $rules['sender_name'] = ['nullable', 'string', 'max:150'];
+            $rules['payment_notes'] = ['nullable', 'string', 'max:500'];
+            $rules['payment_proof'] = ['required', 'file', 'mimes:jpeg,png,jpg,webp,pdf', 'max:2048'];
+        }
+
+        $validated = $request->validate($rules);
+
+        $proofPath = null;
+        if ($isPaid && $request->hasFile('payment_proof')) {
+            $proofPath = Storage::url($request->file('payment_proof')->store('events/payments', 'public'));
+        }
+
+        $result = DB::transaction(function () use ($event, $request, $validated, $isPaid, $proofPath) {
             $lockedEvent = Event::whereKey($event->id)->lockForUpdate()->firstOrFail();
 
             if ($lockedEvent->registrations()->where('user_id', $request->user()->id)->exists()) {
@@ -125,25 +147,70 @@ class EventController extends Controller
             }
 
             if ($lockedEvent->total_quota > 0
-                && $lockedEvent->registrations()->count() >= $lockedEvent->total_quota) {
+                && $lockedEvent->registrations()->whereIn('payment_status', ['confirmed', 'free'])->count() >= $lockedEvent->total_quota) {
                 return 'full';
             }
 
-            $lockedEvent->registrations()->create([
+            $registrationData = [
                 'user_id' => $request->user()->id,
-                ...$validated,
-            ]);
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'amount' => $isPaid ? $lockedEvent->price_numeric : 0,
+                'payment_status' => $isPaid ? 'pending' : 'free',
+                'payment_proof' => $proofPath,
+                'sender_bank' => $validated['sender_bank'] ?? null,
+                'sender_name' => $validated['sender_name'] ?? null,
+                'payment_notes' => $validated['payment_notes'] ?? null,
+                'confirmed_at' => $isPaid ? null : now(),
+            ];
+
+            $lockedEvent->registrations()->create($registrationData);
 
             return 'registered';
         });
 
         if ($result === 'registered') {
+            if ($isPaid) {
+                return back()->with('success', "Pendaftaran dan bukti pembayaran event \"{$event->title}\" berhasil dikirim. Penyelenggara akan segera memverifikasi pembayaran Anda.");
+            }
+
             return back()->with('success', "Pendaftaran event \"{$event->title}\" berhasil.");
         }
 
         return back()->with('error', $result === 'duplicate'
             ? 'Anda sudah terdaftar di event ini.'
             : 'Kuota event sudah penuh.');
+    }
+
+    public function reuploadProof(Request $request, Event $event): RedirectResponse
+    {
+        $registration = $event->registrations()
+            ->where('user_id', $request->user()->id)
+            ->where('payment_status', 'rejected')
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'payment_proof' => ['required', 'file', 'mimes:jpeg,png,jpg,webp,pdf', 'max:2048'],
+            'sender_bank' => ['nullable', 'string', 'max:100'],
+            'sender_name' => ['nullable', 'string', 'max:150'],
+            'payment_notes' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $proofPath = Storage::url($request->file('payment_proof')->store('events/payments', 'public'));
+
+        $registration->update([
+            'payment_proof' => $proofPath,
+            'payment_status' => 'pending',
+            'sender_bank' => $validated['sender_bank'] ?? $registration->sender_bank,
+            'sender_name' => $validated['sender_name'] ?? $registration->sender_name,
+            'payment_notes' => $validated['payment_notes'] ?? $registration->payment_notes,
+            'rejected_at' => null,
+            'rejected_by' => null,
+            'rejection_reason' => null,
+        ]);
+
+        return back()->with('success', 'Bukti pembayaran berhasil diunggah ulang dan sedang menunggu konfirmasi penyelenggara.');
     }
 
     public function cancel(Request $request, Event $event): RedirectResponse

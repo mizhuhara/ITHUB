@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -220,6 +221,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function membershipPayments(): HasMany
     {
         return $this->hasMany(MembershipPayment::class);
+    }
+
+    public function bankAccount(): HasOne
+    {
+        return $this->hasOne(OrganizerBankAccount::class)->where('is_active', true)->latestOfMany();
+    }
+
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(OrganizerBankAccount::class);
     }
 
     /**

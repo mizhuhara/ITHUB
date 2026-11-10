@@ -185,9 +185,9 @@
                         <thead class="bg-slate-50 text-slate-500 uppercase">
                             <tr>
                                 <th class="px-4 py-3 font-extrabold">Nama</th>
-                                <th class="px-4 py-3 font-extrabold">Email</th>
-                                <th class="px-4 py-3 font-extrabold">Telepon</th>
+                                <th class="px-4 py-3 font-extrabold">Email / Telepon</th>
                                 <th class="px-4 py-3 font-extrabold">Tiket</th>
+                                <th class="px-4 py-3 font-extrabold">Pembayaran</th>
                                 <th class="px-4 py-3 font-extrabold">Kehadiran</th>
                                 <th class="px-4 py-3 font-extrabold">Aksi</th>
                             </tr>
@@ -199,9 +199,40 @@
                                         {{ $registration->name }}
                                         <div class="text-[11px] font-normal text-slate-400">{{ $registration->created_at->format('d M Y H:i') }}</div>
                                     </td>
-                                    <td class="px-4 py-3 text-slate-600">{{ $registration->email }}</td>
-                                    <td class="px-4 py-3 text-slate-600">{{ $registration->phone ?: '-' }}</td>
-                                    <td class="px-4 py-3 font-mono text-slate-600">{{ $registration->ticket_code }}</td>
+                                    <td class="px-4 py-3 text-slate-600">
+                                        <div>{{ $registration->email }}</div>
+                                        <div class="text-[11px] text-slate-400">{{ $registration->phone ?: '-' }}</div>
+                                    </td>
+                                    <td class="px-4 py-3 font-mono text-slate-600 font-bold">{{ $registration->ticket_code }}</td>
+                                    <td class="px-4 py-3">
+                                        @if($registration->amount > 0)
+                                            <div class="font-extrabold text-slate-900">Rp {{ number_format($registration->amount, 0, ',', '.') }}</div>
+                                            @if($registration->payment_status === 'pending')
+                                                <span class="inline-flex rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-bold text-amber-700 mt-0.5">
+                                                    Menunggu Verifikasi
+                                                </span>
+                                            @elseif(in_array($registration->payment_status, ['confirmed', 'free']))
+                                                <span class="inline-flex rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 mt-0.5">
+                                                    Lunas
+                                                </span>
+                                            @elseif($registration->payment_status === 'rejected')
+                                                <span class="inline-flex rounded-full bg-red-50 border border-red-200 px-2 py-0.5 text-[10px] font-bold text-red-700 mt-0.5">
+                                                    Ditolak
+                                                </span>
+                                            @endif
+                                            @if($registration->payment_proof)
+                                                <div class="mt-1">
+                                                    <a href="{{ $registration->payment_proof }}" target="_blank" class="text-blue-600 font-bold text-[10.5px] hover:underline">
+                                                        Lihat Bukti &rarr;
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @else
+                                            <span class="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10.5px] font-bold text-slate-600">
+                                                Gratis
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-3">
                                         @if ($registration->checked_in_at)
                                             <span class="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-700">
@@ -214,13 +245,23 @@
                                         @endif
                                     </td>
                                     <td class="px-4 py-3">
-                                        <form action="{{ route('admin.events.registrations.check-in', [$event, $registration]) }}" method="POST" data-async data-async-reload>
-                                            @csrf
-                                            <button type="submit"
-                                                    class="font-semibold {{ $registration->checked_in_at ? 'text-rose-600 hover:underline' : 'text-blue-600 hover:underline' }}">
-                                                {{ $registration->checked_in_at ? 'Batalkan' : 'Check-in' }}
-                                            </button>
-                                        </form>
+                                        <div class="flex items-center gap-2">
+                                            @if($registration->payment_status === 'pending')
+                                                <form action="{{ route('admin.events.registrations.confirm', $registration->id) }}" method="POST" onsubmit="return confirm('Konfirmasi pembayaran peserta?')">
+                                                    @csrf
+                                                    <button type="submit" class="font-bold text-emerald-600 hover:underline">
+                                                        Konfirmasi
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <form action="{{ route('admin.events.registrations.check-in', [$event, $registration]) }}" method="POST" data-async data-async-reload>
+                                                @csrf
+                                                <button type="submit"
+                                                        class="font-semibold {{ $registration->checked_in_at ? 'text-rose-600 hover:underline' : 'text-blue-600 hover:underline' }}">
+                                                    {{ $registration->checked_in_at ? 'Batalkan Hadir' : 'Check-in' }}
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

@@ -200,16 +200,69 @@
 
                         {{-- Price --}}
                         <div class="flex items-start gap-3">
-                            <svg class="w-4 h-4 text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="w-4 h-4 {{ $event->isPaid() ? 'text-emerald-600' : 'text-slate-400' }} mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h10M7 12h10m-7 5h7"/>
                                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                             </svg>
                             <div>
-                                <span class="font-bold text-slate-900 block">Price</span>
-                                <span class="font-bold text-slate-900">{{ $event['price'] }}</span>
+                                <span class="font-bold text-slate-900 block text-xs">Biaya Pendaftaran</span>
+                                <span class="font-extrabold {{ $event->isPaid() ? 'text-emerald-600 text-base' : 'text-slate-900' }}">
+                                    {{ $event->formatted_price }}
+                                </span>
                             </div>
                         </div>
                     </div>
+
+                    {{-- Informasi Rekening Transfer untuk Event Berbayar --}}
+                    @if ($event->isPaid())
+                        @if ($bankAccount)
+                            <div class="rounded-2xl border border-blue-200 bg-blue-50/70 p-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[10px]">
+                                            {{ strtoupper(substr($bankAccount->bank_name, 0, 3)) }}
+                                        </span>
+                                        <span class="font-bold text-xs text-blue-900">Rekening Pembayaran</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                                        {{ $bankAccount->bank_name }}
+                                    </span>
+                                </div>
+
+                                <div class="bg-white rounded-xl p-3 border border-blue-100 flex items-center justify-between shadow-2xs">
+                                    <div>
+                                        <span class="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider block">Nomor Rekening</span>
+                                        <span class="text-sm font-black text-slate-900 font-mono tracking-wider">{{ $bankAccount->account_number }}</span>
+                                    </div>
+                                    <button type="button"
+                                            onclick="navigator.clipboard.writeText('{{ $bankAccount->account_number }}'); this.innerText='Tersalin!'; setTimeout(() => this.innerText='Salin', 2000)"
+                                            class="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg border border-blue-200 transition">
+                                        Salin
+                                    </button>
+                                </div>
+
+                                <div class="text-[11px] text-slate-600 space-y-1">
+                                    <div>Atas Nama: <strong class="text-slate-900">{{ $bankAccount->account_holder }}</strong></div>
+                                    @if($bankAccount->instructions)
+                                        <div class="text-[10.5px] text-slate-500 bg-white/70 p-2.5 rounded-xl border border-blue-100 mt-1">
+                                            {{ $bankAccount->instructions }}
+                                        </div>
+                                    @endif
+                                </div>
+
+                                @if($bankAccount->qr_code_image)
+                                    <div class="pt-2 border-t border-blue-100 text-center">
+                                        <p class="text-[10.5px] font-bold text-slate-600 mb-1.5">Scan QRIS Penyelenggara:</p>
+                                        <img src="{{ $bankAccount->qr_code_image }}" alt="QRIS" class="w-32 h-32 mx-auto rounded-xl object-contain bg-white p-1 border border-slate-200 shadow-xs">
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-3.5 text-xs text-amber-800">
+                                <strong class="font-bold">Info Pembayaran:</strong> Hubungi penyelenggara melalui <strong class="text-amber-900">{{ $event->contact_email }}</strong> untuk rincian transfer tiket sebesar <strong class="text-amber-900">{{ $event->formatted_price }}</strong>.
+                            </div>
+                        @endif
+                    @endif
 
                     {{-- Registration Quota Progress Bar --}}
                     @php
@@ -232,58 +285,162 @@
                     {{-- Registration Action --}}
                     <div>
                         @if ($isRegistered)
-                            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 text-center">
-                                Anda sudah terdaftar di event ini.
-                            </div>
-                            @if ($registration)
-                                <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
-                                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kode Tiket</p>
-                                    <p class="text-lg font-extrabold tracking-widest text-slate-900 mt-1">{{ $registration->ticket_code }}</p>
-                                    <p class="text-xs mt-1 {{ $registration->checked_in_at ? 'text-emerald-600 font-semibold' : 'text-slate-500' }}">
-                                        {{ $registration->checked_in_at
-                                            ? 'Sudah check-in '.$registration->checked_in_at->format('d M Y, H:i')
-                                            : 'Belum check-in' }}
+                            @if ($registration && $registration->payment_status === 'pending')
+                                {{-- Status: Menunggu Konfirmasi Penyelenggara --}}
+                                <div class="rounded-2xl border border-amber-300 bg-amber-50/80 p-4 space-y-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
+                                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        </span>
+                                        <div>
+                                            <h4 class="font-extrabold text-amber-900 text-xs">Menunggu Konfirmasi Pembayaran</h4>
+                                            <p class="text-[11px] text-amber-700">Bukti pembayaran telah terkirim.</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-slate-600 leading-relaxed bg-white/70 p-3 rounded-xl border border-amber-200">
+                                        Tiket resmi dan kode QR Anda akan aktif otomatis setelah pembayaran Anda diverifikasi oleh panitia (<strong>{{ $event->organizer }}</strong>).
                                     </p>
+                                    @if($registration->payment_proof)
+                                        <div class="flex items-center justify-between text-xs pt-1">
+                                            <span class="text-slate-500 text-[11px]">Bukti Transfer:</span>
+                                            <a href="{{ $registration->payment_proof }}" target="_blank" class="font-bold text-blue-600 hover:underline inline-flex items-center gap-1">
+                                                Lihat Bukti &rarr;
+                                            </a>
+                                        </div>
+                                    @endif
+                                    <form action="{{ route('event.unregister', $event['id']) }}" method="POST" onsubmit="return confirm('Batalkan pendaftaran event ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="w-full mt-2 py-2 px-3 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 text-xs font-bold transition">
+                                            Batalkan Pendaftaran
+                                        </button>
+                                    </form>
                                 </div>
+                            @elseif ($registration && $registration->payment_status === 'rejected')
+                                {{-- Status: Ditolak oleh Penyelenggara --}}
+                                <div class="rounded-2xl border border-red-300 bg-red-50 p-4 space-y-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <span class="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0 font-bold text-sm">
+                                            !
+                                        </span>
+                                        <div>
+                                            <h4 class="font-extrabold text-red-900 text-xs">Pembayaran Ditolak</h4>
+                                            <p class="text-[11px] text-red-700">Bukti transfer belum valid.</p>
+                                        </div>
+                                    </div>
+                                    @if($registration->rejection_reason)
+                                        <div class="p-3 rounded-xl bg-white border border-red-200 text-xs text-slate-700">
+                                            <span class="font-bold text-red-600 block text-[10.5px] uppercase">Alasan dari Penyelenggara:</span>
+                                            <p class="mt-0.5">{{ $registration->rejection_reason }}</p>
+                                        </div>
+                                    @endif
+                                    <p class="text-xs text-slate-600">
+                                        Unggah bukti transfer yang valid untuk mengajukan verifikasi kembali:
+                                    </p>
+                                    <form action="{{ route('event.reupload-proof', $event['id']) }}" method="POST" enctype="multipart/form-data" class="space-y-2.5">
+                                        @csrf
+                                        <input type="file" name="payment_proof" required accept="image/jpeg,image/png,image/webp,application/pdf"
+                                               class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                                        <button type="submit" class="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition">
+                                            Kirim Ulang Bukti Pembayaran
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                {{-- Status: Dikonfirmasi / Tiket Aktif --}}
+                                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 text-center">
+                                    {{ $event->isPaid() ? 'Pembayaran Anda telah dikonfirmasi!' : 'Anda sudah terdaftar di event ini.' }}
+                                </div>
+                                @if ($registration)
+                                    <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
+                                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kode Tiket Resmi</p>
+                                        <p class="text-lg font-extrabold tracking-widest text-slate-900 mt-1">{{ $registration->ticket_code }}</p>
+                                        <p class="text-xs mt-1 {{ $registration->checked_in_at ? 'text-emerald-600 font-semibold' : 'text-slate-500' }}">
+                                            {{ $registration->checked_in_at
+                                                ? 'Sudah check-in '.$registration->checked_in_at->format('d M Y, H:i')
+                                                : 'Belum check-in' }}
+                                        </p>
+                                    </div>
+                                @endif
+                                <form action="{{ route('event.unregister', $event['id']) }}" method="POST" class="mt-3"
+                                      onsubmit="return confirm('Batalkan pendaftaran event ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="w-full border border-red-200 bg-white text-red-600 hover:bg-red-50 font-semibold py-2.5 px-4 rounded-xl text-sm transition">
+                                        Batalkan Pendaftaran
+                                    </button>
+                                </form>
                             @endif
-                            <form data-async data-async-reload action="{{ route('event.unregister', $event['id']) }}" method="POST" class="mt-3"
-                                  onsubmit="return confirm('Batalkan pendaftaran event ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        class="w-full border border-red-200 bg-white text-red-600 hover:bg-red-50 font-semibold py-2.5 px-4 rounded-xl text-sm transition">
-                                    Batalkan Pendaftaran
-                                </button>
-                            </form>
                         @elseif ($isFull)
                             <button type="button" disabled
                                     class="w-full bg-slate-300 text-slate-600 font-bold py-3 px-4 rounded-xl text-sm cursor-not-allowed">
                                 Event Full
                             </button>
                         @elseif (auth()->check())
-                            <form data-async data-async-reload action="{{ route('event.register', $event['id']) }}" method="POST" class="space-y-3">
+                            <form action="{{ route('event.register', $event['id']) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
                                 @csrf
                                 <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap</label>
                                     <input name="name" type="text" required value="{{ old('name', auth()->user()->name) }}"
-                                           placeholder="Nama lengkap"
+                                           placeholder="Nama lengkap peserta"
                                            class="w-full h-11 px-4 rounded-xl border border-slate-300 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                                     @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
                                     <input name="email" type="email" required value="{{ old('email', auth()->user()->email) }}"
-                                           placeholder="Email"
+                                           placeholder="Alamat email aktif"
                                            class="w-full h-11 px-4 rounded-xl border border-slate-300 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                                     @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
-                                    <input name="phone" type="text" value="{{ old('phone', auth()->user()->org_phone) }}"
-                                           placeholder="Nomor telepon (opsional)"
+                                    <label class="block text-xs font-bold text-slate-700 mb-1">
+                                        Nomor WhatsApp / Telepon {{ $event->isPaid() ? '*' : '(opsional)' }}
+                                    </label>
+                                    <input name="phone" type="text" {{ $event->isPaid() ? 'required' : '' }} value="{{ old('phone', auth()->user()->org_phone) }}"
+                                           placeholder="Nomor telepon aktif"
                                            class="w-full h-11 px-4 rounded-xl border border-slate-300 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                                     @error('phone') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                                 </div>
+
+                                {{-- Field Tambahan untuk Event Berbayar --}}
+                                @if ($event->isPaid())
+                                    <div class="p-3.5 rounded-2xl bg-slate-100/80 border border-slate-200/80 space-y-3">
+                                        <div class="text-xs font-extrabold text-slate-800 flex items-center justify-between">
+                                            <span>Rincian Transfer Pembayaran</span>
+                                            <span class="text-emerald-600">{{ $event->formatted_price }}</span>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Bank Pengirim (Opsional)</label>
+                                            <input name="sender_bank" type="text" value="{{ old('sender_bank') }}"
+                                                   placeholder="Contoh: BCA / Mandiri / BRI / DANA"
+                                                   class="w-full h-9 px-3 rounded-lg border border-slate-300 text-xs bg-white outline-none focus:border-blue-500">
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Pemilik Rekening Pengirim (Opsional)</label>
+                                            <input name="sender_name" type="text" value="{{ old('sender_name') }}"
+                                                   placeholder="Nama di rekening Anda"
+                                                   class="w-full h-9 px-3 rounded-lg border border-slate-300 text-xs bg-white outline-none focus:border-blue-500">
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-800 mb-1">
+                                                Unggah Bukti Transfer <span class="text-red-500">*</span>
+                                            </label>
+                                            <input name="payment_proof" type="file" required accept="image/jpeg,image/png,image/webp,application/pdf"
+                                                   class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                                            <p class="text-[10.5px] text-slate-500 mt-1">Format: JPG, PNG, WEBP, atau PDF (Maks. 2 MB)</p>
+                                            @error('payment_proof') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <button type="submit"
                                         class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-sm">
-                                    Register for Event
+                                    {{ $event->isPaid() ? 'Daftar & Kirim Bukti Pembayaran' : 'Register for Event' }}
                                 </button>
                             </form>
                         @else

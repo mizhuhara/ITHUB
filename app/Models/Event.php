@@ -68,6 +68,56 @@ class Event extends Model
     }
 
     /**
+     * Check if the event is a paid event.
+     */
+    public function isPaid(): bool
+    {
+        $clean = strtolower(trim((string) $this->price));
+        if ($clean === '' || $clean === 'free' || $clean === 'gratis' || $clean === '0') {
+            return false;
+        }
+
+        $numeric = (int) preg_replace('/[^\d]/', '', $clean);
+
+        return $numeric > 0;
+    }
+
+    /**
+     * Get numeric price (e.g. 50000).
+     */
+    public function getPriceNumericAttribute(): int
+    {
+        return (int) preg_replace('/[^\d]/', '', (string) $this->price);
+    }
+
+    /**
+     * Get clean formatted price string (e.g. 'Rp 50.000' or 'Gratis').
+     */
+    public function getFormattedPriceAttribute(): string
+    {
+        if (! $this->isPaid()) {
+            return 'Gratis';
+        }
+
+        return 'Rp '.number_format($this->price_numeric, 0, ',', '.');
+    }
+
+    /**
+     * Retrieve the organizer's active bank account.
+     */
+    public function getBankAccountAttribute(): ?OrganizerBankAccount
+    {
+        if ($this->user_id) {
+            return OrganizerBankAccount::where('user_id', $this->user_id)
+                ->where('is_active', true)
+                ->latest()
+                ->first();
+        }
+
+        return null;
+    }
+
+    /**
      * Computed quota filled (alias for the 'quota' column value).
      */
     public function getQuotaAttribute(?string $value): ?string

@@ -16,12 +16,26 @@ class EventRegistration extends Model
         'phone',
         'ticket_code',
         'checked_in_at',
+        'amount',
+        'payment_status',
+        'payment_proof',
+        'sender_bank',
+        'sender_name',
+        'payment_notes',
+        'confirmed_at',
+        'confirmed_by',
+        'rejected_at',
+        'rejected_by',
+        'rejection_reason',
     ];
 
     protected function casts(): array
     {
         return [
             'checked_in_at' => 'datetime',
+            'confirmed_at' => 'datetime',
+            'rejected_at' => 'datetime',
+            'amount' => 'integer',
         ];
     }
 
@@ -40,5 +54,30 @@ class EventRegistration extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function confirmedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'confirmed_by');
+    }
+
+    public function rejectedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function isPending(): bool
+    {
+        return $this->payment_status === 'pending';
+    }
+
+    public function isConfirmed(): bool
+    {
+        return in_array($this->payment_status, ['confirmed', 'free'], true);
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->payment_status === 'rejected';
     }
 }
