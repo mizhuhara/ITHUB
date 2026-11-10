@@ -11,10 +11,7 @@
             <a href="/industry" class="{{ request()->is('industry*') ? 'it-active' : '' }}">Industri</a>
             <a href="/career" class="{{ request()->is('career*') ? 'it-active' : '' }}">Karir</a>
             <a href="/events" class="{{ request()->is('events*') ? 'it-active' : '' }}">Acara</a>
-            <a href="/community" class="{{ (request()->is('community') || request()->is('community/create') || (request()->is('community/*') && !request()->routeIs('community.my*') && !request()->is('community/*/manage*'))) ? 'it-active' : '' }}">Komunitas</a>
-            @auth
-                <a href="{{ route('community.my') }}" class="{{ request()->routeIs('community.my*') || request()->is('community/*/manage*') ? 'it-active' : '' }}">Komunitas Saya</a>
-            @endauth
+            <a href="/community" class="{{ request()->is('community*') ? 'it-active' : '' }}">Komunitas</a>
             <a href="/knowledge-hub" class="{{ request()->is('knowledge-hub*') ? 'it-active' : '' }}">Pusat Pengetahuan</a>
         </nav>
 
@@ -359,17 +356,16 @@
 
                 {{-- User Profile & Dropdown --}}
                 <div id="it-user" class="it-user">
-                    <button type="button" id="it-user-btn" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" id="it-user-btn" aria-haspopup="true" aria-expanded="false" title="{{ Auth::user()->name }}" aria-label="Profil {{ Auth::user()->name }}">
                         @if(!empty($navbarLogoUrl))
-                            <img src="{{ $navbarLogoUrl }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover shrink-0">
+                            <img src="{{ $navbarLogoUrl }}" alt="{{ Auth::user()->name }}" class="it-user-avatar-img">
                         @else
                             <span class="it-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                         @endif
-                        <span class="it-user-name notranslate" translate="no">{{ Auth::user()->name }}</span>
-                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                     <div id="it-user-menu" class="it-user-menu" hidden>
                         <div class="it-user-head">
+                            <div class="it-user-head-name notranslate" translate="no">{{ Auth::user()->name }}</div>
                             <span class="it-user-role">
                                 @php
                                     $roleLabels = [

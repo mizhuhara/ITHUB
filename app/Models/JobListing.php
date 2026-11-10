@@ -122,11 +122,6 @@ class JobListing extends Model
     public function getCompanyLogoAttribute(): ?string
     {
         if ($this->user_id) {
-            $user = $this->user;
-            if ($user && ! empty($user->avatar_url)) {
-                return $user->avatar_url;
-            }
-
             $company = Company::where('user_id', $this->user_id)->first();
             if ($company && ! empty($company->logo_url)) {
                 $compLogo = $company->logo_url;
@@ -135,6 +130,11 @@ class JobListing extends Model
                 }
 
                 return asset(ltrim($compLogo, '/'));
+            }
+
+            $user = $this->user;
+            if ($user && ! empty($user->avatar_url)) {
+                return $user->avatar_url;
             }
 
             $university = University::where('user_id', $this->user_id)->first();

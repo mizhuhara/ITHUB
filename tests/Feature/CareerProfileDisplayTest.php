@@ -129,4 +129,44 @@ class CareerProfileDisplayTest extends TestCase
 
         $response->assertRedirect(route('career.seeker.show', $seeker->id));
     }
+
+    public function test_welcome_page_displays_real_jobs_with_company_logo_and_verified_partner(): void
+    {
+        $companyUser = User::factory()->create([
+            'role' => 'company',
+            'name' => 'Mitra Solusi Digital',
+        ]);
+
+        $company = Company::create([
+            'user_id' => $companyUser->id,
+            'name' => 'Mitra Solusi Digital',
+            'logo_url' => 'https://example.com/mitra-logo.png',
+        ]);
+
+        $job = JobListing::create([
+            'user_id' => $companyUser->id,
+            'title' => 'Cloud Solutions Architect',
+            'company' => 'Mitra Solusi Digital',
+            'description' => 'Real architecture job opportunity',
+            'location' => 'Jakarta (Hybrid)',
+            'category' => 'jobs',
+            'is_active' => true,
+            'status' => 'Active',
+            'skills' => ['AWS', 'Terraform', 'Kubernetes'],
+            'total_views' => 250,
+            'deadline' => '30 Jan 2027',
+        ]);
+
+        $response = $this->get(route('welcome'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Lowongan Pekerjaan Terbaru');
+        $response->assertSee('Cloud Solutions Architect');
+        $response->assertSee('Mitra Solusi Digital');
+        $response->assertSee('https://example.com/mitra-logo.png');
+        $response->assertSee('Diposting oleh mitra resmi Mitra Solusi Digital');
+        $response->assertSee('250');
+        $response->assertSee('Kubernetes');
+        $response->assertSee(route('career.apply', ['type' => 'job', 'id' => $job->id]));
+    }
 }

@@ -198,22 +198,54 @@
                         'internship' => 'Magang',
                         'remote' => 'Remote',
                         'freelance' => 'Freelance',
+                        'graduate' => 'Fresh Graduate',
                         default => 'Pekerjaan',
                     };
                     $categoryColor = match(strtolower($job->category)) {
                         'internship' => 'bg-amber-100 text-amber-700',
                         'remote' => 'bg-emerald-100 text-emerald-700',
                         'freelance' => 'bg-violet-100 text-violet-700',
+                        'graduate' => 'bg-cyan-100 text-cyan-700',
                         default => 'bg-blue-100 text-blue-700',
                     };
+                    $logoUrl = $job->logo_url ?? $job->company_logo ?? null;
                 @endphp
-                <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 transition-all hover:-translate-y-1 hover:shadow-xl">
+                <article class="group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 transition-all hover:-translate-y-1 hover:shadow-xl">
                     <div class="mb-3 sm:mb-4 flex items-center justify-between">
-                        <span class="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl text-xs sm:text-sm font-bold text-white shrink-0" style="background:{{ $job->logo_color }}">{{ $job->logo_text }}</span>
+                        @if (!empty($logoUrl))
+                            <img src="{{ $logoUrl }}" alt="Logo {{ $job->company }}" class="h-10 w-10 sm:h-11 sm:w-11 rounded-xl object-cover border border-slate-100 shrink-0 shadow-xs">
+                        @else
+                            <span class="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl text-xs sm:text-sm font-bold text-white shrink-0 shadow-xs" style="background:{{ $job->logo_color }}">{{ $job->logo_text }}</span>
+                        @endif
                         <span class="rounded-md px-2 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold {{ $categoryColor }}">{{ $categoryLabel }}</span>
                     </div>
-                    <h3 class="text-sm sm:text-base font-bold text-slate-900 line-clamp-1">{{ $job->title }}</h3>
-                    <p class="text-xs sm:text-sm text-slate-500 truncate">{{ $job->company }}</p>
+
+                    <h3 class="text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                        <a href="{{ route('career.apply', ['type' => $job->apply_type, 'id' => $job->id]) }}">
+                            {{ $job->title }}
+                        </a>
+                    </h3>
+
+                    <div class="mt-1 flex items-center gap-1.5 truncate">
+                        <p class="text-xs sm:text-sm text-slate-500 truncate font-medium">{{ $job->company }}</p>
+                        @if(isset($job->user) && $job->user)
+                            <span title="Diposting oleh mitra resmi {{ $job->user->name }}" class="inline-flex items-center text-blue-600 shrink-0">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" /></svg>
+                            </span>
+                        @endif
+                    </div>
+
+                    @if(!empty($job->skills) && is_array($job->skills))
+                        <div class="mt-2.5 flex flex-wrap gap-1">
+                            @foreach(array_slice($job->skills, 0, 3) as $skill)
+                                <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10.5px] font-medium text-slate-600">{{ $skill }}</span>
+                            @endforeach
+                            @if(count($job->skills) > 3)
+                                <span class="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">+{{ count($job->skills) - 3 }}</span>
+                            @endif
+                        </div>
+                    @endif
+
                     <div class="mt-3 sm:mt-4 flex flex-col gap-1.5 sm:gap-2 text-xs sm:text-[13px] text-slate-500">
                         <div class="flex items-center gap-2 truncate">
                             <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
@@ -229,10 +261,19 @@
                         </div>
                     </div>
                     <div class="mt-4 sm:mt-5 flex items-center justify-between border-t border-slate-100 pt-3 sm:pt-4">
-                        <span class="flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-emerald-600">
-                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Dibuka
-                        </span>
-                        <a href="{{ route('career.apply', ['type' => $job->category === 'internship' ? 'internships' : 'jobs', 'id' => $job->id]) }}" class="text-xs sm:text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700">Lamar Sekarang &rarr;</a>
+                        <div class="flex items-center gap-3">
+                            <span class="flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-emerald-600">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Dibuka
+                            </span>
+                            <span class="inline-flex items-center gap-1 text-[11.5px] font-semibold text-slate-400" title="{{ number_format($job->total_views ?? 0) }} kali dilihat">
+                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                </svg>
+                                <span>{{ number_format($job->total_views ?? 0) }}</span>
+                            </span>
+                        </div>
+                        <a href="{{ route('career.apply', ['type' => $job->apply_type, 'id' => $job->id]) }}" class="text-xs sm:text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700">Lamar Sekarang &rarr;</a>
                     </div>
                 </article>
             @endforeach

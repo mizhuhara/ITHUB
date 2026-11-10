@@ -37,13 +37,15 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         #it-navbar-inner {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
-            height: 62px;
+            padding: 0 clamp(16px, 2vw, 32px);
+            height: 64px;
+            box-sizing: border-box;
         }
         #it-logo {
             font-size: 21px;
@@ -56,6 +58,8 @@
             align-items: center;
             line-height: 1;
             transition: color 0.15s ease;
+            position: relative;
+            z-index: 2;
         }
         #it-logo span {
             color: #2563eb;
@@ -65,21 +69,34 @@
             color: #2563eb;
         }
         #it-nav {
-            display: flex;
-            align-items: stretch;
-            height: 100%;
-        }
-        #it-nav a {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
-            padding: 0 13px;
-            font-size: 14px;
+            justify-content: center;
+            height: 100%;
+            gap: clamp(1px, 0.4vw, 6px);
+            z-index: 1;
+            pointer-events: auto;
+        }
+        #it-nav a {
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 clamp(6px, 0.75vw, 12px);
+            font-size: clamp(12.5px, 0.88vw, 13.5px);
             font-weight: 500;
             color: #475569;
             text-decoration: none;
             border-bottom: 2.5px solid transparent;
             transition: color 0.15s, border-color 0.15s;
             white-space: nowrap;
+            letter-spacing: -0.01em;
+            line-height: 1;
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
         #it-nav a:hover { color: #2563eb; }
         #it-nav a.it-active {
@@ -88,16 +105,20 @@
             border-bottom-color: #2563eb;
         }
         #it-actions {
+            position: relative;
+            z-index: 2;
+            margin-left: auto;
             display: flex;
             align-items: center;
             gap: 8px;
             flex-shrink: 0;
+            white-space: nowrap;
         }
         .it-btn-signin {
             display: inline-flex !important;
             align-items: center;
-            padding: 7px 16px;
-            font-size: 13.5px;
+            padding: 6px 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #2563eb !important;
             border: 1.5px solid #2563eb;
@@ -107,13 +128,14 @@
             white-space: nowrap;
             transition: background 0.15s;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.2;
         }
         .it-btn-signin:hover { background: #eff6ff; }
         .it-btn-signup {
             display: inline-flex !important;
             align-items: center;
-            padding: 7px 16px;
-            font-size: 13.5px;
+            padding: 6px 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #ffffff !important;
             background: #2563eb;
@@ -124,6 +146,7 @@
             transition: background 0.15s;
             box-shadow: 0 1px 4px rgba(37,99,235,0.25);
             font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.2;
         }
         .it-btn-signup:hover { background: #1d4ed8; border-color: #1d4ed8; }
 
@@ -519,23 +542,37 @@
         #it-user-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: none;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: #ffffff;
             border: 1.5px solid #e2e8f0;
-            border-radius: 50px;
-            padding: 4px 6px 4px 4px;
-            cursor: pointer;
-            color: #0f172a;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: border-color 0.15s, background 0.15s;
-            line-height: 1;
-        }
-        #it-user-btn:hover { border-color: #2563eb; background: #f8fafc; }
-        .it-avatar {
-            width: 30px;
-            height: 30px;
             border-radius: 50%;
-            background: #2563eb;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        #it-user-btn:hover,
+        #it-user-btn[aria-expanded="true"] {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            transform: scale(1.03);
+        }
+        .it-user-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+        .it-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: #ffffff;
             display: inline-flex;
             align-items: center;
@@ -545,16 +582,14 @@
             flex-shrink: 0;
             line-height: 1;
         }
-        .it-user-name {
+        .it-user-head-name {
             font-size: 13.5px;
-            font-weight: 600;
-            color: #334155;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            word-break: break-word;
         }
-        #it-user-btn svg { color: #64748b; flex-shrink: 0; }
         .it-user-menu {
             position: absolute;
             right: 0;
@@ -790,29 +825,41 @@
             background: #1d4ed8 !important;
         }
 
-        /* Laptops fit (1025px - 1200px) */
-        @media (min-width: 1025px) and (max-width: 1200px) {
+        /* Laptops compact mode (1141px - 1280px) */
+        @media (min-width: 1141px) and (max-width: 1280px) {
             #it-nav a {
-                padding: 0 8px;
-                font-size: 13.5px;
+                padding: 0 clamp(4px, 0.6vw, 7px);
+                font-size: 12.5px;
             }
             #it-navbar-inner {
-                padding: 0 16px;
+                padding: 0 14px;
+            }
+            #it-user-btn {
+                width: 36px;
+                height: 36px;
             }
         }
 
-        /* Tablets & Mobile breakpoint */
-        @media (max-width: 1024px) {
-            #it-nav { display: none; }
+        /* Tablets & Mobile breakpoint: clean switch to mobile drawer */
+        @media (max-width: 1140px) {
+            #it-nav { display: none !important; }
             .it-btn-signin, .it-btn-signup { display: none !important; }
-            #it-mobile-toggle { display: inline-flex; }
-            #it-mobile-menu.it-open { display: block; }
+            #it-mobile-toggle { display: inline-flex !important; }
+            #it-mobile-menu.it-open { display: block !important; }
+            #it-navbar-inner {
+                padding: 0 16px;
+                height: 60px;
+            }
+            #it-user-btn {
+                width: 36px;
+                height: 36px;
+            }
         }
 
         /* Mobile phones (<= 768px) */
         @media (max-width: 768px) {
             #it-navbar-inner {
-                padding: 0 16px;
+                padding: 0 14px;
                 height: 58px;
             }
             #it-logo {
@@ -847,11 +894,11 @@
             }
         }
 
-        /* Extra small phones (<= 380px) */
-        @media (max-width: 380px) {
+        /* Extra small phones (<= 400px) */
+        @media (max-width: 400px) {
             #it-navbar-inner {
                 padding: 0 10px;
-                height: 56px;
+                height: 54px;
             }
             #it-logo {
                 font-size: 18px;
@@ -859,15 +906,22 @@
             #it-actions {
                 gap: 4px;
             }
+            .it-lang-btn {
+                padding: 0 6px;
+                gap: 4px;
+            }
+            .it-lang-chevron {
+                display: none;
+            }
             .it-nav-icon-btn,
             #it-mobile-toggle {
-                width: 34px;
-                height: 34px;
+                width: 32px;
+                height: 32px;
             }
             .it-avatar {
                 width: 28px;
                 height: 28px;
-                font-size: 13px;
+                font-size: 12px;
             }
         }
 
@@ -1027,9 +1081,9 @@
         .it-lang-btn {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 6px;
             height: 38px;
-            padding: 0 12px;
+            padding: 0 10px;
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
             border-radius: 9999px;
@@ -1037,6 +1091,8 @@
             transition: all 0.15s ease;
             color: #0f172a;
             font-family: inherit;
+            flex-shrink: 0;
+            box-sizing: border-box;
         }
         .it-lang-btn:hover,
         .it-lang-btn[aria-expanded="true"] {
@@ -1742,10 +1798,10 @@
                 'ja': { signin: 'ログイン', signup: '新規登録' },
                 'ko': { signin: '로그인', signup: '회원가입' },
                 'zh-CN': { signin: '登录', signup: '注册' },
-                'ar': { signin: 'تسجيل الدخول', signup: 'إنشاء حساب' },
+                'ar': { signin: 'دخول', signup: 'تسجيل' },
                 'de': { signin: 'Anmelden', signup: 'Registrieren' },
                 'fr': { signin: 'Connexion', signup: "S'inscrire" },
-                'es': { signin: 'Iniciar sesión', signup: 'Registrarse' },
+                'es': { signin: 'Entrar', signup: 'Registrarse' },
                 'ru': { signin: 'Войти', signup: 'Регистрация' }
             };
 
