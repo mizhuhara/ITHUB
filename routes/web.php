@@ -37,7 +37,8 @@ use App\Models\JobListing;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $latestJobs = JobListing::where('is_active', true)
+    $latestJobs = JobListing::with(['user.company'])
+        ->where('is_active', true)
         ->where('status', '!=', 'Draft')
         ->latest('id')
         ->take(6)
