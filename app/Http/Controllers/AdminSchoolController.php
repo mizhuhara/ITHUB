@@ -201,6 +201,7 @@ class AdminSchoolController extends Controller
         // Institusi tidak boleh mengubah status — hanya admin yang approve/reject
         if (in_array($user->role, ['school', 'university', 'company'], true)) {
             unset($data['status']);
+            unset($data['views']);
         }
 
         if ($request->hasFile('logo')) {
@@ -383,6 +384,7 @@ class AdminSchoolController extends Controller
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'total_students' => ['nullable', 'integer', 'min:0'],
+            'views' => ['nullable', 'integer', 'min:0', 'max:100000000'],
             'industry_partners' => ['nullable', 'integer', 'min:0'],
             'placement_rate' => ['nullable', 'string', 'max:20'],
             'modern_labs' => ['nullable', 'integer', 'min:0'],

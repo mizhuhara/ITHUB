@@ -59,13 +59,9 @@ class IndustryController extends Controller
         return view('industry.industry', compact('companies'));
     }
 
-    public function incrementView(Request $request, Company $company)
+    public function incrementView(Company $company)
     {
-        $sessionKey = 'viewed_company_'.$company->id;
-        if (! $request->session()->has($sessionKey)) {
-            $company->increment('views');
-            $request->session()->put($sessionKey, true);
-        }
+        $company->increment('views');
 
         return response()->json([
             'success' => true,

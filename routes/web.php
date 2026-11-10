@@ -65,6 +65,8 @@ Route::get('/campus', [CampusController::class, 'index'])->name('campus.index');
 Route::get('/campus/{id}', [CampusController::class, 'show'])->name('campus.show');
 
 Route::get('/industry', [IndustryController::class, 'index'])->name('industry');
+Route::post('/industry/company/{company}/view', [IndustryController::class, 'incrementView'])
+    ->name('industry.company.view');
 
 Route::get('/career', [CareerController::class, 'index'])->name('career.index');
 Route::get('/career/kerja/daftar', [CareerController::class, 'createJobSeeker'])

@@ -307,6 +307,23 @@
                         @enderror
                     </div>
 
+                    @if (in_array(auth()->user()->role, ['super_admin', 'admin'], true))
+                        {{-- Jumlah Dilihat (Marketing) --}}
+                        <div>
+                            <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Jumlah Dilihat (Marketing)</label>
+                            <input type="number"
+                                   name="views"
+                                   value="{{ old('views', $univ['views'] ?? 0) }}"
+                                   placeholder="500"
+                                   min="0"
+                                   class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            <p class="mt-1 text-xs text-slate-400">Angka tampil di badge mata pada halaman publik.</p>
+                            @error('views')
+                                <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endif
+
                     {{-- Tahun Berdiri --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tahun Berdiri</label>
