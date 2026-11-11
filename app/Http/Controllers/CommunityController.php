@@ -252,6 +252,61 @@ class CommunityController extends Controller
         return back()->with('success', $msg);
     }
 
+    public function memberInfo(Request $request, Community $community, User $user): View
+    {
+        $isApproved = $community->status === 'active' && $community->approval_status === 'approved';
+        $canPreview = $request->user() && ($request->user()->role === 'super_admin' || $community->user_id === $request->user()->id);
+
+        abort_unless($isApproved || $canPreview, 404);
+        abort_unless($community->canAccessChat($request->user()), 403, 'Akses ke info anggota komunitas ini dibatasi.');
+
+        // Find membership record in pivot table
+        $membership = $community->members()
+            ->withPivot(['role', 'is_banned', 'created_at'])
+            ->where('users.id', $user->id)
+            ->first();
+
+        $isOwner = $user->id === $community->user_id;
+
+        // User must be either in the pivot table or the creator/owner
+        abort_unless($membership || $isOwner, 404, 'Pengguna bukan anggota dari komunitas ini.');
+
+        $role = $isOwner ? 'admin' : ($membership?->pivot->role ?: 'member');
+        $roleLabel = match ($role) {
+            'admin' => $isOwner ? 'Pemilik Komunitas' : 'Admin Komunitas',
+            'moderator' => 'Moderator Komunitas',
+            default => 'Anggota Komunitas',
+        };
+
+        $isBanned = (bool) ($membership?->pivot->is_banned ?? false);
+        $joinedAt = $membership?->pivot->created_at ?: ($isOwner ? $community->created_at : $user->created_at);
+
+        $currentUser = $request->user();
+        $canKick = $community->canKickMember($currentUser, $user);
+        $canBan = $community->canBanMember($currentUser, $user);
+        $isSelf = $currentUser && $currentUser->id === $user->id;
+
+        // Activities in this community
+        $messagesCount = $community->messages()->where('user_id', $user->id)->count();
+        $postsCount = $community->posts()->where('user_id', $user->id)->count();
+
+        return view('community.member-info', [
+            'community' => $community,
+            'member' => $user,
+            'membership' => $membership,
+            'role' => $role,
+            'roleLabel' => $roleLabel,
+            'isOwner' => $isOwner,
+            'isBanned' => $isBanned,
+            'joinedAt' => $joinedAt,
+            'canKick' => $canKick,
+            'canBan' => $canBan,
+            'isSelf' => $isSelf,
+            'messagesCount' => $messagesCount,
+            'postsCount' => $postsCount,
+        ]);
+    }
+
     public function kickMember(Request $request, Community $community, User $user): RedirectResponse|JsonResponse
     {
         abort_unless(

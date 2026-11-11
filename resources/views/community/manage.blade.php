@@ -65,7 +65,7 @@
         {{-- Community Identity Banner Card --}}
         <div class="cmty-manage-banner-card">
             @if($community->cover_url)
-                <div class="cmty-manage-cover">
+                <div class="cmty-manage-cover h-44 sm:h-60">
                     <img src="{{ $community->cover_url }}" alt="{{ $community->name }}">
                 </div>
             @endif
@@ -556,9 +556,14 @@
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 .cmty-manage-cover {
-    height: 140px;
+    height: 176px;
     background: #f1f5f9;
     overflow: hidden;
+}
+@media (min-width: 640px) {
+    .cmty-manage-cover {
+        height: 240px;
+    }
 }
 .cmty-manage-cover img {
     width: 100%;

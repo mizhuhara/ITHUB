@@ -477,6 +477,12 @@
             </div>
 
             <div class="chat-info-actions">
+                <button type="button" id="info-modal-view-page-btn" class="chat-info-btn-close" style="background: #2563eb; color: #fff; border-color: #2563eb; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                    Lihat Halaman Lengkap
+                </button>
                 <button type="button" id="info-modal-kick-btn" class="chat-info-btn-kick" style="display: none;">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
@@ -516,6 +522,7 @@
             uploadChunk: "{{ route('community.chat.upload_chunk', $community) }}",
             members: "{{ route('community.chat.members', $community) }}",
             kickMemberBase: "{{ url('/community/' . $community->id . '/members') }}",
+            memberInfoBase: "{{ url('/community/' . $community->id . '/members') }}",
         },
         maxFileSize: {{ $maxFileSizeMb * 1048576 }},
         maxTotalSize: {{ $maxTotalSizeMb * 1048576 }},
@@ -3346,8 +3353,8 @@ document.addEventListener('DOMContentLoaded', function () {
         ctxBtnInfo.addEventListener('click', function (e) {
             e.stopPropagation();
             hideContextMenu();
-            if (currentContextUser) {
-                openMemberInfoModal(currentContextUser);
+            if (currentContextUser && currentContextUser.id) {
+                navigateToMemberInfo(currentContextUser.id);
             }
         });
     }
@@ -3380,7 +3387,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showContextMenu(e.clientX, e.clientY, userData);
     });
 
-    // 2. Left-click on message avatar opens Member Info Modal directly
+    // 2. Left-click on message avatar opens Member Info page directly
     chatBody.addEventListener('click', function (e) {
         const avatar = e.target.closest('.msg-avatar');
         if (avatar) {
@@ -3390,7 +3397,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const msg = messagesMap.get(Number(msgId)) || messagesMap.get(String(msgId));
                 if (msg) {
                     const userData = getUserDataForMessage(msg);
-                    openMemberInfoModal(userData);
+                    if (userData && userData.id) {
+                        navigateToMemberInfo(userData.id);
+                    }
                 }
             }
         }
@@ -3538,11 +3547,15 @@ function getUserDataForMessage(msg) {
     };
 }
 
+function navigateToMemberInfo(userId) {
+    if (!userId) return;
+    const base = (window.COMMUNITY_CHAT && window.COMMUNITY_CHAT.endpoints && window.COMMUNITY_CHAT.endpoints.memberInfoBase)
+        || `/community/{{ $community->id }}/members`;
+    window.location.href = `${base}/${userId}`;
+}
+
 function openMemberInfoModalById(memberId) {
-    const member = currentCommunityMembers.find(m => Number(m.id) === Number(memberId));
-    if (member) {
-        openMemberInfoModal(member);
-    }
+    navigateToMemberInfo(memberId);
 }
 
 function showContextMenu(x, y, userData) {
@@ -3664,6 +3677,15 @@ function openMemberInfoModal(userData) {
         } else {
             leaveBtn.style.display = 'none';
         }
+    }
+
+    // View Full Page button inside Info Modal
+    const viewPageBtn = document.getElementById('info-modal-view-page-btn');
+    if (viewPageBtn) {
+        viewPageBtn.onclick = function () {
+            closeMemberInfoModal();
+            navigateToMemberInfo(userData.id);
+        };
     }
 
     modal.style.display = 'flex';

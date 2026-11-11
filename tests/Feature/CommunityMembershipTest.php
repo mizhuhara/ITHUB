@@ -113,6 +113,50 @@ class CommunityMembershipTest extends TestCase
         $this->get(route('community.show', $community))->assertNotFound();
     }
 
+    public function test_guest_cannot_view_member_info(): void
+    {
+        $creator = User::factory()->create();
+        $community = $this->createCommunity(['user_id' => $creator->id, 'approval_status' => 'approved']);
+        $member = User::factory()->create();
+        $community->members()->attach($member->id, ['role' => 'member']);
+
+        $this->get(route('community.member.show', [$community, $member]))
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_member_can_view_member_info_page_with_name_and_join_date(): void
+    {
+        $creator = User::factory()->create();
+        $community = $this->createCommunity(['user_id' => $creator->id, 'approval_status' => 'approved']);
+        $member = User::factory()->create(['name' => 'Budi Santoso']);
+        $community->members()->attach($member->id, [
+            'role' => 'member',
+            'created_at' => now()->subDays(5),
+            'updated_at' => now()->subDays(5),
+        ]);
+
+        $response = $this->actingAs($member)->get(route('community.member.show', [$community, $member]));
+
+        $response->assertOk()
+            ->assertSee('Budi Santoso')
+            ->assertSee('Kapan Join Komunitas')
+            ->assertSee('Bergabung dengan Komunitas')
+            ->assertSee(now()->subDays(5)->translatedFormat('d F Y'))
+            ->assertSee('Kembali ke Chat Komunitas');
+    }
+
+    public function test_cannot_view_member_info_for_user_not_in_community(): void
+    {
+        $creator = User::factory()->create();
+        $community = $this->createCommunity(['user_id' => $creator->id, 'approval_status' => 'approved']);
+        $member = User::factory()->create();
+        $community->members()->attach($member->id, ['role' => 'member']);
+        $stranger = User::factory()->create();
+
+        $this->actingAs($member)->get(route('community.member.show', [$community, $stranger]))
+            ->assertNotFound();
+    }
+
     private function createCommunity(array $attributes = []): Community
     {
         return Community::create(array_merge([
