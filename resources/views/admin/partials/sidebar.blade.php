@@ -200,11 +200,11 @@
                     'roles' => ['super_admin', 'admin'],
                 ],
                 [
-                    'label' => 'Banner',
+                    'label' => in_array($userRole, ['school', 'university', 'company'], true) ? 'Promosi' : 'Banner Promosi',
                     'icon' => 'banner',
                     'active' => request()->routeIs('admin.banners.*'),
                     'href' => route('admin.banners.index'),
-                    'roles' => ['super_admin'],
+                    'roles' => ['super_admin', 'admin', 'school', 'university', 'company'],
                 ],
                 [
                     'label' => 'Kelola Membership',

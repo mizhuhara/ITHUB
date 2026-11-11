@@ -16,6 +16,33 @@
     </div>
 </div>
 
+{{-- Slot & Queue Status Notice --}}
+<div class="mb-6 rounded-2xl border {{ $activeBannersCount < $maxSlots ? 'border-emerald-200 bg-emerald-50/70 text-emerald-800' : 'border-amber-200 bg-amber-50/70 text-amber-900' }} p-4 shadow-xs">
+    <div class="flex items-start gap-3">
+        @if ($activeBannersCount < $maxSlots)
+            <div class="h-8 w-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            </div>
+            <div>
+                <h3 class="text-[14px] font-bold text-emerald-900">Slot Slide Beranda Tersedia ({{ $activeBannersCount }}/{{ $maxSlots }} Terisi)</h3>
+                <p class="text-[12.5px] text-emerald-700 mt-0.5">
+                    Banner yang Anda buat akan langsung aktif dan tayang di slider utama halaman beranda{{ $isAdmin ? '' : ' selama 7 hari' }}.
+                </p>
+            </div>
+        @else
+            <div class="h-8 w-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+            </div>
+            <div>
+                <h3 class="text-[14px] font-bold text-amber-900">Slot 5 Banner Beranda Penuh ({{ $activeBannersCount }}/{{ $maxSlots }})</h3>
+                <p class="text-[12.5px] text-amber-800 mt-0.5">
+                    Banner baru Anda akan masuk ke <strong>Antrean ke-{{ $queuedBannersCount + 1 }}</strong> secara otomatis. Ketika banner yang sedang aktif selesai masa tayangnya, banner dalam antrean akan otomatis naik ke slide beranda.
+                </p>
+            </div>
+        @endif
+    </div>
+</div>
+
 {{-- Validation Errors --}}
 @if ($errors->any())
     <div class="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[13px]">
@@ -154,15 +181,51 @@
                     <p class="text-[11.5px] text-slate-400 mt-1">Semakin kecil angka (misal 0, 1, 2), semakin di depan urutannya pada slider.</p>
                 </div>
 
-                <div class="pt-2 border-t border-slate-100">
-                    <label class="flex items-center gap-3 cursor-pointer select-none">
-                        <input type="checkbox" name="is_active" value="1" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500/20" {{ old('is_active', true) ? 'checked' : '' }}>
-                        <div>
-                            <span class="text-[13.5px] font-semibold text-slate-800 block">Banner Aktif</span>
-                            <span class="text-[12px] text-slate-400 block">Tampilkan langsung pada slider halaman utama</span>
+                @if ($isAdmin)
+                    <div>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-2">Masa Tayang Banner</label>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-brand-500 hover:bg-blue-50/20 transition has-[:checked]:border-brand-600 has-[:checked]:bg-blue-50/40 has-[:checked]:text-brand-700">
+                                <input type="radio" name="duration_mode" value="permanent" {{ old('duration_mode', 'permanent') === 'permanent' ? 'checked' : '' }} class="accent-brand-600">
+                                <div>
+                                    <span class="text-[12.5px] font-bold block leading-tight">Permanen</span>
+                                    <span class="text-[11px] text-slate-400 block mt-0.5">Tanpa batas waktu</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-brand-500 hover:bg-blue-50/20 transition has-[:checked]:border-brand-600 has-[:checked]:bg-blue-50/40 has-[:checked]:text-brand-700">
+                                <input type="radio" name="duration_mode" value="1_week" {{ old('duration_mode') === '1_week' ? 'checked' : '' }} class="accent-brand-600">
+                                <div>
+                                    <span class="text-[12.5px] font-bold block leading-tight">1 Minggu</span>
+                                    <span class="text-[11px] text-slate-400 block mt-0.5">7 hari bergilir</span>
+                                </div>
+                            </label>
                         </div>
-                    </label>
-                </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100">
+                        <label class="flex items-center gap-3 cursor-pointer select-none">
+                            <input type="checkbox" name="is_active" value="1" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500/20" {{ old('is_active', true) ? 'checked' : '' }}>
+                            <div>
+                                <span class="text-[13.5px] font-semibold text-slate-800 block">Banner Aktif</span>
+                                <span class="text-[12px] text-slate-400 block">Tampilkan langsung pada slider halaman utama</span>
+                            </div>
+                        </label>
+                    </div>
+                @else
+                    <div class="pt-2 border-t border-slate-100 text-[12px] text-slate-500 space-y-1.5">
+                        <div class="flex items-center justify-between text-slate-700 font-semibold">
+                            <span>Durasi Tayang</span>
+                            <span class="text-blue-600 font-bold">7 Hari</span>
+                        </div>
+                        <div class="flex items-center justify-between text-slate-700 font-semibold">
+                            <span>Status Penayangan</span>
+                            <span class="font-bold {{ $activeBannersCount < $maxSlots ? 'text-emerald-600' : 'text-amber-600' }}">
+                                {{ $activeBannersCount < $maxSlots ? 'Langsung Aktif di Slide' : 'Masuk Antrean #' . ($queuedBannersCount + 1) }}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 pt-1">Status dan masa tayang banner promosi dikelola secara otomatis oleh sistem antrean.</p>
+                    </div>
+                @endif
             </div>
 
             {{-- Simpan --}}

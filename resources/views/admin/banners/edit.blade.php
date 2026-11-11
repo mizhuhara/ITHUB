@@ -167,15 +167,46 @@
                     <p class="text-[11.5px] text-slate-400 mt-1">Semakin kecil angka (misal 0, 1, 2), semakin di depan urutannya pada slider.</p>
                 </div>
 
-                <div class="pt-2 border-t border-slate-100">
-                    <label class="flex items-center gap-3 cursor-pointer select-none">
-                        <input type="checkbox" name="is_active" value="1" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500/20" {{ old('is_active', $banner->is_active) ? 'checked' : '' }}>
-                        <div>
-                            <span class="text-[13.5px] font-semibold text-slate-800 block">Banner Aktif</span>
-                            <span class="text-[12px] text-slate-400 block">Tampilkan langsung pada slider halaman utama</span>
+                @if ($isAdmin)
+                    <div>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-2">Masa Tayang Banner</label>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-brand-500 hover:bg-blue-50/20 transition has-[:checked]:border-brand-600 has-[:checked]:bg-blue-50/40 has-[:checked]:text-brand-700">
+                                <input type="radio" name="duration_mode" value="permanent" {{ old('duration_mode', $banner->expires_at ? '1_week' : 'permanent') === 'permanent' ? 'checked' : '' }} class="accent-brand-600">
+                                <div>
+                                    <span class="text-[12.5px] font-bold block leading-tight">Permanen</span>
+                                    <span class="text-[11px] text-slate-400 block mt-0.5">Tanpa batas waktu</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:border-brand-500 hover:bg-blue-50/20 transition has-[:checked]:border-brand-600 has-[:checked]:bg-blue-50/40 has-[:checked]:text-brand-700">
+                                <input type="radio" name="duration_mode" value="1_week" {{ old('duration_mode', $banner->expires_at ? '1_week' : 'permanent') === '1_week' ? 'checked' : '' }} class="accent-brand-600">
+                                <div>
+                                    <span class="text-[12.5px] font-bold block leading-tight">1 Minggu</span>
+                                    <span class="text-[11px] text-slate-400 block mt-0.5">7 hari bergilir</span>
+                                </div>
+                            </label>
                         </div>
-                    </label>
-                </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100">
+                        <label class="flex items-center gap-3 cursor-pointer select-none">
+                            <input type="checkbox" name="is_active" value="1" class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500/20" {{ old('is_active', $banner->is_active) ? 'checked' : '' }}>
+                            <div>
+                                <span class="text-[13.5px] font-semibold text-slate-800 block">Banner Aktif</span>
+                                <span class="text-[12px] text-slate-400 block">Tampilkan langsung pada slider halaman utama</span>
+                            </div>
+                        </label>
+                    </div>
+                @else
+                    <div class="pt-2 border-t border-slate-100 text-[12px] text-slate-500 space-y-1.5">
+                        <div class="flex items-center justify-between text-slate-700 font-semibold">
+                            <span>Status Saat Ini</span>
+                            <span class="font-bold {{ $banner->isCurrentlyActive() ? 'text-emerald-600' : ($banner->status === 'queued' ? 'text-amber-600' : 'text-slate-500') }}">
+                                {{ $banner->isCurrentlyActive() ? 'Aktif di Slide' : ($banner->status === 'queued' ? 'Dalam Antrean' : ucfirst($banner->status)) }}
+                            </span>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="space-y-2">
@@ -189,7 +220,6 @@
             </div>
         </div>
     </div>
-</form>
 </form>
 
 @push('scripts')
