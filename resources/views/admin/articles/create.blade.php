@@ -320,29 +320,15 @@
                     $isSuperAdmin = in_array(auth()->user()?->role, ['super_admin', 'admin'], true);
                 @endphp
 
-                @if(!$isSuperAdmin)
-                    <div class="bg-amber-50 border border-amber-200/90 rounded-xl p-3.5 mb-3.5">
-                        <div class="flex items-start gap-2.5">
-                            <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01"/></svg>
-                            <p class="text-[12px] text-amber-800 leading-relaxed font-medium">
-                                Artikel yang dikirim akan berstatus <strong>Pending</strong> dan menunggu persetujuan (approval) dari Super Admin sebelum tayang di website.
-                            </p>
-                        </div>
-                    </div>
-                @endif
-
                 <label for="status" class="block text-[13.5px] font-semibold text-slate-800 mb-2">Status Publikasi <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <select id="status" name="status"
                             class="w-full h-11 px-3.5 pr-9 rounded-lg border border-slate-300 bg-white text-[14px] text-slate-900 appearance-none outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        @if(!$isSuperAdmin)
-                            <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>Kirim untuk Approval (Pending)</option>
-                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Simpan Sebagai Draf (Draft)</option>
-                        @else
-                            <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published (Langsung Tayang)</option>
-                            <option value="pending"   {{ old('status') === 'pending' ? 'selected' : '' }}>Pending (Menunggu Persetujuan)</option>
-                            <option value="draft"     {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draft (Draf)</option>
-                            <option value="archived"  {{ old('status') === 'archived' ? 'selected' : '' }}>Archived (Arsip)</option>
+                        <option value="published" {{ old('status', 'published') === 'published' ? 'selected' : '' }}>Published (Langsung Tayang)</option>
+                        <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft (Draf)</option>
+                        @if($isSuperAdmin)
+                            <option value="pending" {{ old('status') === 'pending' ? 'selected' : '' }}>Pending (Menunggu Persetujuan)</option>
+                            <option value="archived" {{ old('status') === 'archived' ? 'selected' : '' }}>Archived (Arsip)</option>
                         @endif
                     </select>
                     <svg class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m8 10 4 4 4-4"/></svg>
