@@ -134,15 +134,9 @@ class AdminArticleController extends Controller
         }
 
         $user = $request->user();
-        $isSuperAdmin = $user && in_array($user->role, ['super_admin', 'admin'], true);
 
-        // Institusi (sekolah/kampus/perusahaan): jika memilih publish, status otomatis menjadi pending menunggu approve super admin
+        // Institusi (sekolah/kampus/perusahaan) dapat langsung mempublikasikan artikel
         $status = $validated['status'];
-        if (! $isSuperAdmin) {
-            if ($status === 'published') {
-                $status = 'pending';
-            }
-        }
 
         $company = $user && $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
         $school = $user && $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
@@ -175,9 +169,7 @@ class AdminArticleController extends Controller
             'user_id' => $user ? $user->id : null,
         ]);
 
-        $successMsg = ($status === 'pending')
-            ? "Artikel \"{$article->title}\" berhasil dikirim dan menunggu persetujuan (approval) Super Admin sebelum tayang."
-            : "Artikel \"{$article->title}\" berhasil disimpan!";
+        $successMsg = "Artikel \"{$article->title}\" berhasil disimpan!";
 
         return redirect()->route('admin.articles.index')
             ->with('success', $successMsg);
@@ -231,15 +223,9 @@ class AdminArticleController extends Controller
         }
 
         $user = $request->user();
-        $isSuperAdmin = $user && in_array($user->role, ['super_admin', 'admin'], true);
 
-        // Institusi (sekolah/kampus/perusahaan): jika memilih publish, status otomatis menjadi pending menunggu approve super admin
+        // Institusi (sekolah/kampus/perusahaan) dapat langsung mempublikasikan artikel
         $status = $validated['status'];
-        if (! $isSuperAdmin) {
-            if ($status === 'published') {
-                $status = 'pending';
-            }
-        }
 
         $company = $user && $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
         $school = $user && $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
@@ -264,9 +250,7 @@ class AdminArticleController extends Controller
             'user_id' => $article->user_id ?: ($user ? $user->id : null),
         ]);
 
-        $successMsg = ($status === 'pending')
-            ? "Artikel \"{$article->title}\" berhasil diperbarui dan menunggu persetujuan (approval) Super Admin sebelum tayang."
-            : "Artikel \"{$article->title}\" berhasil diperbarui di database.";
+        $successMsg = "Artikel \"{$article->title}\" berhasil diperbarui di database.";
 
         return redirect()->route('admin.articles.index')
             ->with('success', $successMsg);

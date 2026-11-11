@@ -334,20 +334,6 @@
                         @enderror
                     </div>
 
-                    {{-- NPSN --}}
-                    <div>
-                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">NPSN <span class="text-red-500">*</span></label>
-                        <input type="text" 
-                               name="npsn" 
-                               value="{{ old('npsn', $school['npsn']) }}" 
-                               required
-                               placeholder="20109988"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        @error('npsn')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     {{-- Jenis Institusi --}}
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Jenis Institusi</label>

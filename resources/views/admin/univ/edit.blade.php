@@ -171,20 +171,6 @@
                         @enderror
                     </div>
 
-                    {{-- NPSN --}}
-                    <div>
-                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
-                        <input type="text" 
-                               name="npsn" 
-                               value="{{ old('npsn', $univ['npsn'] ?? '') }}" 
-                               required
-                               placeholder="20109988"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        @error('npsn')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     {{-- University Type --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tipe Institusi</label>

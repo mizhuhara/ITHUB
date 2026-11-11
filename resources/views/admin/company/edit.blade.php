@@ -340,16 +340,6 @@
                         @enderror
                     </div>
 
-                    {{-- Company Code --}}
-                    <div>
-                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Kode Perusahaan / NIB</label>
-                        <input type="text" 
-                               name="npsn" 
-                               value="{{ old('npsn', $company['npsn'] ?? '') }}" 
-                               placeholder="Nomor Induk Berusaha / Kode"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                    </div>
-
                     {{-- Company Type --}}
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tipe Perusahaan <span class="text-red-500">*</span></label>
