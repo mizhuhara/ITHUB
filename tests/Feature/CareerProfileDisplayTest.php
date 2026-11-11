@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Company;
 use App\Models\JobListing;
 use App\Models\JobSeeker;
+use App\Models\School;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -46,6 +47,25 @@ class CareerProfileDisplayTest extends TestCase
         $response->assertSee('Software Engineer');
         $response->assertSee('Tech Corp');
         $response->assertSee('https://example.com/company-logo.png');
+        $response->assertSee('Job Provider');
+    }
+
+    public function test_education_page_displays_lihat_profile_button(): void
+    {
+        School::create([
+            'npsn' => '12345678',
+            'name' => 'SMK TI Bali Global',
+            'status' => 'Active',
+            'city' => 'Denpasar',
+            'province' => 'Bali',
+            'location' => 'Denpasar, Bali',
+            'address' => 'Jl. Tukad Citarum',
+        ]);
+
+        $response = $this->get(route('education.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Lihat Profile');
     }
 
     public function test_siap_kerja_page_displays_real_user_avatar(): void

@@ -17,7 +17,7 @@ class CareerController extends Controller
 {
     /** @var array<string, string> */
     private array $tabs = [
-        'jobs' => 'Pekerjaan',
+        'jobs' => 'Job Provider',
         'kerja' => 'Job Seeker',
         'internship' => 'Magang',
         'freelance' => 'Freelance',

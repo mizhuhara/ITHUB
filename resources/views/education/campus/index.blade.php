@@ -196,7 +196,7 @@
                     </div>
 
                     <a href="{{ route('campus.show', $campus['id']) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
-                        Lihat Profil
+                        Lihat Profile
                     </a>
                 </div>
             </div>
