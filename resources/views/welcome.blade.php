@@ -433,4 +433,8 @@
             }
         });
     </script>
+
+    @if (! empty($promoPopup))
+        @include('partials.promo-popup', ['popup' => $promoPopup])
+    @endif
 @endsection
