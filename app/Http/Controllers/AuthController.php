@@ -164,6 +164,7 @@ class AuthController extends Controller
             if ($role === 'user') {
                 Auth::login($user);
                 $request->session()->regenerate();
+                $request->session()->forget('promo_popup_seen');
             }
 
             return response()->json([
@@ -176,6 +177,7 @@ class AuthController extends Controller
         if ($role === 'user') {
             Auth::login($user);
             $request->session()->regenerate();
+            $request->session()->forget('promo_popup_seen');
 
             return redirect()->intended($this->redirectFor($user));
         }
@@ -225,6 +227,10 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+
+        if ($user->role !== 'super_admin') {
+            $request->session()->forget('promo_popup_seen');
+        }
 
         if ($user->role === 'user' || strtolower((string) $user->status) === 'active') {
             if (! $user->hasVerifiedEmail()) {

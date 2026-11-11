@@ -207,6 +207,13 @@
                     'roles' => ['super_admin'],
                 ],
                 [
+                    'label' => 'Promo Popup',
+                    'icon' => 'banner',
+                    'active' => request()->routeIs('admin.promo-popup.*'),
+                    'href' => route('admin.promo-popup.edit'),
+                    'roles' => ['super_admin'],
+                ],
+                [
                     'label' => 'Kelola Membership',
                     'icon' => 'membership',
                     'active' => request()->routeIs('admin.memberships.*'),
