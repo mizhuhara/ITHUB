@@ -6,7 +6,10 @@ use App\Models\Company;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\OrganizerBankAccount;
+use App\Models\School;
+use App\Models\University;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -77,7 +80,7 @@ class AdminEventPaymentController extends Controller
     /**
      * Confirm a participant's payment.
      */
-    public function confirm(EventRegistration $registration): RedirectResponse
+    public function confirm(Request $request, EventRegistration $registration): RedirectResponse|JsonResponse
     {
         $this->authorizeEventOwnership($registration->event_id);
 
@@ -90,13 +93,23 @@ class AdminEventPaymentController extends Controller
             'rejection_reason' => null,
         ]);
 
-        return back()->with('success', "Pembayaran peserta \"{$registration->name}\" berhasil dikonfirmasi. Tiket telah diaktifkan.");
+        $message = "Pembayaran peserta \"{$registration->name}\" berhasil dikonfirmasi. Tiket telah diaktifkan.";
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'redirect' => route('admin.events.confirmations'),
+            ]);
+        }
+
+        return redirect()->route('admin.events.confirmations')->with('success', $message);
     }
 
     /**
      * Reject a participant's payment with a reason.
      */
-    public function reject(Request $request, EventRegistration $registration): RedirectResponse
+    public function reject(Request $request, EventRegistration $registration): RedirectResponse|JsonResponse
     {
         $this->authorizeEventOwnership($registration->event_id);
 
@@ -111,7 +124,17 @@ class AdminEventPaymentController extends Controller
             'rejection_reason' => $validated['rejection_reason'],
         ]);
 
-        return back()->with('success', "Pembayaran peserta \"{$registration->name}\" telah ditolak.");
+        $message = "Pembayaran peserta \"{$registration->name}\" telah ditolak.";
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'redirect' => route('admin.events.confirmations'),
+            ]);
+        }
+
+        return redirect()->route('admin.events.confirmations')->with('success', $message);
     }
 
     /**
@@ -242,10 +265,18 @@ class AdminEventPaymentController extends Controller
         $user = auth()->user();
 
         if ($user && in_array($user->role, ['school', 'university', 'company'], true)) {
+            $school = $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
+            $univ = $user->role === 'university' ? University::where('user_id', $user->id)->first() : null;
             $company = $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
 
-            return Event::where(function (Builder $q) use ($user, $company) {
+            return Event::where(function (Builder $q) use ($user, $school, $univ, $company) {
                 $q->where('user_id', $user->id);
+                if ($school && ! empty($school->name)) {
+                    $q->orWhere('organizer', $school->name);
+                }
+                if ($univ && ! empty($univ->name)) {
+                    $q->orWhere('organizer', $univ->name);
+                }
                 if ($company && ! empty($company->name)) {
                     $q->orWhere('organizer', $company->name);
                 }

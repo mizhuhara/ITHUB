@@ -3,24 +3,7 @@
 @section('title', 'Konfirmasi Pembayaran Event — IndoTech Admin')
 
 @section('content')
-<div class="space-y-6" x-data="{
-    proofModalOpen: false,
-    proofUrl: '',
-    proofTitle: '',
-    rejectModalOpen: false,
-    rejectAction: '',
-    participantName: '',
-    openProof(url, title) {
-        this.proofUrl = url;
-        this.proofTitle = title;
-        this.proofModalOpen = true;
-    },
-    openReject(action, name) {
-        this.rejectAction = action;
-        this.participantName = name;
-        this.rejectModalOpen = true;
-    }
-}">
+<div class="space-y-6">
 
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -174,6 +157,11 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($registrations as $reg)
+                        @php
+                            $amountText = $reg->amount > 0 ? 'Rp ' . number_format($reg->amount, 0, ',', '.') : 'Gratis';
+                            $senderInfo = ($reg->sender_bank ? $reg->sender_bank : 'Bank') . ($reg->sender_name ? ' a.n ' . $reg->sender_name : '');
+                            $isPending = $reg->payment_status === 'pending';
+                        @endphp
                         <tr class="hover:bg-slate-50/50 transition">
                             {{-- Peserta --}}
                             <td class="py-3.5 px-4">
@@ -199,11 +187,11 @@
                             <td class="py-3.5 px-4 whitespace-nowrap">
                                 @if($reg->amount > 0)
                                     <span class="font-extrabold text-slate-900 text-sm">
-                                        Rp {{ number_format($reg->amount, 0, ',', '.') }}
+                                        {{ $amountText }}
                                     </span>
                                     @if($reg->sender_bank || $reg->sender_name)
                                         <div class="text-[10.5px] text-slate-500 mt-0.5">
-                                            {{ $reg->sender_bank ?? 'Bank' }} a.n {{ $reg->sender_name ?? '-' }}
+                                            {{ $senderInfo }}
                                         </div>
                                     @endif
                                 @else
@@ -217,8 +205,8 @@
                             <td class="py-3.5 px-4">
                                 @if($reg->payment_proof)
                                     <button type="button"
-                                            @click="openProof('{{ $reg->payment_proof }}', 'Bukti Transfer: {{ addslashes($reg->name) }} (Rp {{ number_format($reg->amount, 0, ',', '.') }})')"
-                                            class="group inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition">
+                                            onclick="openProofModal('{{ $reg->payment_proof }}', '{{ addslashes($reg->name) }}', '{{ addslashes($reg->event?->title ?? '') }}', '{{ $amountText }}', '{{ addslashes($senderInfo) }}', {{ $reg->id }}, {{ $isPending ? 'true' : 'false' }})"
+                                            class="group inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition cursor-pointer">
                                         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -264,20 +252,19 @@
                                 @if($reg->payment_status === 'pending')
                                     <div class="flex items-center justify-end gap-1.5">
                                         {{-- Tombol Konfirmasi --}}
-                                        <form method="POST" action="{{ route('admin.events.registrations.confirm', $reg->id) }}" onsubmit="return confirm('Konfirmasi pembayaran peserta {{ addslashes($reg->name) }}?')">
-                                            @csrf
-                                            <button type="submit" class="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1">
-                                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                Konfirmasi
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                                onclick="openConfirmModal({{ $reg->id }}, '{{ addslashes($reg->name) }}', '{{ $amountText }}')"
+                                                class="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
+                                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            Konfirmasi
+                                        </button>
 
                                         {{-- Tombol Tolak --}}
                                         <button type="button"
-                                                @click="openReject('{{ route('admin.events.registrations.reject', $reg->id) }}', '{{ addslashes($reg->name) }}')"
-                                                class="h-8 px-2.5 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-red-600 text-xs font-bold transition">
+                                                onclick="openRejectModal({{ $reg->id }}, '{{ addslashes($reg->name) }}')"
+                                                class="h-8 px-2.5 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-red-600 text-xs font-bold transition cursor-pointer">
                                             Tolak
                                         </button>
                                     </div>
@@ -319,98 +306,268 @@
         @endif
     </div>
 
-    {{-- MODAL PREVIEW BUKTI TRANSFER --}}
-    <div x-show="proofModalOpen" style="display: none;"
-         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0">
-        <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200"
-             @click.away="proofModalOpen = false">
-            <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50">
-                <h3 class="font-bold text-slate-900 text-sm" x-text="proofTitle">Bukti Transfer</h3>
-                <button type="button" @click="proofModalOpen = false" class="text-slate-400 hover:text-slate-600 p-1">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+</div>
+
+{{-- ========================================================================= --}}
+{{-- 1. MODAL PREVIEW BUKTI TRANSFER (VANILLA JAVASCRIPT - 100% RELIABLE)      --}}
+{{-- ========================================================================= --}}
+<div id="proofModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs overflow-y-auto flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-scale-up" onclick="event.stopPropagation()">
+        {{-- Header --}}
+        <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50">
+            <div>
+                <h3 class="font-bold text-slate-900 text-sm" id="proofModalTitle">Bukti Transfer</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5" id="proofModalSubtitle">Rincian pembayaran tiket event</p>
             </div>
-            <div class="p-4 flex items-center justify-center bg-slate-950/5 min-h-[300px]">
-                <template x-if="proofUrl.endsWith('.pdf')">
-                    <div class="text-center py-8">
-                        <svg class="w-16 h-16 text-red-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                        <p class="font-bold text-slate-800 text-sm mb-2">Dokumen Bukti PDF</p>
-                        <a :href="proofUrl" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition">
-                            Buka / Unduh File PDF
-                        </a>
-                    </div>
-                </template>
-                <template x-if="!proofUrl.endsWith('.pdf')">
-                    <img :src="proofUrl" alt="Bukti Transfer" class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-sm">
-                </template>
+            <button type="button" onclick="closeProofModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/60 transition cursor-pointer">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        {{-- Body --}}
+        <div class="p-4 space-y-3 bg-slate-50/50">
+            {{-- Quick Info Card --}}
+            <div class="grid grid-cols-2 gap-2 p-3 bg-white rounded-2xl border border-slate-200 text-xs">
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Peserta</span>
+                    <strong class="text-slate-800" id="proofModalName">-</strong>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nominal Tiket</span>
+                    <strong class="text-emerald-600 text-sm" id="proofModalAmount">-</strong>
+                </div>
+                <div class="col-span-2 pt-1 border-t border-slate-100">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Pengirim</span>
+                    <span class="text-slate-700" id="proofModalSender">-</span>
+                </div>
             </div>
-            <div class="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
-                <a :href="proofUrl" target="_blank" class="text-xs font-bold text-blue-600 hover:underline">
-                    Buka Ukuran Penuh &rarr;
-                </a>
-                <button type="button" @click="proofModalOpen = false" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-300 transition">
+
+            {{-- Image Preview Area --}}
+            <div class="rounded-2xl bg-slate-950/5 border border-slate-200/80 p-2 flex items-center justify-center min-h-[260px] max-h-[55vh] overflow-hidden">
+                <div id="proofPdfView" class="hidden text-center py-8">
+                    <svg class="w-16 h-16 text-red-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    <p class="font-bold text-slate-800 text-sm mb-2">Dokumen Bukti PDF</p>
+                    <a id="proofPdfLink" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition">
+                        Buka Dokumen PDF &rarr;
+                    </a>
+                </div>
+                <img id="proofImage" src="" alt="Bukti Transfer" class="max-h-[50vh] max-w-full rounded-xl object-contain shadow-xs cursor-pointer" onclick="window.open(this.src, '_blank')">
+            </div>
+            <p class="text-[11px] text-slate-400 text-center">Klik gambar di atas untuk melihat dalam resolusi penuh.</p>
+        </div>
+
+        {{-- Footer with Direct Actions --}}
+        <div class="p-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-2.5">
+            <a id="proofFullLink" href="#" target="_blank" class="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline">
+                Buka Tab Baru &rarr;
+            </a>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <div id="proofActionButtons" class="flex items-center gap-2">
+                    <button type="button" id="proofModalRejectBtn" class="h-9 px-3 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 font-bold text-xs transition cursor-pointer">
+                        Tolak
+                    </button>
+                    <button type="button" id="proofModalConfirmBtn" class="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+                        Konfirmasi Pembayaran
+                    </button>
+                </div>
+                <button type="button" onclick="closeProofModal()" class="h-9 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer">
                     Tutup
                 </button>
             </div>
         </div>
     </div>
+</div>
 
-    {{-- MODAL TOLAK PEMBAYARAN --}}
-    <div x-show="rejectModalOpen" style="display: none;"
-         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200"
-             @click.away="rejectModalOpen = false">
-            <form method="POST" :action="rejectAction">
-                @csrf
-                <div class="p-5 border-b border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </span>
-                        <div>
-                            <h3 class="font-extrabold text-slate-900 text-base">Tolak Pembayaran Peserta</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Peserta: <strong class="text-slate-700" x-text="participantName"></strong></p>
-                        </div>
+{{-- ========================================================================= --}}
+{{-- 2. MODAL KONFIRMASI PEMBAYARAN                                            --}}
+{{-- ========================================================================= --}}
+<div id="confirmModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs overflow-y-auto flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200 animate-scale-up" onclick="event.stopPropagation()">
+        <form id="confirmForm" method="POST" action="">
+            @csrf
+            <div class="p-6 text-center space-y-3">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                    <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-900">Konfirmasi Pembayaran Peserta</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Apakah Anda yakin ingin menyetujui pembayaran untuk peserta <strong id="confirmModalName" class="text-slate-900 font-bold"></strong> sebesar <strong id="confirmModalAmount" class="text-emerald-600 font-bold"></strong>?
+                </p>
+                <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800 text-left">
+                    Tiket resmi akan langsung aktif dan peserta akan menerima status terverifikasi di halaman event.
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeConfirmModal()" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="submit" class="h-10 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+                    Ya, Konfirmasi Pembayaran
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ========================================================================= --}}
+{{-- 3. MODAL TOLAK PEMBAYARAN                                                 --}}
+{{-- ========================================================================= --}}
+<div id="rejectModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs overflow-y-auto flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200 animate-scale-up" onclick="event.stopPropagation()">
+        <form id="rejectForm" method="POST" action="">
+            @csrf
+            <div class="p-5 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 class="font-extrabold text-slate-900 text-base">Tolak Pembayaran Peserta</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Peserta: <strong class="text-slate-700" id="rejectModalName">-</strong></p>
                     </div>
                 </div>
+            </div>
 
-                <div class="p-5 space-y-3">
-                    <label class="block text-xs font-bold text-slate-700">
-                        Alasan Penolakan <span class="text-red-500">*</span>
-                    </label>
-                    <textarea name="rejection_reason" required rows="3"
-                              placeholder="Contoh: Bukti transfer buram/tidak terbaca, nominal transfer tidak sesuai tiket, atau dana belum masuk rekening..."
-                              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 placeholder-slate-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none"></textarea>
-                    <p class="text-[11px] text-slate-500">
-                        Alasan ini akan ditampilkan kepada peserta di halaman event agar mereka dapat mengunggah bukti yang benar.
-                    </p>
-                </div>
+            <div class="p-5 space-y-3">
+                <label for="rejection_reason_input" class="block text-xs font-bold text-slate-700">
+                    Alasan Penolakan <span class="text-red-500">*</span>
+                </label>
+                <textarea id="rejection_reason_input" name="rejection_reason" required rows="3"
+                          placeholder="Contoh: Bukti transfer buram/tidak terbaca, nominal transfer tidak sesuai tiket, atau dana belum masuk rekening..."
+                          class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-800 placeholder-slate-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none"></textarea>
+                <p class="text-[11px] text-slate-500">
+                    Alasan ini akan ditampilkan kepada peserta agar mereka dapat mengunggah bukti yang benar.
+                </p>
+            </div>
 
-                <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-                    <button type="button" @click="rejectModalOpen = false"
-                            class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition">
-                        Batal
-                    </button>
-                    <button type="submit"
-                            class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-sm">
-                        Ya, Tolak Pembayaran
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeRejectModal()" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="submit" class="h-10 px-5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+                    Ya, Tolak Pembayaran
+                </button>
+            </div>
+        </form>
     </div>
-
 </div>
-@endsection
 
+{{-- ========================================================================= --}}
+{{-- JAVASCRIPT LOGIC (PURE VANILLA JS)                                       --}}
+{{-- ========================================================================= --}}
+<script>
+    let activeRegistrationId = null;
+    let activeParticipantName = '';
+    let activeAmount = '';
+
+    // --- PROOF MODAL ---
+    function openProofModal(imageUrl, name, eventTitle, amount, sender, regId, isPending) {
+        activeRegistrationId = regId;
+        activeParticipantName = name;
+        activeAmount = amount;
+
+        document.getElementById('proofModalTitle').innerText = 'Bukti Transfer: ' + name;
+        document.getElementById('proofModalSubtitle').innerText = eventTitle;
+        document.getElementById('proofModalName').innerText = name;
+        document.getElementById('proofModalAmount').innerText = amount;
+        document.getElementById('proofModalSender').innerText = sender || '-';
+
+        const isPdf = imageUrl.toLowerCase().endsWith('.pdf');
+        const pdfView = document.getElementById('proofPdfView');
+        const imgView = document.getElementById('proofImage');
+        const pdfLink = document.getElementById('proofPdfLink');
+        const fullLink = document.getElementById('proofFullLink');
+
+        if (isPdf) {
+            pdfView.classList.remove('hidden');
+            imgView.classList.add('hidden');
+            pdfLink.href = imageUrl;
+        } else {
+            pdfView.classList.add('hidden');
+            imgView.classList.remove('hidden');
+            imgView.src = imageUrl;
+        }
+        fullLink.href = imageUrl;
+
+        // Action buttons inside proof modal
+        const actionBtns = document.getElementById('proofActionButtons');
+        if (isPending) {
+            actionBtns.classList.remove('hidden');
+            document.getElementById('proofModalConfirmBtn').onclick = function() {
+                closeProofModal();
+                openConfirmModal(regId, name, amount);
+            };
+            document.getElementById('proofModalRejectBtn').onclick = function() {
+                closeProofModal();
+                openRejectModal(regId, name);
+            };
+        } else {
+            actionBtns.classList.add('hidden');
+        }
+
+        document.getElementById('proofModal').classList.remove('hidden');
+    }
+
+    function closeProofModal() {
+        document.getElementById('proofModal').classList.add('hidden');
+    }
+
+    // --- CONFIRM MODAL ---
+    function openConfirmModal(regId, name, amount) {
+        document.getElementById('confirmModalName').innerText = name;
+        document.getElementById('confirmModalAmount').innerText = amount;
+        document.getElementById('confirmForm').action = '/admin/events/registrations/' + regId + '/confirm';
+        document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.add('hidden');
+    }
+
+    // --- REJECT MODAL ---
+    function openRejectModal(regId, name) {
+        document.getElementById('rejectModalName').innerText = name;
+        document.getElementById('rejectForm').action = '/admin/events/registrations/' + regId + '/reject';
+        document.getElementById('rejection_reason_input').value = '';
+        document.getElementById('rejectModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('rejection_reason_input').focus();
+        }, 100);
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectModal').classList.add('hidden');
+    }
+
+    // Close on backdrop click & ESC key
+    window.addEventListener('click', function(e) {
+        if (e.target.id === 'proofModal') closeProofModal();
+        if (e.target.id === 'confirmModal') closeConfirmModal();
+        if (e.target.id === 'rejectModal') closeRejectModal();
+    });
+
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeProofModal();
+            closeConfirmModal();
+            closeRejectModal();
+        }
+    });
+</script>
+
+<style>
+    @keyframes scaleUpModal {
+        from { transform: scale(0.96); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .animate-scale-up {
+        animation: scaleUpModal 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+</style>
+@endsection

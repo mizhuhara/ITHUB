@@ -6,7 +6,7 @@
         'graduate'   => 'graduate',
         default      => 'jobs',
     };
-    $tagLabel = $tabs[$job['category']] ?? 'Pekerjaan';
+    $tagLabel = $tabs[$job['category']] ?? 'Job Provider';
     $logoUrl = $job->logo_url ?? $job['logo_url'] ?? null;
     $bannerImage = $job->image ?? $job['image'] ?? null;
     if ($bannerImage === $logoUrl) {
