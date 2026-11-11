@@ -178,7 +178,8 @@ class CommunityChatController extends Controller
                     'is_self' => $currentUser && $currentUser->id === $member->id,
                     'is_banned' => (bool) $member->pivot->is_banned,
                     'can_be_kicked' => $community->canKickMember($currentUser, $member),
-                    'joined_at' => $member->created_at?->translatedFormat('d M Y') ?: '-',
+                    'joined_at' => $member->pivot?->created_at?->translatedFormat('d M Y')
+                        ?: ($isOwner ? $community->created_at?->translatedFormat('d M Y') : ($member->created_at?->translatedFormat('d M Y') ?: '-')),
                     'email' => $member->email ?: '',
                 ];
             });
@@ -590,6 +591,22 @@ class CommunityChatController extends Controller
         $isOwner = $author && $author->id === $community->user_id;
         $canKick = $currentUser && $author ? $community->canKickMember($currentUser, $author) : false;
 
+        $authorJoinedAt = '-';
+        if ($author) {
+            $pivotDate = DB::table('community_user')
+                ->where('community_id', $community->id)
+                ->where('user_id', $author->id)
+                ->value('created_at');
+
+            if ($pivotDate) {
+                $authorJoinedAt = Carbon::parse($pivotDate)->translatedFormat('d M Y');
+            } elseif ($isOwner) {
+                $authorJoinedAt = $community->created_at?->translatedFormat('d M Y') ?: '-';
+            } else {
+                $authorJoinedAt = $author->created_at?->translatedFormat('d M Y') ?: '-';
+            }
+        }
+
         return [
             'id' => $message->id,
             'community_id' => $message->community_id,
@@ -604,7 +621,7 @@ class CommunityChatController extends Controller
                 default => 'Anggota',
             },
             'can_be_kicked' => $canKick,
-            'user_joined_at' => $author?->created_at?->translatedFormat('d M Y') ?: '-',
+            'user_joined_at' => $authorJoinedAt,
             'user_email' => $author?->email ?: '',
             'is_me' => $isMe,
             'message' => $message->message,
