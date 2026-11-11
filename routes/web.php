@@ -134,6 +134,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/community/my', [CommunityController::class, 'my'])->name('community.my');
     Route::get('/community/{community}/manage', [CommunityController::class, 'manage'])->name('community.manage');
     Route::put('/community/{community}/manage', [CommunityController::class, 'updateSettings'])->name('community.manage.update');
+    Route::get('/community/{community}/members/{user}', [CommunityController::class, 'memberInfo'])->name('community.member.show');
     Route::patch('/community/{community}/members/{user}/role', [CommunityController::class, 'updateMemberRole'])->name('community.manage.member.role');
     Route::delete('/community/{community}/members/{user}/kick', [CommunityController::class, 'kickMember'])->name('community.manage.kick');
     Route::post('/community/{community}/members/{user}/toggle-ban', [CommunityController::class, 'toggleBanMember'])->name('community.manage.ban');

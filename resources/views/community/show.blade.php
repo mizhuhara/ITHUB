@@ -52,7 +52,7 @@
 
         <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
             @if ($community->cover_url)
-                <div class="h-40 sm:h-56 bg-slate-100 overflow-hidden">
+                <div class="h-44 sm:h-60 bg-slate-100 overflow-hidden">
                     <img src="{{ $community->cover_url }}" alt="{{ $community->name }}" class="w-full h-full object-cover">
                 </div>
             @endif
