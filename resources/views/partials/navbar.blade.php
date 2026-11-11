@@ -2,7 +2,7 @@
     <div id="it-navbar-inner">
 
         {{-- Logo --}}
-        <a href="/" id="it-logo" class="notranslate" translate="no"><img src="{{ asset('favicon.png') }}" alt="Logo" class="h-6 w-6 mr-1.5 rounded-md object-contain inline-block">IT<span>Hub</span></a>
+        <a href="/" id="it-logo" class="notranslate" translate="no">IT<span>Hub</span></a>
 
         {{-- Desktop Nav --}}
         <nav id="it-nav">
