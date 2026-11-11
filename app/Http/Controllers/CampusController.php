@@ -35,11 +35,7 @@ class CampusController extends Controller
             })
             ->firstOrFail();
 
-        $sessionKey = 'viewed_campus_'.$university->id;
-        if (! session()->has($sessionKey)) {
-            $university->increment('views');
-            session()->put($sessionKey, true);
-        }
+        $university->increment('views');
 
         return view('education.campus.show', [
             'campus' => $this->mapCampus($university),

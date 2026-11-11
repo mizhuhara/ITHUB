@@ -48,6 +48,32 @@ class AppSetting extends Model
     /**
      * @return array<string, mixed>
      */
+    public static function getPromoPopupSettings(): array
+    {
+        return [
+            'enabled' => in_array(static::get('promo_popup_enabled', '0'), ['1', 'true', true, 1], true),
+            'title' => (string) static::get('promo_popup_title', 'Promo Spesial ITHub'),
+            'subtitle' => (string) static::get('promo_popup_subtitle', 'Temukan program dan penawaran terbaru untuk kamu.'),
+            'image' => (string) static::get('promo_popup_image', ''),
+            'button_text' => (string) static::get('promo_popup_button_text', 'Lihat Promo'),
+            'button_link' => (string) static::get('promo_popup_button_link', ''),
+            'theme' => (string) static::get('promo_popup_theme', 'light'),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $settings
+     */
+    public static function setPromoPopupSettings(array $settings): void
+    {
+        foreach ($settings as $key => $value) {
+            static::set('promo_popup_'.$key, $value, 'promo');
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public static function getMembershipBankSettings(): array
     {
         return [

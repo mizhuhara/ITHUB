@@ -305,6 +305,7 @@ class AdminCompanyController extends Controller
             'phone' => ['nullable', 'string', 'max:30'],
             'description' => ['nullable', 'string'],
             'total_employees' => ['nullable', 'integer', 'min:0'],
+            'views' => ['nullable', 'integer', 'min:0', 'max:100000000'],
             'founded' => ['nullable', 'integer', 'min:1800', 'max:2030'],
             'projects_completed' => ['nullable', 'string', 'max:100'],
             'specialties' => ['nullable', 'array'],
@@ -367,6 +368,11 @@ class AdminCompanyController extends Controller
             'status' => $status,
             'map_link' => $mapLink,
         ];
+
+        // Jumlah views hanya boleh diubah admin — institusi tidak
+        if (in_array($user->role, ['super_admin', 'admin'], true)) {
+            $payload['views'] = $validated['views'] ?? $company->views;
+        }
 
         // Handle logo update
         if ($request->hasFile('logo')) {

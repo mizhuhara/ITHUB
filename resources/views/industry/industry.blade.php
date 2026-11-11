@@ -483,6 +483,14 @@
             company = JSON.parse(target.getAttribute('data-company'));
         }
 
+        fetch("{{ url('/industry/company') }}/" + company.id + "/view", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        }).catch(() => {});
+
         // Lock background body scrolling so mouse scroll strictly focuses on modal popup
         document.body.style.overflow = 'hidden';
 

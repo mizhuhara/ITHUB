@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminEventPaymentController;
 use App\Http\Controllers\AdminInternshipController;
 use App\Http\Controllers\AdminJobController;
 use App\Http\Controllers\AdminMembershipController;
+use App\Http\Controllers\AdminPromoPopupController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminSchoolController;
 use App\Http\Controllers\AdminUnivController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserReportController;
+use App\Models\AppSetting;
 use App\Models\Banner;
 use App\Models\Event;
 use App\Models\JobListing;
@@ -63,7 +65,18 @@ Route::get('/', function () {
         ->take(5)
         ->get();
 
-    return view('welcome', compact('latestJobs', 'upcomingEvents', 'banners'));
+    $promoPopup = null;
+
+    if (auth()->user()?->role !== 'super_admin' && ! request()->session()->get('promo_popup_seen')) {
+        $promo = AppSetting::getPromoPopupSettings();
+
+        if ($promo['enabled'] && $promo['title'] !== '') {
+            $promoPopup = $promo;
+            request()->session()->put('promo_popup_seen', true);
+        }
+    }
+
+    return view('welcome', compact('latestJobs', 'upcomingEvents', 'banners', 'promoPopup'));
 })->name('welcome');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search');
@@ -75,6 +88,8 @@ Route::get('/campus', [CampusController::class, 'index'])->name('campus.index');
 Route::get('/campus/{id}', [CampusController::class, 'show'])->name('campus.show');
 
 Route::get('/industry', [IndustryController::class, 'index'])->name('industry');
+Route::post('/industry/company/{company}/view', [IndustryController::class, 'incrementView'])
+    ->name('industry.company.view');
 
 Route::get('/career', [CareerController::class, 'index'])->name('career.index');
 Route::get('/career/kerja/daftar', [CareerController::class, 'createJobSeeker'])
@@ -293,6 +308,9 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/banners/{id}/edit', [AdminBannerController::class, 'edit'])->name('admin.banners.edit');
     Route::put('/admin/banners/{id}', [AdminBannerController::class, 'update'])->name('admin.banners.update');
     Route::delete('/admin/banners/{id}', [AdminBannerController::class, 'destroy'])->name('admin.banners.destroy');
+
+    Route::get('/admin/promo-popup', [AdminPromoPopupController::class, 'edit'])->name('admin.promo-popup.edit');
+    Route::put('/admin/promo-popup', [AdminPromoPopupController::class, 'update'])->name('admin.promo-popup.update');
 
     // Admin Memberships & Premium Management (super_admin)
     Route::get('/admin/memberships', [AdminMembershipController::class, 'index'])->name('admin.memberships.index');
