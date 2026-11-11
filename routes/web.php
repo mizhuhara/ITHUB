@@ -50,9 +50,17 @@ Route::get('/', function () {
         ->take(3)
         ->get();
 
-    $banners = Banner::where('is_active', true)
+    Banner::syncActiveQueue();
+
+    $banners = Banner::where('status', 'active')
+        ->where('is_active', true)
+        ->where(function ($q) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+        })
         ->orderBy('sort_order')
+        ->orderByDesc('started_at')
         ->orderByDesc('id')
+        ->take(5)
         ->get();
 
     return view('welcome', compact('latestJobs', 'upcomingEvents', 'banners'));
@@ -277,10 +285,11 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::post('/admin/articles/{id}/reject', [AdminArticleController::class, 'reject'])->name('admin.articles.reject');
     Route::delete('/admin/articles/{id}', [AdminArticleController::class, 'destroy'])->name('admin.articles.destroy');
 
-    // Admin Banners (super_admin only)
+    // Admin Banners
     Route::get('/admin/banners', [AdminBannerController::class, 'index'])->name('admin.banners.index');
     Route::get('/admin/banners/create', [AdminBannerController::class, 'create'])->name('admin.banners.create');
     Route::post('/admin/banners', [AdminBannerController::class, 'store'])->name('admin.banners.store');
+    Route::post('/admin/banners/{id}/promote', [AdminBannerController::class, 'promote'])->name('admin.banners.promote');
     Route::get('/admin/banners/{id}/edit', [AdminBannerController::class, 'edit'])->name('admin.banners.edit');
     Route::put('/admin/banners/{id}', [AdminBannerController::class, 'update'])->name('admin.banners.update');
     Route::delete('/admin/banners/{id}', [AdminBannerController::class, 'destroy'])->name('admin.banners.destroy');
