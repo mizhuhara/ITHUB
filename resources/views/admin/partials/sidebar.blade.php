@@ -50,8 +50,7 @@
 
     {{-- Header / Brand --}}
     <div class="h-16 px-6 flex items-center justify-between border-b border-slate-200/80 shrink-0">
-        <a href="{{ $dashboardRoute }}" class="group flex items-center gap-2.5 notranslate" translate="no">
-            <img src="{{ asset('favicon.png') }}" alt="Logo" class="h-7 w-7 rounded-lg object-contain">
+        <a href="{{ $dashboardRoute }}" class="group flex items-center gap-2 notranslate" translate="no">
             <span class="text-[21px] font-black text-slate-900 tracking-tight leading-none group-hover:text-brand-600 transition-colors notranslate" translate="no">
                 IT<span class="text-brand-600">Hub</span>
             </span>
