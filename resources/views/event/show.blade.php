@@ -360,6 +360,20 @@
                                                 ? 'Sudah check-in '.$registration->checked_in_at->format('d M Y, H:i')
                                                 : 'Belum check-in' }}
                                         </p>
+                                        @if (!empty($ticketQr))
+                                            <img src="{{ $ticketQr }}" alt="QR Tiket {{ $registration->ticket_code }}"
+                                                 class="mx-auto mt-3 h-36 w-36">
+                                            <a href="{{ route('ticket.show', $registration->ticket_code) }}"
+                                               class="mt-2 inline-block text-xs font-bold text-blue-600 hover:underline">
+                                                Buka Halaman Tiket
+                                            </a>
+                                        @endif
+                                        @if (!empty($certificateAvailable))
+                                            <a href="{{ route('ticket.certificate', $registration->ticket_code) }}"
+                                               class="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700">
+                                                Unduh Sertifikat
+                                            </a>
+                                        @endif
                                     </div>
                                 @endif
                                 <form action="{{ route('event.unregister', $event['id']) }}" method="POST" class="mt-3"

@@ -108,11 +108,22 @@ class AdminEventController extends Controller
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            ...$this->certificateRules(),
         ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = Storage::url($request->file('image')->store('events', 'public'));
+        }
+
+        $certificateTemplate = $request->hasFile('certificate_template')
+            ? $request->file('certificate_template')->store('events/certificates', 'public')
+            : null;
+
+        $certificateEnabled = $request->boolean('certificate_enabled');
+
+        if ($certificateEnabled && ! $certificateTemplate) {
+            return back()->withErrors(['certificate_template' => 'Template sertifikat wajib diunggah.'])->withInput();
         }
 
         if ($user->role === 'school') {
@@ -161,6 +172,12 @@ class AdminEventController extends Controller
             'image' => $imagePath ?: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop',
             'status' => $status,
             'is_verified' => $isVerified,
+            'certificate_enabled' => $certificateEnabled,
+            'certificate_template' => $certificateTemplate,
+            'certificate_name_x' => $validated['certificate_name_x'] ?? 50,
+            'certificate_name_y' => $validated['certificate_name_y'] ?? 50,
+            'certificate_name_font_size' => $validated['certificate_name_font_size'] ?? 48,
+            'certificate_name_color' => $validated['certificate_name_color'] ?? '#111827',
         ]);
 
         $msg = in_array($user->role, ['school', 'university', 'company'], true)
@@ -251,6 +268,7 @@ class AdminEventController extends Controller
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
+            ...$this->certificateRules(),
         ]);
 
         $payload = [
@@ -268,10 +286,23 @@ class AdminEventController extends Controller
             'contact_email' => ! empty($validated['contact_email']) ? $validated['contact_email'] : $event->contact_email,
             'contact_phone' => $validated['contact_phone'] ?? $event->contact_phone,
             'description' => $validated['description'] ?? $event->description,
+            'certificate_enabled' => $request->boolean('certificate_enabled'),
+            'certificate_name_x' => $validated['certificate_name_x'] ?? 50,
+            'certificate_name_y' => $validated['certificate_name_y'] ?? 50,
+            'certificate_name_font_size' => $validated['certificate_name_font_size'] ?? 48,
+            'certificate_name_color' => $validated['certificate_name_color'] ?? '#111827',
         ];
 
         if ($request->hasFile('image')) {
             $payload['image'] = Storage::url($request->file('image')->store('events', 'public'));
+        }
+
+        if ($request->hasFile('certificate_template')) {
+            $payload['certificate_template'] = $request->file('certificate_template')->store('events/certificates', 'public');
+        }
+
+        if ($request->boolean('certificate_enabled') && empty($payload['certificate_template'] ?? $event->certificate_template)) {
+            return back()->withErrors(['certificate_template' => 'Template sertifikat wajib diunggah.'])->withInput();
         }
 
         if (! in_array($user->role, ['school', 'university'], true) && $request->filled('organizer')) {
@@ -283,6 +314,24 @@ class AdminEventController extends Controller
 
         return redirect()->route('admin.events.index')
             ->with('success', "Event '{$event->title}' berhasil diperbarui.");
+    }
+
+    /**
+     * Toggle the event's completed status, which activates participant certificates.
+     */
+    public function complete(int $id): RedirectResponse
+    {
+        $event = $this->findVisibleEvent($id);
+
+        $completed = $event->completed_at === null;
+
+        $event->update([
+            'completed_at' => $completed ? now() : null,
+        ]);
+
+        return back()->with('success', $completed
+            ? "Event '{$event->title}' ditandai selesai. Sertifikat peserta aktif."
+            : "Status selesai event '{$event->title}' dibatalkan.");
     }
 
     /**
@@ -355,26 +404,30 @@ class AdminEventController extends Controller
     }
 
     /**
+     * Shared validation rules for certificate settings.
+     *
+     * @return array<string, array<int, string>>
+     */
+    private function certificateRules(): array
+    {
+        return [
+            'certificate_enabled' => ['nullable', 'boolean'],
+            'certificate_template' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'certificate_name_x' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'certificate_name_y' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'certificate_name_font_size' => ['nullable', 'integer', 'min:8', 'max:200'],
+            'certificate_name_color' => ['nullable', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
+        ];
+    }
+
+    /**
      * Query events visible to the current user:
      * - role school / university / company: only their own events
      * - super_admin / admin: all events
      */
     private function visibleEvents()
     {
-        $user = auth()->user();
-
-        if ($user && in_array($user->role, ['school', 'university', 'company'], true)) {
-            $company = $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
-
-            return Event::where(function ($q) use ($user, $company) {
-                $q->where('user_id', $user->id);
-                if ($company && ! empty($company->name)) {
-                    $q->orWhere('organizer', $company->name);
-                }
-            });
-        }
-
-        return Event::query();
+        return Event::query()->visibleTo(auth()->user());
     }
 
     /**
