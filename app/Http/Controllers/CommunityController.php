@@ -280,6 +280,9 @@ class CommunityController extends Controller
 
         $isBanned = (bool) ($membership?->pivot->is_banned ?? false);
         $joinedAt = $membership?->pivot->created_at ?: ($isOwner ? $community->created_at : $user->created_at);
+        if ($joinedAt) {
+            $joinedAt = $joinedAt->copy()->timezone('Asia/Jakarta');
+        }
 
         $currentUser = $request->user();
         $canKick = $community->canKickMember($currentUser, $user);
