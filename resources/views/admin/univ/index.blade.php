@@ -8,17 +8,18 @@
     {{-- Action Buttons --}}
     <div class="flex items-center justify-end gap-3">
             {{-- Filter Button --}}
-            <div class="relative" x-data="{ open: false }">
-                <button type="button" 
-                        onclick="document.getElementById('filterModal').classList.toggle('hidden')"
-                        class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                    </svg>
-                    Filter
-                </button>
-            </div>
-
+            <button type="button" 
+                    onclick="toggleFilter()" 
+                    id="filterBtn"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                </svg>
+                <span>Filter</span>
+                @if((request('status') && request('status') !== 'all') || (request('type') && request('type') !== 'all'))
+                    <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                @endif
+            </button>
 
             {{-- Add New University Button (hanya admin) --}}
             @if (!empty($canManage))
@@ -32,32 +33,48 @@
             @endif
     </div>
 
-    {{-- Filter Modal / Drawer (Collapsible) --}}
-    <div id="filterModal" class="hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm transition">
-        <form method="GET" action="{{ route('admin.univ.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Status</label>
-                <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500">
-                    <option value="all">Semua Status</option>
-                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+    {{-- Inline Filter Panel (Collapsible) --}}
+    <div id="filterPanel" class="{{ ((request('status') && request('status') !== 'all') || (request('type') && request('type') !== 'all')) ? '' : 'hidden' }} bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs transition-all duration-200">
+        <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Filter Data Universitas</h3>
+            </div>
+            <button type="button" onclick="toggleFilter()" class="text-slate-400 hover:text-slate-600 text-xs font-semibold flex items-center gap-1 transition">
+                <span>Tutup</span>
+                <span class="text-base leading-none">&times;</span>
+            </button>
+        </div>
+
+        <form method="GET" action="{{ route('admin.univ.index') }}" class="flex flex-wrap items-end gap-3.5">
+            @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+            @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
+
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-bold text-slate-600 mb-1.5">Status Kampus</label>
+                <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-[13px] text-slate-800 outline-none focus:border-blue-600 focus:bg-white transition">
+                    <option value="all" {{ (!request('status') || request('status') === 'all') ? 'selected' : '' }}>Semua Status</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active (Aktif)</option>
+                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive (Non-aktif)</option>
                 </select>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Type</label>
-                <select name="type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500">
-                    <option value="all">Semua Tipe</option>
-                    <option value="negeri" {{ request('type') === 'negeri' ? 'selected' : '' }}>Negeri</option>
-                    <option value="swasta" {{ request('type') === 'swasta' ? 'selected' : '' }}>Swasta</option>
+
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-xs font-bold text-slate-600 mb-1.5">Tipe Universitas</label>
+                <select name="type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-[13px] text-slate-800 outline-none focus:border-blue-600 focus:bg-white transition">
+                    <option value="all" {{ (!request('type') || request('type') === 'all') ? 'selected' : '' }}>Semua Tipe</option>
+                    <option value="negeri" {{ strtolower(request('type')) === 'negeri' ? 'selected' : '' }}>Negeri</option>
+                    <option value="swasta" {{ strtolower(request('type')) === 'swasta' ? 'selected' : '' }}>Swasta</option>
                 </select>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Search Keyword</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama / NPSN / kota..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500">
-            </div>
-            <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 bg-brand-600 text-white py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition">Terapkan Filter</button>
-                <a href="{{ route('admin.univ.index') }}" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200 transition">Reset</a>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="{{ route('admin.univ.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] hover:bg-slate-50 transition">Reset</a>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13px] shadow-sm transition">Terapkan Filter</button>
             </div>
         </form>
     </div>
@@ -300,6 +317,13 @@
 
     function closeDeleteModal() {
         window.closeGlobalDeleteModal();
+    }
+
+    function toggleFilter() {
+        const panel = document.getElementById('filterPanel');
+        if (panel) {
+            panel.classList.toggle('hidden');
+        }
     }
 </script>
 @endpush

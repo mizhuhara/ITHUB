@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                @php $existingRequirements = old('requirements', $job->requirements ?? []); @endphp
+                @php $existingRequirements = is_array($er = old('requirements', $job->requirements)) ? $er : (empty($er) ? [] : (array) $er); @endphp
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Persyaratan</label>
                     <div class="flex gap-2">
@@ -166,7 +166,7 @@
                         @foreach ($existingRequirements as $req)
                             <span class="tag-badge-green">
                                 {{ $req }}
-                                <button type="button" onclick="removeTag(this)" class="ml-1 text-green-800 hover:text-red-600 font-bold leading-none">&times;</button>
+                                <button type="button" onclick="removeTag(this)" class="ml-1 text-slate-500 hover:text-red-600 font-bold leading-none">&times;</button>
                                 <input type="hidden" name="requirements[]" value="{{ $req }}">
                             </span>
                         @endforeach
@@ -186,7 +186,7 @@
                     </div>
                 </div>
 
-                @php $existingResponsibilities = old('responsibilities', $job->responsibilities ?? []); @endphp
+                @php $existingResponsibilities = is_array($er = old('responsibilities', $job->responsibilities)) ? $er : (empty($er) ? [] : (array) $er); @endphp
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Tanggung Jawab</label>
                     <div class="flex gap-2">
@@ -221,7 +221,7 @@
                     </div>
                 </div>
 
-                @php $existingSkills = old('skills', $job->skills ?? []); @endphp
+                @php $existingSkills = is_array($es = old('skills', $job->skills)) ? $es : (empty($es) ? [] : (array) $es); @endphp
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Skill / Tag</label>
                     <div class="flex gap-2">
@@ -404,7 +404,7 @@
 
 @push('scripts')
 <style>
-.tag-badge-green { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#166534; border:1px solid #bbf7d0; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
+.tag-badge-green { display:inline-flex; align-items:center; gap:4px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
 .tag-badge-indigo { display:inline-flex; align-items:center; gap:4px; background:#e0e7ff; color:#3730a3; border:1px solid #c7d2fe; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
 .tag-badge-blue { display:inline-flex; align-items:center; gap:4px; background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
 </style>

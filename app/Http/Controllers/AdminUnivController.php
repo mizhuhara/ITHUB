@@ -46,7 +46,18 @@ class AdminUnivController extends Controller
         }
 
         if ($request->filled('status') && $request->input('status') !== 'all') {
-            $query->whereRaw('LOWER(status) = ?', [strtolower($request->input('status'))]);
+            $status = strtolower($request->input('status'));
+            if ($status === 'active') {
+                $query->whereRaw('LOWER(status) = ?', ['active']);
+            } elseif ($status === 'inactive') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(status) = ?', ['inactive'])
+                        ->orWhereRaw('LOWER(status) != ?', ['active'])
+                        ->orWhereNull('status');
+                });
+            } else {
+                $query->whereRaw('LOWER(status) = ?', [$status]);
+            }
         }
 
         if ($request->filled('type') && $request->input('type') !== 'all') {
