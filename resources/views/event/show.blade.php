@@ -65,12 +65,15 @@
                     </h1>
 
                     {{-- Host Info --}}
+                    @php
+                        $hostLogo = $event->organizer_logo ?? ($event['organizer_logo'] ?? null) ?? $event->user?->avatar_url;
+                    @endphp
                     <div class="flex items-center gap-2.5 pt-1">
                         <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
-                            @if(!empty($event['organizer_logo']))
-                                <img src="{{ $event['organizer_logo'] }}" alt="{{ $event['organizer'] }}" class="w-full h-full object-cover">
+                            @if(!empty($hostLogo))
+                                <img src="{{ $hostLogo }}" alt="{{ $event['organizer'] }}" class="w-full h-full object-cover">
                             @else
-                                {{ substr($event['organizer'], 0, 2) }}
+                                {{ strtoupper(substr($event['organizer'] ?? 'EV', 0, 2)) }}
                             @endif
                         </div>
                         <span class="text-xs sm:text-sm font-medium text-slate-600">

@@ -247,13 +247,48 @@ class Event extends Model
     }
 
     /**
-     * Convenience for Blade — organizer logo image URL.
+     * Convenience for Blade — organizer logo / profile image URL.
      */
     public function getOrganizerLogoAttribute(): ?string
     {
-        return $this->attributes['organizer_logo']
-            ?? ($this->relationLoaded('organizer') ? $this->organizer->logo ?? null : null)
-            ?? null;
+        if (! empty($this->attributes['organizer_logo'])) {
+            $logo = $this->attributes['organizer_logo'];
+            if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://')) {
+                return $logo;
+            }
+            if (str_starts_with($logo, '/storage/')) {
+                return asset(ltrim($logo, '/'));
+            }
+
+            return asset('storage/'.ltrim($logo, '/'));
+        }
+
+        if ($this->user_id) {
+            $user = $this->relationLoaded('user') ? $this->user : $this->user;
+            if ($user && $user->avatar_url) {
+                return $user->avatar_url;
+            }
+        }
+
+        if (! empty($this->organizer)) {
+            $instLogo = Company::where('name', $this->organizer)->value('logo_url')
+                ?? School::where('name', $this->organizer)->value('logo_url')
+                ?? University::where('name', $this->organizer)->value('logo_url')
+                ?? User::where('name', $this->organizer)->first()?->avatar_url;
+
+            if ($instLogo) {
+                if (str_starts_with($instLogo, 'http://') || str_starts_with($instLogo, 'https://')) {
+                    return $instLogo;
+                }
+                if (str_starts_with($instLogo, '/storage/')) {
+                    return asset(ltrim($instLogo, '/'));
+                }
+
+                return asset('storage/'.ltrim($instLogo, '/'));
+            }
+        }
+
+        return null;
     }
 
     /**
