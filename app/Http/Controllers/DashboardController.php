@@ -10,6 +10,7 @@ use App\Models\School;
 use App\Models\University;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -298,7 +299,7 @@ class DashboardController extends Controller
 
     public function school(): View
     {
-        $owned = School::where('user_id', auth()->id())->first();
+        $owned = School::where('user_id', Auth::id())->first();
 
         $cards = [];
         if ($owned) {
@@ -337,7 +338,7 @@ class DashboardController extends Controller
             ];
         }
 
-        $schoolArticleCount = Article::where('user_id', auth()->id())->count();
+        $schoolArticleCount = Article::where('user_id', Auth::id())->count();
         $cards[] = [
             'label' => 'Artikel Sekolah',
             'value' => $schoolArticleCount > 0 ? number_format($schoolArticleCount).' Artikel' : 'Belum Ada Artikel',
@@ -347,7 +348,7 @@ class DashboardController extends Controller
             'cta_style' => 'secondary',
         ];
 
-        $schoolEventCount = Event::where('user_id', auth()->id())->count();
+        $schoolEventCount = Event::where('user_id', Auth::id())->count();
         $cards[] = [
             'label' => 'Event & Workshop',
             'value' => $schoolEventCount > 0 ? number_format($schoolEventCount).' Event' : 'Belum Ada Event',
@@ -357,7 +358,7 @@ class DashboardController extends Controller
             'cta_style' => 'secondary',
         ];
 
-        $authUser = auth()->user();
+        $authUser = $this->authUser();
         $cards[] = [
             'label' => 'Status Keanggotaan',
             'value' => $authUser->membership_status_label,
@@ -376,7 +377,7 @@ class DashboardController extends Controller
 
     public function university(): View
     {
-        $owned = University::where('user_id', auth()->id())->first();
+        $owned = University::where('user_id', Auth::id())->first();
 
         $cards = [];
         if ($owned) {
@@ -415,7 +416,7 @@ class DashboardController extends Controller
             ];
         }
 
-        $univArticleCount = Article::where('user_id', auth()->id())->count();
+        $univArticleCount = Article::where('user_id', Auth::id())->count();
         $cards[] = [
             'label' => 'Artikel Kampus',
             'value' => $univArticleCount > 0 ? number_format($univArticleCount).' Artikel' : 'Belum Ada Artikel',
@@ -425,7 +426,7 @@ class DashboardController extends Controller
             'cta_style' => 'secondary',
         ];
 
-        $univEventCount = Event::where('user_id', auth()->id())->count();
+        $univEventCount = Event::where('user_id', Auth::id())->count();
         $cards[] = [
             'label' => 'Event & Workshop',
             'value' => $univEventCount > 0 ? number_format($univEventCount).' Event' : 'Belum Ada Event',
@@ -435,7 +436,7 @@ class DashboardController extends Controller
             'cta_style' => 'secondary',
         ];
 
-        $authUser = auth()->user();
+        $authUser = $this->authUser();
         $cards[] = [
             'label' => 'Status Keanggotaan',
             'value' => $authUser->membership_status_label,
@@ -454,7 +455,7 @@ class DashboardController extends Controller
 
     public function company(): View
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         $owned = Company::where('user_id', $user->id)->first();
 
         $cards = [];
@@ -550,7 +551,7 @@ class DashboardController extends Controller
             'cards' => [
                 [
                     'label' => 'Profil',
-                    'value' => auth()->user()->name,
+                    'value' => $this->authUser()?->name,
                     'action' => 'Lihat profil',
                     'url' => route('profile.edit'),
                 ],

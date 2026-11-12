@@ -210,7 +210,7 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
         }
 
-        $user = Auth::user();
+        $user = $this->authUser();
 
         if (strtolower((string) $user->status) !== 'active') {
             Auth::logout();

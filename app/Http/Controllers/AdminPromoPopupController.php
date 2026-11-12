@@ -12,7 +12,7 @@ class AdminPromoPopupController extends Controller
 {
     private function authorizeSuperAdmin(): void
     {
-        abort_if(auth()->user()?->role !== 'super_admin', 403, 'Hanya Super Admin yang dapat mengelola promo popup.');
+        abort_if($this->authUser()?->role !== 'super_admin', 403, 'Hanya Super Admin yang dapat mengelola promo popup.');
     }
 
     public function edit(): View

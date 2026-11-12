@@ -80,7 +80,7 @@ class AdminArticleController extends Controller
     {
         $this->authorizeCreate();
 
-        $user = auth()->user();
+        $user = $this->authUser();
         $company = $user && $user->role === 'company' ? Company::where('user_id', $user->id)->first() : null;
         $school = $user && $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
         $univ = $user && $user->role === 'university' ? University::where('user_id', $user->id)->first() : null;
@@ -261,7 +261,7 @@ class AdminArticleController extends Controller
      */
     public function approve(int $id): RedirectResponse
     {
-        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin'], true), 403, 'Hanya Admin/Super Admin yang dapat menyetujui artikel.');
+        abort_if(! in_array($this->authUser()?->role, ['super_admin', 'admin'], true), 403, 'Hanya Admin/Super Admin yang dapat menyetujui artikel.');
 
         $article = Article::findOrFail($id);
         $article->update([
@@ -278,7 +278,7 @@ class AdminArticleController extends Controller
      */
     public function reject(int $id): RedirectResponse
     {
-        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin'], true), 403, 'Hanya Admin/Super Admin yang dapat menolak artikel.');
+        abort_if(! in_array($this->authUser()?->role, ['super_admin', 'admin'], true), 403, 'Hanya Admin/Super Admin yang dapat menolak artikel.');
 
         $article = Article::findOrFail($id);
         $article->update([
@@ -294,7 +294,7 @@ class AdminArticleController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin', 'school', 'university', 'company'], true), 403, 'Akses ditolak.');
+        abort_if(! in_array($this->authUser()?->role, ['super_admin', 'admin', 'school', 'university', 'company'], true), 403, 'Akses ditolak.');
 
         $article = $this->findVisibleArticle($id);
         $title = $article->title;
@@ -309,7 +309,7 @@ class AdminArticleController extends Controller
      */
     private function visibleArticles()
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if ($user && in_array($user->role, ['school', 'university', 'company'], true)) {
             return Article::where('user_id', $user->id);
@@ -328,7 +328,7 @@ class AdminArticleController extends Controller
 
     private function authorizeCreate(): void
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if (! in_array($user->role, ['super_admin', 'admin', 'school', 'university', 'company'], true)) {
             abort(403, 'Akses ditolak. Akun ini tidak dapat menambah artikel.');

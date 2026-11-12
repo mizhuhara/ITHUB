@@ -6,6 +6,7 @@ use App\Models\Internship;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -66,8 +67,8 @@ class AdminInternshipController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (! $request->filled('user_id') && auth()->check()) {
-            $request->merge(['user_id' => auth()->id()]);
+        if (! $request->filled('user_id') && Auth::check()) {
+            $request->merge(['user_id' => Auth::id()]);
         }
 
         $validated = $request->validate([
