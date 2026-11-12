@@ -7,6 +7,7 @@ use App\Models\JobApplication;
 use App\Notifications\ApplicationStatusUpdated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -94,7 +95,7 @@ class AdminApplicationController extends Controller
             $application->statusHistories()->create([
                 'status' => $validated['status'],
                 'note' => $note,
-                'changed_by' => auth()->id(),
+                'changed_by' => Auth::id(),
             ]);
         });
 

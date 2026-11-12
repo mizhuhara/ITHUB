@@ -7,6 +7,7 @@ use App\Models\UserReport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -96,7 +97,7 @@ class AdminSchoolController extends Controller
      */
     public function create(): View|RedirectResponse
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Jika role school sudah punya sekolah, arahkan ke edit
         if ($user->role === 'school') {
@@ -284,7 +285,7 @@ class AdminSchoolController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        abort_if(auth()->user()->role !== 'super_admin' && auth()->user()->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
+        abort_if($this->authUser()?->role !== 'super_admin' && $this->authUser()?->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
 
         $school = $this->findVisibleSchool($id);
         $name = $school->name;
@@ -300,7 +301,7 @@ class AdminSchoolController extends Controller
      */
     private function visibleSchools()
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if ($user && $user->role === 'school') {
             return School::where('user_id', $user->id);
@@ -319,7 +320,7 @@ class AdminSchoolController extends Controller
 
     private function authorizeCreate(): void
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Role school boleh membuat sekolah pertama mereka; role lain (university, company) tidak
         if (in_array($user->role, ['university', 'company'], true)) {
@@ -363,7 +364,7 @@ class AdminSchoolController extends Controller
 
         UserReport::create([
             ...$validated,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'status' => 'pending',
         ]);
 

@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\UserReport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -109,7 +110,7 @@ class AdminCompanyController extends Controller
      */
     public function create(): View|RedirectResponse
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Jika role company sudah punya perusahaan, arahkan ke edit
         if ($user->role === 'company') {
@@ -267,7 +268,7 @@ class AdminCompanyController extends Controller
 
     private function visibleCompanies()
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         if ($user && $user->role === 'company') {
             return Company::where('user_id', $user->id);
         }
@@ -431,7 +432,7 @@ class AdminCompanyController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        abort_if(auth()->user()->role !== 'super_admin' && auth()->user()->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
+        abort_if($this->authUser()?->role !== 'super_admin' && $this->authUser()?->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
 
         $company = $this->findVisibleCompany($id);
         $name = $company->name;
@@ -516,7 +517,7 @@ class AdminCompanyController extends Controller
 
         UserReport::create([
             ...$validated,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'status' => 'pending',
         ]);
 

@@ -70,7 +70,7 @@ class AdminEventController extends Controller
      */
     public function create(): View
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         abort_if(! in_array($user->role, ['super_admin', 'admin', 'school', 'university', 'company'], true), 403, 'Akses ditolak.');
 
         $school = $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
@@ -216,8 +216,8 @@ class AdminEventController extends Controller
             'event' => $event,
             'registrations' => $registrations,
             'searchQuery' => $request->query('q', ''),
-            'isSchool' => in_array(auth()->user()?->role, ['school', 'university', 'company'], true),
-            'userRole' => auth()->user()?->role,
+            'isSchool' => in_array($this->authUser()?->role, ['school', 'university', 'company'], true),
+            'userRole' => $this->authUser()?->role,
         ]);
     }
 
@@ -226,7 +226,7 @@ class AdminEventController extends Controller
      */
     public function edit(int $id): View
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         abort_if(! in_array($user->role, ['super_admin', 'admin', 'school', 'university', 'company'], true), 403, 'Akses ditolak.');
 
         $event = $this->findVisibleEvent($id);
@@ -358,7 +358,7 @@ class AdminEventController extends Controller
      */
     public function approve(int $id): RedirectResponse
     {
-        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin'], true), 403, 'Akses ditolak. Hanya admin yang dapat memverifikasi event.');
+        abort_if(! in_array($this->authUser()?->role, ['super_admin', 'admin'], true), 403, 'Akses ditolak. Hanya admin yang dapat memverifikasi event.');
 
         $event = Event::findOrFail($id);
         $event->update([
@@ -375,7 +375,7 @@ class AdminEventController extends Controller
      */
     public function reject(int $id): RedirectResponse
     {
-        abort_if(! in_array(auth()->user()->role, ['super_admin', 'admin'], true), 403, 'Akses ditolak. Hanya admin yang dapat menolak event.');
+        abort_if(! in_array($this->authUser()?->role, ['super_admin', 'admin'], true), 403, 'Akses ditolak. Hanya admin yang dapat menolak event.');
 
         $event = Event::findOrFail($id);
         $event->update([
@@ -392,7 +392,7 @@ class AdminEventController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         abort_if(! in_array($user->role, ['super_admin', 'admin', 'school', 'university', 'company'], true), 403, 'Akses ditolak.');
 
         $event = $this->findVisibleEvent($id);
@@ -427,7 +427,7 @@ class AdminEventController extends Controller
      */
     private function visibleEvents()
     {
-        return Event::query()->visibleTo(auth()->user());
+        return Event::query()->visibleTo($this->authUser());
     }
 
     /**

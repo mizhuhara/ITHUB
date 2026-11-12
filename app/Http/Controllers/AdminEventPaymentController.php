@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -87,7 +88,7 @@ class AdminEventPaymentController extends Controller
         $registration->update([
             'payment_status' => 'confirmed',
             'confirmed_at' => now(),
-            'confirmed_by' => auth()->id(),
+            'confirmed_by' => Auth::id(),
             'rejected_at' => null,
             'rejected_by' => null,
             'rejection_reason' => null,
@@ -120,7 +121,7 @@ class AdminEventPaymentController extends Controller
         $registration->update([
             'payment_status' => 'rejected',
             'rejected_at' => now(),
-            'rejected_by' => auth()->id(),
+            'rejected_by' => Auth::id(),
             'rejection_reason' => $validated['rejection_reason'],
         ]);
 
@@ -262,7 +263,7 @@ class AdminEventPaymentController extends Controller
      */
     private function visibleEventIds(): array
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if ($user && in_array($user->role, ['school', 'university', 'company'], true)) {
             $school = $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
