@@ -87,6 +87,7 @@ class EventController extends Controller
     {
         $event = Event::where('status', 'Approved')
             ->where('is_verified', true)
+            ->with(['user.school', 'user.university', 'user.company'])
             ->findOrFail($id);
 
         $event->loadLearningAndSpeakers();
