@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use chillerlan\QRCode\QRCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +102,13 @@ class EventController extends Controller
         $isFull = $event->total_quota > 0 && $registeredCount >= $event->total_quota;
         $bankAccount = $event->bank_account;
 
+        $ticketQr = $event->isOffline() && $registration?->isConfirmed()
+            ? (new QRCode)->render(route('ticket.show', $registration->ticket_code))
+            : null;
+
+        $certificateAvailable = $registration !== null
+            && $event->certificateAvailableFor($registration);
+
         return view('event.show', [
             'event' => $event,
             'registeredCount' => $registeredCount,
@@ -108,6 +116,8 @@ class EventController extends Controller
             'isRegistered' => $isRegistered,
             'isFull' => $isFull,
             'bankAccount' => $bankAccount,
+            'ticketQr' => $ticketQr,
+            'certificateAvailable' => $certificateAvailable,
         ]);
     }
 

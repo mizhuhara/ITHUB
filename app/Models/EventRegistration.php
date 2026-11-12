@@ -80,4 +80,27 @@ class EventRegistration extends Model
     {
         return $this->payment_status === 'rejected';
     }
+
+    public function getMaskedEmailAttribute(): ?string
+    {
+        if (! $this->email || ! str_contains($this->email, '@')) {
+            return $this->email;
+        }
+
+        [$name, $domain] = explode('@', $this->email, 2);
+        $visible = substr($name, 0, 2);
+
+        return $visible.str_repeat('*', max(1, strlen($name) - 2)).'@'.$domain;
+    }
+
+    public function getMaskedPhoneAttribute(): ?string
+    {
+        $digits = preg_replace('/\D/', '', (string) $this->phone);
+
+        if (strlen($digits) < 4) {
+            return $this->phone;
+        }
+
+        return str_repeat('*', strlen($digits) - 4).substr($digits, -4);
+    }
 }

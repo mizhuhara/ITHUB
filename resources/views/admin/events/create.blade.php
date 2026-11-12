@@ -162,6 +162,8 @@
                     </div>
                 </div>
 
+                @include('admin.events.partials.certificate-fields', ['event' => null])
+
             </div>
 
             {{-- ===== RIGHT COLUMN: Schedule, Organizer & Quota ===== --}}

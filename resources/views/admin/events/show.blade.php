@@ -68,6 +68,17 @@
                     <span>Edit Event</span>
                 </a>
 
+                <form action="{{ route('admin.events.complete', $event['id']) }}" method="POST" data-async data-async-reload>
+                    @csrf
+                    <button type="submit"
+                            class="font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs inline-flex items-center gap-1.5 transition {{ $event->completed_at ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }}">
+                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>{{ $event->completed_at ? 'Batalkan Selesai' : 'Selesaikan Acara' }}</span>
+                    </button>
+                </form>
+
                 @if(!$isSchool)
                     <form action="{{ route('admin.events.approve', $event['id']) }}" method="POST" data-async data-async-reload>
                         @csrf

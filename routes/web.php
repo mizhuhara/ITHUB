@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminVerificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampusController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CommunityChatController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\DashboardController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserReportController;
 use App\Models\AppSetting;
 use App\Models\Banner;
@@ -125,6 +127,15 @@ Route::get('/event', function () {
 Route::get('/event/{id}', function ($id) {
     return redirect()->route('event.show', $id);
 });
+Route::get('/ticket/{ticket_code}', [TicketController::class, 'show'])
+    ->middleware('throttle:60,1')
+    ->name('ticket.show');
+Route::post('/ticket/{ticket_code}/check-in', [TicketController::class, 'checkIn'])
+    ->middleware(['auth', 'verified', 'throttle:60,1'])
+    ->name('ticket.check-in');
+Route::get('/ticket/{ticket_code}/certificate', [CertificateController::class, 'download'])
+    ->middleware('throttle:30,1')
+    ->name('ticket.certificate');
 
 Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
 Route::get('/community/create', [CommunityController::class, 'create'])->name('community.create');
@@ -279,6 +290,7 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::put('/admin/events/{id}', [AdminEventController::class, 'update'])->name('admin.events.update');
     Route::post('/admin/events/{event}/registrations/{registration}/check-in', [AdminEventController::class, 'toggleAttendance'])
         ->name('admin.events.registrations.check-in');
+    Route::post('/admin/events/{id}/complete', [AdminEventController::class, 'complete'])->name('admin.events.complete');
     Route::post('/admin/events/{id}/approve', [AdminEventController::class, 'approve'])->name('admin.events.approve');
     Route::post('/admin/events/{id}/reject', [AdminEventController::class, 'reject'])->name('admin.events.reject');
     Route::delete('/admin/events/{id}', [AdminEventController::class, 'destroy'])->name('admin.events.destroy');

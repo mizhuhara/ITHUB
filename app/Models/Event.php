@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,6 +43,13 @@ class Event extends Model
         'image',
         'status',
         'is_verified',
+        'certificate_enabled',
+        'certificate_template',
+        'certificate_name_x',
+        'certificate_name_y',
+        'certificate_name_font_size',
+        'certificate_name_color',
+        'completed_at',
     ];
 
     /**
@@ -54,6 +62,11 @@ class Event extends Model
             'speakers' => 'array',
             'is_verified' => 'boolean',
             'total_quota' => 'integer',
+            'certificate_enabled' => 'boolean',
+            'certificate_name_x' => 'float',
+            'certificate_name_y' => 'float',
+            'certificate_name_font_size' => 'integer',
+            'completed_at' => 'datetime',
         ];
     }
 
@@ -65,6 +78,69 @@ class Event extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    /**
+     * Limit events to those the given user may manage.
+     *
+     * @param  Builder<Event>  $query
+     * @return Builder<Event>
+     */
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        if (! $user || ! in_array($user->role, ['super_admin', 'admin', 'school', 'university', 'company'], true)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if (in_array($user->role, ['super_admin', 'admin'], true)) {
+            return $query;
+        }
+
+        $companyName = $user->role === 'company'
+            ? Company::where('user_id', $user->id)->value('name')
+            : null;
+
+        return $query->where(function (Builder $q) use ($user, $companyName) {
+            $q->where('user_id', $user->id);
+
+            if (! empty($companyName)) {
+                $q->orWhere('organizer', $companyName);
+            }
+        });
+    }
+
+    /**
+     * Check if the given user may manage this event.
+     */
+    public function isManageableBy(?User $user): bool
+    {
+        return static::whereKey($this->getKey())->visibleTo($user)->exists();
+    }
+
+    /**
+     * Check if the event has a usable certificate template.
+     */
+    public function hasCertificate(): bool
+    {
+        return $this->certificate_enabled
+            && $this->completed_at !== null
+            && ! empty($this->certificate_template);
+    }
+
+    /**
+     * Check if the registration is eligible for a certificate.
+     */
+    public function certificateAvailableFor(EventRegistration $registration): bool
+    {
+        return $this->hasCertificate() && $registration->isConfirmed();
+    }
+
+    /**
+     * Check if the event takes place offline.
+     */
+    public function isOffline(): bool
+    {
+        return strtolower(trim((string) $this->mode)) !== 'online';
     }
 
     /**
