@@ -50,7 +50,18 @@ class AdminCompanyController extends Controller
 
         // Status Filter
         if ($request->filled('status') && strtolower($request->input('status')) !== 'all') {
-            $query->whereRaw('LOWER(status) = ?', [strtolower($request->input('status'))]);
+            $status = strtolower($request->input('status'));
+            if ($status === 'active') {
+                $query->whereRaw('LOWER(status) = ?', ['active']);
+            } elseif ($status === 'inactive') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(status) = ?', ['inactive'])
+                        ->orWhereRaw('LOWER(status) != ?', ['active'])
+                        ->orWhereNull('status');
+                });
+            } else {
+                $query->whereRaw('LOWER(status) = ?', [$status]);
+            }
         }
 
         // Type Filter (Swasta, BUMN, Multinasional, Startup)
