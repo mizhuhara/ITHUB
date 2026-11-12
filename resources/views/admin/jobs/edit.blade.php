@@ -374,15 +374,26 @@
                 </div>
 
                 {{-- Deadline --}}
+                @php
+                    $rawDeadline = old('deadline', $job['deadline'] ?? '');
+                    $deadlineFormatted = '';
+                    if (!empty($rawDeadline)) {
+                        try {
+                            $deadlineFormatted = \Carbon\Carbon::parse($rawDeadline)->format('Y-m-d');
+                        } catch (\Throwable $e) {
+                            $deadlineFormatted = $rawDeadline;
+                        }
+                    }
+                @endphp
                 <div>
-                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Deadline Lamaran</label>
+                    <label for="deadline-input" class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Deadline Lamaran</label>
                     <div class="relative">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="absolute left-3.5 top-3 text-slate-400 pointer-events-none">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
                         </svg>
-                        <input type="text" name="deadline" value="{{ old('deadline', $job['deadline'] ?? '') }}"
-                               placeholder="mis. 30 Nov 2026 atau 2026-11-30"
-                               class="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="date" id="deadline-input" name="deadline" value="{{ $deadlineFormatted }}"
+                               onclick="this.showPicker && this.showPicker()"
+                               class="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
                     </div>
                 </div>
 
