@@ -186,18 +186,24 @@
                             </div>
                         </div>
 
-                        {{-- Location --}}
+                        {{-- Location / Platform --}}
                         <div class="flex items-start gap-3">
                             <svg class="w-4 h-4 text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                             <div>
-                                <span class="font-bold text-slate-900 block">Location</span>
-                                <span>{{ $event['location'] }}</span>
-                                <a href="https://maps.google.com/?q={{ urlencode($event['location']) }}" target="_blank" class="block text-blue-600 hover:underline font-semibold mt-0.5">
-                                    View on Map
-                                </a>
+                                @if ($event->isOnline())
+                                    <span class="font-bold text-slate-900 block">Platform</span>
+                                    <span>Online</span>
+                                    <span class="block text-slate-500 mt-0.5">Link meeting dibagikan ke peserta terdaftar.</span>
+                                @else
+                                    <span class="font-bold text-slate-900 block">Location</span>
+                                    <span>{{ $event['location'] }}</span>
+                                    <a href="https://maps.google.com/?q={{ urlencode($event['location']) }}" target="_blank" class="block text-blue-600 hover:underline font-semibold mt-0.5">
+                                        View on Map
+                                    </a>
+                                @endif
                             </div>
                         </div>
 
@@ -358,24 +364,55 @@
                                     <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
                                         <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kode Tiket Resmi</p>
                                         <p class="text-lg font-extrabold tracking-widest text-slate-900 mt-1">{{ $registration->ticket_code }}</p>
-                                        <p class="text-xs mt-1 {{ $registration->checked_in_at ? 'text-emerald-600 font-semibold' : 'text-slate-500' }}">
-                                            {{ $registration->checked_in_at
-                                                ? 'Sudah check-in '.$registration->checked_in_at->format('d M Y, H:i')
-                                                : 'Belum check-in' }}
-                                        </p>
-                                        @if (!empty($ticketQr))
-                                            <img src="{{ $ticketQr }}" alt="QR Tiket {{ $registration->ticket_code }}"
-                                                 class="mx-auto mt-3 h-36 w-36">
+
+                                        @if ($event->isOnline())
+                                            @if ($event->hasMeetingLink())
+                                                <p class="text-xs mt-2 {{ $registration->hasJoinedOnline() ? 'text-emerald-600 font-semibold' : 'text-slate-500' }}">
+                                                    {{ $registration->hasJoinedOnline()
+                                                        ? 'Sudah masuk meeting '.$registration->joined_at->format('d M Y, H:i')
+                                                        : 'Belum masuk meeting' }}
+                                                </p>
+                                                <a href="{{ route('event.join', $registration->meeting_token) }}" target="_blank" rel="noopener"
+                                                   class="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-700">
+                                                    Masuk ke Meeting
+                                                </a>
+                                                <p class="mt-2 text-[10.5px] font-semibold text-amber-600">
+                                                    Link ini khusus akun Anda. Jangan dibagikan ke orang lain.
+                                                </p>
+                                            @else
+                                                <p class="text-xs mt-2 text-slate-500">
+                                                    Penyelenggara belum menambahkan link meeting.
+                                                </p>
+                                            @endif
                                             <a href="{{ route('ticket.show', $registration->ticket_code) }}"
                                                class="mt-2 inline-block text-xs font-bold text-blue-600 hover:underline">
                                                 Buka Halaman Tiket
                                             </a>
+                                        @else
+                                            <p class="text-xs mt-1 {{ $registration->checked_in_at ? 'text-emerald-600 font-semibold' : 'text-slate-500' }}">
+                                                {{ $registration->checked_in_at
+                                                    ? 'Sudah check-in '.$registration->checked_in_at->format('d M Y, H:i')
+                                                    : 'Belum check-in' }}
+                                            </p>
+                                            @if (!empty($ticketQr))
+                                                <img src="{{ $ticketQr }}" alt="QR Tiket {{ $registration->ticket_code }}"
+                                                     class="mx-auto mt-3 h-36 w-36">
+                                                <a href="{{ route('ticket.show', $registration->ticket_code) }}"
+                                                   class="mt-2 inline-block text-xs font-bold text-blue-600 hover:underline">
+                                                    Buka Halaman Tiket
+                                                </a>
+                                            @endif
                                         @endif
+
                                         @if (!empty($certificateAvailable))
                                             <a href="{{ route('ticket.certificate', $registration->ticket_code) }}"
                                                class="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700">
                                                 Unduh Sertifikat
                                             </a>
+                                        @elseif ($event->requiresOnlineAttendance())
+                                            <p class="mt-3 text-[10.5px] text-slate-500">
+                                                Sertifikat aktif setelah event selesai dan Anda masuk melalui link meeting pribadi.
+                                            </p>
                                         @endif
                                     </div>
                                 @endif
