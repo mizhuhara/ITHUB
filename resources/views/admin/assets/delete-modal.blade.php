@@ -4,7 +4,8 @@
 {{-- ========================================================================= --}}
 
 <div id="global-delete-modal" 
-     class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center p-4 transition-all duration-200"
+     style="display: none; pointer-events: none;"
+     class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-[2px] items-center justify-center p-4 transition-all duration-200"
      role="dialog" 
      aria-modal="true" 
      aria-labelledby="global-delete-title">
@@ -40,7 +41,7 @@
         </div>
 
         {{-- Action Buttons --}}
-        <form id="global-delete-form" method="POST" data-async data-async-reload class="pt-1 flex items-center justify-end gap-2.5">
+        <form id="global-delete-form" method="POST" class="pt-1 flex items-center justify-end gap-2.5">
             @csrf
             @method('DELETE')
             <button type="button" 
@@ -70,7 +71,7 @@
         const modal = document.getElementById('global-delete-modal');
         const form = document.getElementById('global-delete-form');
         const titleEl = document.getElementById('global-delete-title');
-        const nameEl = document.getElementById('global-delete-item-name');
+        let nameEl = document.getElementById('global-delete-item-name');
         const msgEl = document.getElementById('global-delete-message');
         const warnEl = document.getElementById('global-delete-warning-text');
         const submitBtn = document.getElementById('global-delete-submit-btn');
@@ -79,21 +80,30 @@
 
         globalDeleteCallback = options.onConfirm || null;
         form.action = actionUrl || '#';
-        nameEl.textContent = itemName;
 
-        if (options.title) titleEl.textContent = options.title;
-        else titleEl.textContent = 'Konfirmasi Hapus';
-
-        if (options.message) {
-            msgEl.innerHTML = options.message;
-        } else {
-            msgEl.innerHTML = `Apakah Anda yakin ingin menghapus <strong class="text-slate-800 font-semibold">${itemName}</strong>?`;
+        if (titleEl) {
+            titleEl.textContent = options.title || 'Konfirmasi Hapus';
         }
 
-        if (options.warning) warnEl.textContent = options.warning;
-        if (options.submitText) submitBtn.textContent = options.submitText;
-        else submitBtn.textContent = 'Hapus Data';
+        if (options.message) {
+            if (msgEl) msgEl.innerHTML = options.message;
+        } else {
+            if (!nameEl && msgEl) {
+                msgEl.innerHTML = `Apakah Anda yakin ingin menghapus <strong id="global-delete-item-name" class="text-slate-800 font-semibold"></strong>?`;
+                nameEl = document.getElementById('global-delete-item-name');
+            }
+            if (nameEl) {
+                nameEl.textContent = itemName;
+            }
+        }
 
+        if (warnEl && options.warning) warnEl.textContent = options.warning;
+        if (submitBtn) {
+            submitBtn.textContent = options.submitText || 'Hapus Data';
+        }
+
+        modal.style.display = 'flex';
+        modal.style.pointerEvents = 'auto';
         modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
     };
@@ -103,6 +113,8 @@
     window.closeGlobalDeleteModal = function() {
         const modal = document.getElementById('global-delete-modal');
         if (modal) {
+            modal.style.display = 'none';
+            modal.style.pointerEvents = 'none';
             modal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
             globalDeleteCallback = null;
