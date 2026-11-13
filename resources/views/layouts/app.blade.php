@@ -8,19 +8,8 @@
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
         <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @fonts
-
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-            <script src="https://cdn.tailwindcss.com"></script>
-            <style>
-                body { font-family: 'Plus Jakarta Sans', sans-serif; }
-            </style>
-        @endif
+        @fonts
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         {{-- ===== NAVBAR & FOOTER STYLES ===== --}}
         <style>
