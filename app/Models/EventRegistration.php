@@ -15,6 +15,8 @@ class EventRegistration extends Model
         'email',
         'phone',
         'ticket_code',
+        'meeting_token',
+        'joined_at',
         'checked_in_at',
         'amount',
         'payment_status',
@@ -32,6 +34,7 @@ class EventRegistration extends Model
     protected function casts(): array
     {
         return [
+            'joined_at' => 'datetime',
             'checked_in_at' => 'datetime',
             'confirmed_at' => 'datetime',
             'rejected_at' => 'datetime',
@@ -43,6 +46,7 @@ class EventRegistration extends Model
     {
         static::creating(function (self $registration) {
             $registration->ticket_code ??= 'EVT-'.Str::upper(Str::random(8));
+            $registration->meeting_token ??= 'MTG-'.Str::upper(Str::random(40));
         });
     }
 
@@ -79,6 +83,11 @@ class EventRegistration extends Model
     public function isRejected(): bool
     {
         return $this->payment_status === 'rejected';
+    }
+
+    public function hasJoinedOnline(): bool
+    {
+        return $this->joined_at !== null;
     }
 
     public function getMaskedEmailAttribute(): ?string

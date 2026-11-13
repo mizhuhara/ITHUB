@@ -121,13 +121,15 @@
                     {{-- Lokasi / Venue --}}
                     <div>
                         <label for="location" class="block text-xs font-bold text-slate-700 mb-1.5">
-                            Lokasi / Link Platform
+                            Lokasi / Venue (Event Offline)
                         </label>
                         <input id="location" name="location" type="text"
                                value="{{ old('location') }}"
-                               placeholder="Contoh: Gedung Serbaguna Kampus 1 / Zoom Meeting link"
+                               placeholder="Contoh: Gedung Serbaguna Kampus 1"
                                class="w-full h-10 px-3.5 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder-slate-400 bg-slate-50/50 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10">
                     </div>
+
+                    @include('admin.events.partials.meeting-fields', ['event' => null])
 
                     {{-- Deskripsi Event --}}
                     <div>
