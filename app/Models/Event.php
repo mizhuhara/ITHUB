@@ -33,6 +33,7 @@ class Event extends Model
         'full_date',
         'time',
         'location',
+        'meeting_url',
         'quota',
         'total_quota',
         'contact_email',
@@ -132,7 +133,9 @@ class Event extends Model
      */
     public function certificateAvailableFor(EventRegistration $registration): bool
     {
-        return $this->hasCertificate() && $registration->isConfirmed();
+        return $this->hasCertificate()
+            && $registration->isConfirmed()
+            && (! $this->requiresOnlineAttendance() || $registration->hasJoinedOnline());
     }
 
     /**
@@ -141,6 +144,30 @@ class Event extends Model
     public function isOffline(): bool
     {
         return strtolower(trim((string) $this->mode)) !== 'online';
+    }
+
+    /**
+     * Check if the event takes place online.
+     */
+    public function isOnline(): bool
+    {
+        return ! $this->isOffline();
+    }
+
+    /**
+     * Check if the organizer has configured a meeting link.
+     */
+    public function hasMeetingLink(): bool
+    {
+        return ! empty($this->meeting_url);
+    }
+
+    /**
+     * Check if certificates require the participant to join the meeting first.
+     */
+    public function requiresOnlineAttendance(): bool
+    {
+        return $this->isOnline() && $this->hasMeetingLink();
     }
 
     /**
