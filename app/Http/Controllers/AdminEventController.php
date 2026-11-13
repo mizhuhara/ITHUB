@@ -103,6 +103,7 @@ class AdminEventController extends Controller
             'date' => ['required', 'string', 'max:100'],
             'time' => ['nullable', 'string', 'max:100'],
             'location' => ['nullable', 'string', 'max:255'],
+            'meeting_url' => ['nullable', 'url:https', 'max:2048'],
             'total_quota' => ['nullable', 'integer', 'min:1'],
             'contact_email' => ['nullable', 'email', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:50'],
@@ -164,6 +165,7 @@ class AdminEventController extends Controller
             'full_date' => $validated['date'],
             'time' => ! empty($validated['time']) ? $validated['time'] : '09:00 - 15:00 (WIB)',
             'location' => ! empty($validated['location']) ? $validated['location'] : ($validated['mode'] === 'Online' ? 'Online Webinar' : null),
+            'meeting_url' => $validated['meeting_url'] ?? null,
             'quota' => ! empty($validated['total_quota']) ? "{$validated['total_quota']} Peserta" : null,
             'total_quota' => ! empty($validated['total_quota']) ? $validated['total_quota'] : null,
             'contact_email' => ! empty($validated['contact_email']) ? $validated['contact_email'] : $user->email,
@@ -263,6 +265,7 @@ class AdminEventController extends Controller
             'date' => ['required', 'string', 'max:100'],
             'time' => ['nullable', 'string', 'max:100'],
             'location' => ['nullable', 'string', 'max:255'],
+            'meeting_url' => ['nullable', 'url:https', 'max:2048'],
             'total_quota' => ['nullable', 'integer', 'min:1'],
             'contact_email' => ['nullable', 'email', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:50'],
@@ -281,6 +284,7 @@ class AdminEventController extends Controller
             'full_date' => $validated['date'],
             'time' => ! empty($validated['time']) ? $validated['time'] : $event->time,
             'location' => ! empty($validated['location']) ? $validated['location'] : ($validated['mode'] === 'Online' ? 'Online Webinar' : null),
+            'meeting_url' => $validated['meeting_url'] ?? null,
             'quota' => ! empty($validated['total_quota']) ? "{$validated['total_quota']} Peserta" : null,
             'total_quota' => ! empty($validated['total_quota']) ? $validated['total_quota'] : null,
             'contact_email' => ! empty($validated['contact_email']) ? $validated['contact_email'] : $event->contact_email,
@@ -341,6 +345,19 @@ class AdminEventController extends Controller
     {
         $this->findVisibleEvent($event->id);
         abort_unless($registration->event_id === $event->id, 404);
+
+        if ($event->isOnline()) {
+            $joined = $registration->joined_at === null;
+
+            $registration->update([
+                'joined_at' => $joined ? now() : null,
+                'checked_in_at' => $joined ? now() : null,
+            ]);
+
+            return back()->with('success', $joined
+                ? "Kehadiran online {$registration->name} ditandai."
+                : "Kehadiran online {$registration->name} dibatalkan.");
+        }
 
         $checkedIn = $registration->checked_in_at === null;
 

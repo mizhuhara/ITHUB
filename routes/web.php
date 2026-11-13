@@ -31,6 +31,7 @@ use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\InstitutionMembershipController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MyApplicationController;
+use App\Http\Controllers\OnlineEventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TicketController;
@@ -111,6 +112,9 @@ Route::post('/career/{type}/{id}/apply', [CareerController::class, 'storeApplica
     ->middleware('throttle:10,1');
 
 Route::get('/events', [EventController::class, 'index'])->name('event.index');
+Route::get('/events/join/{token}', [OnlineEventController::class, 'join'])
+    ->middleware(['auth', 'verified', 'throttle:30,1'])
+    ->name('event.join');
 Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show');
 Route::post('/events/{event}/register', [EventController::class, 'register'])
     ->middleware(['auth', 'verified', 'throttle:10,1'])
