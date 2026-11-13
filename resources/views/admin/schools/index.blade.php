@@ -11,12 +11,12 @@
     <div class="space-y-6">
 
     {{-- Action Buttons --}}
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-2.5 sm:gap-3">
             {{-- Filter Button --}}
             <button type="button" 
                     onclick="toggleFilter()" 
                     id="filterBtn"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
+                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
@@ -29,7 +29,7 @@
             {{-- Add New School Button (hanya admin) --}}
             @if (!empty($canManage))
             <a href="{{ route('admin.schools.create') }}" 
-               class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold shadow-sm transition">
+               class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold shadow-sm transition">
                 <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <path d="M12 5v14M5 12h14"/>
                 </svg>
@@ -55,11 +55,11 @@
             </button>
         </div>
 
-        <form method="GET" action="{{ route('admin.schools.index') }}" class="flex flex-wrap items-end gap-3.5">
+        <form method="GET" action="{{ route('admin.schools.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-end gap-3.5">
             @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
             @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
 
-            <div class="flex-1 min-w-[200px]">
+            <div class="w-full lg:flex-1 lg:min-w-[200px]">
                 <label class="block text-xs font-bold text-slate-600 mb-1.5">Status Sekolah</label>
                 <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-[13px] text-slate-800 outline-none focus:border-blue-600 focus:bg-white transition">
                     <option value="all" {{ (!request('status') || request('status') === 'all') ? 'selected' : '' }}>Semua Status</option>
@@ -68,7 +68,7 @@
                 </select>
             </div>
 
-            <div class="flex-1 min-w-[200px]">
+            <div class="w-full lg:flex-1 lg:min-w-[200px]">
                 <label class="block text-xs font-bold text-slate-600 mb-1.5">Tipe Sekolah</label>
                 <select name="type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-[13px] text-slate-800 outline-none focus:border-blue-600 focus:bg-white transition">
                     <option value="all" {{ (!request('type') || request('type') === 'all') ? 'selected' : '' }}>Semua Tipe</option>
@@ -79,15 +79,15 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0">
-                <a href="{{ route('admin.schools.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] hover:bg-slate-50 transition">Reset</a>
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13px] shadow-sm transition">Terapkan Filter</button>
+            <div class="flex items-center gap-2 w-full lg:w-auto shrink-0 mt-1 lg:mt-0">
+                <a href="{{ route('admin.schools.index') }}" class="flex-1 sm:flex-initial text-center px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] hover:bg-slate-50 transition">Reset</a>
+                <button type="submit" class="flex-1 sm:flex-initial text-center px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13px] shadow-sm transition">Terapkan Filter</button>
             </div>
         </form>
     </div>
 
     {{-- 3 Top Stat Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
         {{-- Card 1: SCHOOLS --}}
         <div class="card relative overflow-hidden flex flex-col justify-between">
             <div class="text-[12px] font-bold tracking-wider text-slate-400 uppercase">SCHOOLS</div>
@@ -111,9 +111,9 @@
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         
         {{-- Table Toolbar: Search & Sort --}}
-        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             {{-- Search Bar --}}
-            <form method="GET" action="{{ route('admin.schools.index') }}" class="relative flex-1 max-w-md">
+            <form method="GET" action="{{ route('admin.schools.index') }}" class="relative w-full sm:max-w-md">
                 <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3.5 h-10 w-full focus-within:border-blue-500 focus-within:bg-white transition">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-400">
                         <circle cx="11" cy="11" r="7"/>
@@ -131,7 +131,7 @@
             </form>
 
             {{-- Sort Dropdown --}}
-            <div class="flex items-center gap-2 text-[13.5px] text-slate-600 self-end sm:self-auto">
+            <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2 text-[13.5px] text-slate-600">
                 <form method="GET" action="{{ route('admin.schools.index') }}" id="sortForm" class="flex items-center gap-2">
                     @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
                     @if(request('status')) <input type="hidden" name="status" value="{{ request('status') }}"> @endif
@@ -154,7 +154,7 @@
 
         {{-- Schools Table --}}
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full min-w-[720px] text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50/75 text-[11.5px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-100">
                         <th class="cell">SCHOOL NAME</th>
@@ -279,13 +279,13 @@
         </div>
 
         {{-- Table Footer / Pagination --}}
-        <div class="p-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-left">
             <div class="text-[13px] text-slate-500">
                 Showing <span class="font-semibold text-slate-800">{{ $schools->firstItem() ?? 0 }}-{{ $schools->lastItem() ?? 0 }}</span> of <span class="font-semibold text-slate-800">{{ $schools->total() }}</span> schools
             </div>
 
             {{-- Pagination Navigation --}}
-            <div class="flex items-center gap-1.5 text-[13.5px]">
+            <div class="flex flex-wrap justify-center items-center gap-1.5 text-[13.5px]">
                 {{-- Previous Link --}}
                 @if ($schools->onFirstPage())
                     <span class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-100 text-slate-300 cursor-not-allowed select-none">‹</span>

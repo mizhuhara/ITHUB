@@ -1,6 +1,9 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Job Applications - IndoTech Admin')
+@section('title', 'Data Pelamar — IndoTech Admin')
+@section('header_title', 'Data Pelamar')
+@section('header_breadcrumb', 'Data Pelamar')
+@section('header_subtitle', 'Pantau dan kelola seluruh lamaran pekerjaan yang masuk dari para talenta.')
 
 @section('content')
 <div class="space-y-6">
