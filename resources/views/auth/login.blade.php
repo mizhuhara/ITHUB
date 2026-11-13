@@ -26,7 +26,15 @@
 
         {{-- Logo --}}
         <div class="text-center">
-            <span class="text-2xl font-extrabold tracking-tight text-slate-900 notranslate" translate="no">IT<span class="text-blue-600">Hub</span></span>
+            <a href="/" class="inline-flex flex-col items-center leading-none no-underline notranslate" translate="no">
+                <span class="text-3xl font-black tracking-tight font-sans">
+                    <span class="text-black">IT</span><span class="text-blue-600">HUB</span>
+                </span>
+                <div class="w-full self-stretch flex justify-between text-[11px] font-medium text-slate-900 mt-1 select-none" aria-hidden="true">
+                    <span>i</span><span>n</span><span>d</span><span>o</span><span>n</span><span>e</span><span>s</span><span>i</span><span>a</span>
+                </div>
+                <span class="sr-only">ITHUB indonesia</span>
+            </a>
         </div>
 
         {{-- Heading --}}

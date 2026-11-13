@@ -2,7 +2,11 @@
     <div id="it-navbar-inner">
 
         {{-- Logo --}}
-        <a href="/" id="it-logo" class="notranslate" translate="no">IT<span>Hub</span></a>
+        <a href="{{ route('dashboard') }}" class="inline-flex items-center leading-none no-underline notranslate" translate="no">
+            <span class="text-2xl sm:text-3xl font-black tracking-tight font-sans">
+                <span class="text-black">IT</span><span class="text-blue-600">HUB</span>
+            </span>
+        </a>
 
         {{-- Desktop Nav --}}
         <nav id="it-nav">
