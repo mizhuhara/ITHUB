@@ -132,6 +132,13 @@
                         $subtitle = 'Kelola dan pantau seluruh lowongan karir di platform.';
                         $parentName = null;
                     }
+                } elseif (request()->routeIs('admin.applications.*') || request()->routeIs('admin.application.*')) {
+                    $parentRoute = route('admin.applications.index');
+                    $parentName = 'Pelamar';
+                    $title = 'Data Pelamar';
+                    $breadcrumb = 'Data Pelamar';
+                    $subtitle = 'Pantau dan kelola seluruh lamaran pekerjaan yang masuk dari para talenta.';
+                    $parentName = null;
                 } elseif (request()->routeIs('admin.internships.*') || request()->routeIs('admin.internship.*')) {
                     $parentRoute = route('admin.internships.index');
                     $parentName = 'Internships';

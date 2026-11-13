@@ -584,9 +584,9 @@
             {{-- Card 4: Galeri Sekolah --}}
             <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
                 {{-- Card Header with Action --}}
-                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px]">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center shrink-0">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
                                 <rect x="3" y="3" width="18" height="18" rx="3"/>
                                 <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -603,7 +603,7 @@
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                    <label for="galleryInput" id="galleryBtnTrigger" class="self-start sm:self-auto inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
                         <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                         </svg>
@@ -762,13 +762,13 @@
                 <input type="hidden" name="longitude" id="longitudeInput" value="{{ old('longitude', $school['longitude'] ?? '') }}">
                 <input type="hidden" name="map_link" id="mapLinkInput" value="{{ old('map_link', $school['map_link'] ?? '') }}">
 
-                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-[12px] flex items-center justify-between text-slate-600">
-                    <div class="flex items-center gap-1.5 truncate max-w-[70%]">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-[12px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-slate-600">
+                    <div class="flex items-center gap-1.5 min-w-0 max-w-full">
                         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2.2" class="shrink-0">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
                         </svg>
-                        <span id="coordinateDisplay" class="font-mono font-medium truncate">
+                        <span id="coordinateDisplay" class="font-mono font-medium truncate break-all">
                             @if(!empty($school['latitude']) && !empty($school['longitude']))
                                 {{ number_format((float)$school['latitude'], 5) }}, {{ number_format((float)$school['longitude'], 5) }}
                             @else
@@ -776,7 +776,7 @@
                             @endif
                         </span>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
                         <button type="button" onclick="getCurrentLocation()" class="text-brand-600 hover:underline font-bold text-[11.5px] cursor-pointer">GPS Saya</button>
                         <span class="text-slate-300">•</span>
                         <button type="button" onclick="openInGoogleMaps()" class="text-slate-600 hover:text-blue-600 font-bold text-[11.5px] flex items-center gap-0.5 cursor-pointer">
@@ -792,14 +792,14 @@
     </div>
 
     {{-- Bottom Action Bar --}}
-    <div class="pt-6 border-t border-slate-200/80 flex items-center justify-end gap-4">
+    <div class="pt-6 border-t border-slate-200/80 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4">
         <a href="{{ route('admin.schools.index') }}" 
-           class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
+           class="w-full sm:w-auto text-center px-6 py-2.5 rounded-xl border border-slate-200 text-[14px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
             Batal
         </a>
 
         <button type="submit" 
-                class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-8H7v8M7 3v5h8"/>
