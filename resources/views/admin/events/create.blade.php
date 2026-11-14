@@ -6,7 +6,7 @@
 <div class="max-w-5xl mx-auto space-y-6">
 
     {{-- Header Bar --}}
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <a href="{{ route('admin.events.index') }}" 
                class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-600 transition mb-1">
@@ -29,13 +29,13 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
             <a href="{{ route('admin.events.index') }}" 
-               class="inline-flex items-center h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition shadow-2xs">
+               class="flex-1 sm:flex-initial inline-flex items-center justify-center h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition shadow-2xs">
                 Batal
             </a>
             <button type="submit" form="event-form" 
-                    class="inline-flex items-center gap-1.5 h-10 px-5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-sm transition">
+                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 h-10 px-5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-sm transition">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>

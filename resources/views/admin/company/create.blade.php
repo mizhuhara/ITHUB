@@ -579,15 +579,15 @@
                 <input type="hidden" name="longitude" id="longitudeInput" value="{{ old('longitude', '106.8456') }}">
                 <input type="hidden" name="map_link" id="mapLinkInput" value="{{ old('map_link') }}">
 
-                <div class="p-3 bg-slate-50 border border-slate-200/80 rounded-xl flex items-center justify-between text-[11.5px] text-slate-600">
-                    <div class="flex items-center gap-1.5">
+                <div class="p-3 bg-slate-50 border border-slate-200/80 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-[11.5px] text-slate-600">
+                    <div class="flex items-center gap-1.5 min-w-0 max-w-full">
                         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-400 shrink-0">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
                         </svg>
-                        <span>Koordinat: <b id="coordinateDisplay" class="font-mono text-slate-800">-6.20880, 106.84560</b></span>
+                        <span class="truncate">Koordinat: <b id="coordinateDisplay" class="font-mono text-slate-800 break-all">-6.20880, 106.84560</b></span>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
                         <button type="button" onclick="detectCurrentLocation()" class="text-blue-600 hover:text-blue-700 font-bold hover:underline cursor-pointer">
                             Deteksi Lokasi
                         </button>
@@ -605,18 +605,18 @@
     </div>
 
     {{-- Bottom Action Bar --}}
-    <div class="pt-6 border-t border-slate-200/80 flex items-center justify-end gap-4">
+    <div class="pt-6 border-t border-slate-200/80 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4">
         @if (auth()->user()->role === 'company')
-            <a href="{{ route('dashboard.company') }}" class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
+            <a href="{{ route('dashboard.company') }}" class="w-full sm:w-auto text-center px-6 py-2.5 rounded-xl border border-slate-200 text-[14px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
                 Batal
             </a>
         @else
-            <a href="{{ route('admin.company.index') }}" class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
+            <a href="{{ route('admin.company.index') }}" class="w-full sm:w-auto text-center px-6 py-2.5 rounded-xl border border-slate-200 text-[14px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
                 Batal
             </a>
         @endif
 
-        <button type="submit" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
+        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>

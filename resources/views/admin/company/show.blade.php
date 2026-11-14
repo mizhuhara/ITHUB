@@ -9,7 +9,7 @@
 <div class="space-y-6 max-w-7xl mx-auto">
     
     {{-- Top Back Link & Actions --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <a href="{{ route('admin.company.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -17,29 +17,28 @@
             Kembali ke Daftar
         </a>
             
-            <div class="flex items-center gap-3">
-                <a href="{{ route('admin.company.edit', $company['id']) }}" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[13.5px] font-semibold transition">
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+            <a href="{{ route('admin.company.edit', $company['id']) }}" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[13.5px] font-semibold transition">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                <span>Edit</span>
+            </a>
+            
+            <form method="POST" action="{{ route('admin.company.destroy', $company['id']) }}" class="flex-1 sm:flex-initial inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus perusahaan ini?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-[13.5px] font-semibold transition cursor-pointer">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
                     </svg>
-                    Edit
-                </a>
-                
-                <form method="POST" action="{{ route('admin.company.destroy', $company['id']) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus perusahaan ini?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-[13.5px] font-semibold transition">
-                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            <line x1="10" y1="11" x2="10" y2="17"/>
-                            <line x1="14" y1="11" x2="14" y2="17"/>
-                        </svg>
-                        Hapus
-                    </button>
-                </form>
-            </div>
+                    <span>Hapus</span>
+                </button>
+            </form>
         </div>
     </div>
 
@@ -219,9 +218,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>
                             </svg>
                         </div>
-                        <div>
+                        <div class="min-w-0">
                             <div class="text-[13px] font-semibold text-slate-500 mb-0.5">Email</div>
-                            <div class="text-[14px] font-bold text-slate-900">{{ $company['email'] ?? '-' }}</div>
+                            <div class="text-[14px] font-bold text-slate-900 break-all">{{ $company['email'] ?? '-' }}</div>
                         </div>
                     </div>
                     
@@ -231,10 +230,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/>
                             </svg>
                         </div>
-                        <div>
+                        <div class="min-w-0">
                             <div class="text-[13px] font-semibold text-slate-500 mb-0.5">Website</div>
                             @if(!empty($company['website']))
-                                <a href="{{ $company['website'] }}" target="_blank" class="text-[14px] font-bold text-blue-600 hover:underline">{{ $company['website'] }}</a>
+                                <a href="{{ $company['website'] }}" target="_blank" class="text-[14px] font-bold text-blue-600 hover:underline break-all">{{ $company['website'] }}</a>
                             @else
                                 <div class="text-[14px] font-bold text-slate-900">-</div>
                             @endif
@@ -247,9 +246,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.596-5.48-4.18-7.076-7.076l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/>
                             </svg>
                         </div>
-                        <div>
+                        <div class="min-w-0">
                             <div class="text-[13px] font-semibold text-slate-500 mb-0.5">Telepon</div>
-                            <div class="text-[14px] font-bold text-slate-900">{{ $company['phone'] ?? '-' }}</div>
+                            <div class="text-[14px] font-bold text-slate-900 break-all">{{ $company['phone'] ?? '-' }}</div>
                         </div>
                     </div>
                 </div>

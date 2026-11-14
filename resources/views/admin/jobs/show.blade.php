@@ -258,22 +258,27 @@
                         {{-- Bottom Action Row: Download Resume Button & Status Update Form --}}
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-200/70">
                             <div>
-                                <a href="{{ route('admin.jobs.applications.resume', ['job' => $job['id'], 'application' => $application->id]) }}" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold text-xs px-3.5 py-2 rounded-lg shadow-2xs transition">
+                                <a href="{{ route('admin.jobs.applications.resume', ['job' => $job['id'], 'application' => $application->id]) }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold text-xs px-3.5 py-2 rounded-lg shadow-2xs transition">
                                     <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-blue-600"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                                     <span>Download Resume (CV)</span>
                                 </a>
                             </div>
 
-                            <form action="{{ route('admin.jobs.applications.status', ['job' => $job['id'], 'application' => $application->id]) }}" method="POST" class="flex flex-wrap items-center gap-2">
+                            <form action="{{ route('admin.jobs.applications.status', ['job' => $job['id'], 'application' => $application->id]) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                                 @csrf
                                 @method('PATCH')
-                                <select name="status" class="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:border-brand-600 focus:outline-none">
-                                    @foreach (\App\Models\JobApplication::STATUS_LABELS as $sVal => $sText)
-                                        <option value="{{ $sVal }}" @selected($application->status === $sVal)>{{ $sText }}</option>
-                                    @endforeach
-                                </select>
-                                <input type="text" name="note" placeholder="Catatan (opsional)" class="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-brand-600 focus:outline-none w-36 sm:w-44">
-                                <button type="submit" class="rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 py-1.5 transition">
+                                <div class="flex gap-2">
+                                    <select name="status" class="flex-1 sm:flex-initial rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:border-brand-600 focus:outline-none">
+                                        @foreach (\App\Models\JobApplication::STATUS_LABELS as $sVal => $sText)
+                                            <option value="{{ $sVal }}" @selected($application->status === $sVal)>{{ $sText }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="sm:hidden rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3.5 py-1.5 transition shrink-0">
+                                        Update
+                                    </button>
+                                </div>
+                                <input type="text" name="note" placeholder="Catatan (opsional)" class="w-full sm:w-44 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-brand-600 focus:outline-none">
+                                <button type="submit" class="hidden sm:inline-block rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 py-1.5 transition">
                                     Update
                                 </button>
                             </form>

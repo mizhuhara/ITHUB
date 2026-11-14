@@ -109,13 +109,13 @@
                 @enderror
             </div>
 
-            <div class="pt-4 flex items-center justify-between border-t border-slate-100">
+            <div class="pt-4 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-slate-100">
                 <a href="{{ route('dashboard.company') }}" 
-                   class="inline-flex items-center h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition shadow-2xs">
+                   class="inline-flex items-center justify-center h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition shadow-2xs w-full sm:w-auto">
                     Batal
                 </a>
                 <button type="submit" 
-                        class="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-sm transition cursor-pointer">
+                        class="inline-flex items-center justify-center gap-2 h-10 px-6 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-sm transition cursor-pointer w-full sm:w-auto">
                     <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                     </svg>

@@ -142,24 +142,25 @@
 </div>
 
 {{-- Filter Tabs --}}
-<div class="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
-    <button type="button" onclick="filterBanners('all')" id="tab-all" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-bold bg-slate-900 text-white transition">
+<div class="flex items-center gap-2 mb-4 overflow-x-auto pb-1 scrollbar-none">
+    <button type="button" onclick="filterBanners('all')" id="tab-all" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[12.5px] font-bold bg-slate-900 text-white transition">
         Semua ({{ $totalBanners }})
     </button>
-    <button type="button" onclick="filterBanners('active')" id="tab-active" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
-        Slide Aktif Beranda ({{ $activeBanners }}/{{ $maxSlots }})
+    <button type="button" onclick="filterBanners('active')" id="tab-active" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
+        Slide Aktif ({{ $activeBanners }}/{{ $maxSlots }})
     </button>
-    <button type="button" onclick="filterBanners('queued')" id="tab-queued" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
+    <button type="button" onclick="filterBanners('queued')" id="tab-queued" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
         Antrean ({{ $queuedBanners }})
     </button>
-    <button type="button" onclick="filterBanners('expired')" id="tab-expired" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
-        Riwayat / Expired
+    <button type="button" onclick="filterBanners('expired')" id="tab-expired" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
+        Riwayat
     </button>
 </div>
 
 {{-- Table --}}
 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-    <div class="overflow-x-auto">
+    {{-- Desktop Table --}}
+    <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left">
             <thead>
                 <tr class="bg-slate-50 text-[11.5px] uppercase tracking-wider text-slate-500 border-b border-slate-100">
@@ -348,12 +349,113 @@
             </tbody>
         </table>
     </div>
+
+    {{-- Mobile Cards (no horizontal scroll) --}}
+    <div class="block md:hidden divide-y divide-slate-100" id="banners-tbody-mobile">
+        @forelse ($banners as $banner)
+            @php
+                $isCurrentActive = $banner->isCurrentlyActive();
+                $isQueued = $banner->status === 'queued';
+                $isExpired = $banner->status === 'expired' || ($banner->expires_at && $banner->expires_at->isPast());
+                $rowCategory = $isCurrentActive ? 'active' : ($isQueued ? 'queued' : 'expired');
+                $isOwner = $banner->user_id === auth()->id();
+            @endphp
+            <div class="banner-row px-4 py-4 space-y-3" data-category="{{ $rowCategory }}">
+                {{-- Preview + Title + Status --}}
+                <div class="flex items-start gap-3">
+                    <div class="relative w-20 h-10 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
+                        <img src="{{ $banner->image }}" alt="{{ $banner->title }}" class="h-full w-full object-cover">
+                        @if ($isCurrentActive)
+                            <span class="absolute top-1 left-1 flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-900 text-sm leading-snug break-words">{{ $banner->title }}</div>
+                        @if ($banner->subtitle)
+                            <div class="text-[11.5px] text-slate-500 mt-0.5">{{ Str::limit($banner->subtitle, 50) }}</div>
+                        @endif
+                    </div>
+                    <div class="shrink-0">
+                        @if ($isCurrentActive)
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 text-[10.5px] font-bold text-emerald-700">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Aktif
+                            </span>
+                        @elseif ($isQueued)
+                            <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200/80 px-2 py-0.5 text-[10.5px] font-bold text-amber-700">
+                                Antrean #{{ $banner->queue_position ?? 1 }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[10.5px] font-medium text-slate-500">Selesai</span>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Creator + time info --}}
+                <div class="text-xs text-slate-500 space-y-1">
+                    @if ($banner->user)
+                        <div class="font-medium text-slate-600">
+                            {{ $banner->user->school?->name ?? $banner->user->university?->name ?? $banner->user->company?->name ?? $banner->user->name }}
+                            <span class="text-slate-400 font-normal">({{ ucfirst($banner->user->role) }})</span>
+                        </div>
+                    @else
+                        <span class="font-bold text-blue-700">Admin Utama</span>
+                    @endif
+                    @if ($isCurrentActive && $banner->expires_at)
+                        <div class="text-emerald-700 font-semibold">Sisa {{ $banner->expires_at->diffForHumans(null, true) }}</div>
+                    @elseif ($isQueued)
+                        <div>Antre sejak {{ $banner->created_at->translatedFormat('d M Y') }}</div>
+                    @elseif ($isExpired && $banner->expires_at)
+                        <div>Berakhir: {{ $banner->expires_at->translatedFormat('d M Y') }}</div>
+                    @endif
+                    <div>Dibuat: {{ $banner->created_at ? $banner->created_at->translatedFormat('d M Y, H:i') : '-' }}</div>
+                </div>
+
+                {{-- Actions --}}
+                <div class="pt-2 border-t border-slate-100 flex items-center gap-2 flex-wrap">
+                    @if ($isAdmin && $isQueued)
+                        <form action="{{ route('admin.banners.promote', $banner->id) }}" method="POST" data-async data-async-follow class="inline">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer">
+                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/></svg>
+                                Tayangkan
+                            </button>
+                        </form>
+                    @endif
+                    @if ($isAdmin || $isOwner)
+                        <a href="{{ route('admin.banners.edit', $banner->id) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 transition cursor-pointer">
+                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+                            Edit
+                        </a>
+                        <button type="button"
+                                onclick="openDeleteModal('{{ $banner->id }}', '{{ addslashes($banner->title) }}')"
+                                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200/60 transition cursor-pointer">
+                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                            Hapus
+                        </button>
+                        <form id="delete-banner-form-{{ $banner->id }}" action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" class="hidden">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="px-5 py-12 text-center text-slate-400">
+                <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" class="mx-auto mb-3"><rect x="2" y="4" width="20" height="16" rx="2"/><path stroke-linecap="round" d="M2 10h20"/></svg>
+                <p class="text-[13.5px] font-medium text-slate-500">Belum ada banner terdaftar</p>
+                <p class="text-[12px] text-slate-400 mt-1">Klik tombol "Tambah Banner" untuk membuat banner baru.</p>
+            </div>
+        @endforelse
+    </div>
 </div>
 
 @push('scripts')
 <script>
     function filterBanners(type) {
-        const rows = document.querySelectorAll('.banner-row');
+        const rows = document.querySelectorAll('#banners-tbody .banner-row, #banners-tbody-mobile .banner-row');
         const tabs = document.querySelectorAll('.filter-tab');
 
         tabs.forEach(t => {
