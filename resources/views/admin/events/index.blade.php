@@ -42,9 +42,9 @@
             </p>
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto">
             <a href="{{ route('admin.events.create') }}" 
-               class="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition">
+               class="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition w-full sm:w-auto">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -54,7 +54,7 @@
     </div>
 
     {{-- Main Container Card --}}
-    <div class="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-xs space-y-6">
+    <div class="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-7 shadow-xs space-y-5 sm:space-y-6">
 
         {{-- Filter Toolbar: Segmented Pills + Search --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -135,8 +135,8 @@
 
         </div>
 
-        {{-- Table Component --}}
-        <div class="overflow-x-auto border-t border-slate-100 pt-4">
+        {{-- Table for Desktop & Tablet --}}
+        <div class="hidden md:block overflow-x-auto border-t border-slate-100 pt-4">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="text-slate-400 text-[11px] font-extrabold uppercase tracking-wider border-b border-slate-100">
@@ -273,6 +273,111 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- Mobile Cards (No Horizontal Scrolling Needed!) --}}
+        <div class="block md:hidden divide-y divide-slate-100 border-t border-slate-100 pt-1">
+            @forelse($events as $event)
+                <div class="py-3.5 space-y-2.5">
+                    {{-- Title + Status --}}
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <span class="font-bold text-slate-900 text-sm block leading-snug break-words">
+                                {{ $event['title'] }}
+                            </span>
+                            <span class="text-xs text-slate-500 font-medium block mt-0.5">
+                                {{ $event['organizer'] }}
+                            </span>
+                        </div>
+                        <div class="shrink-0">
+                            @if($event['status'] === 'Pending')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    Pending
+                                </span>
+                            @elseif($event['status'] === 'Approved')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    Approved
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                    Rejected
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Metadata info --}}
+                    <div class="flex items-center gap-2 flex-wrap text-xs text-slate-600">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                            {{ $event['type'] }}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-slate-500 text-[11.5px] font-medium">
+                            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            {{ $event['proposed_date'] }}
+                        </span>
+                    </div>
+
+                    {{-- Actions for mobile --}}
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 flex-1">
+                            <a href="{{ route('admin.events.show', $event['id']) }}"
+                               class="flex-1 inline-flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition shadow-2xs">
+                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                Detail
+                            </a>
+                            <a href="{{ route('admin.events.edit', $event['id']) }}"
+                               class="flex-1 inline-flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-blue-700 font-bold text-xs transition shadow-2xs">
+                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
+                                </svg>
+                                Edit
+                            </a>
+                            @if(!$isClientRole)
+                                <form action="{{ route('admin.events.approve', $event['id']) }}" method="POST" data-async data-async-reload class="inline">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="py-1.5 px-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs inline-flex items-center gap-1 transition shadow-2xs">
+                                        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/>
+                                        </svg>
+                                        Approve
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.events.reject', $event['id']) }}" method="POST" data-async data-async-reload class="inline">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="py-1.5 px-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs inline-flex items-center gap-1 transition shadow-2xs">
+                                        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/>
+                                        </svg>
+                                        Reject
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                        <button type="button"
+                                onclick="openDeleteModal('{{ $event['id'] }}', '{{ addslashes($event['title']) }}', '{{ addslashes($event['organizer'] ?? '') }}')"
+                                title="Hapus Event"
+                                class="p-2 rounded-xl border border-red-200 bg-red-50/70 hover:bg-red-100 text-red-600 transition shadow-2xs">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="py-10 text-center text-slate-400 font-medium text-xs">
+                    Tidak ada data event yang ditemukan.
+                </div>
+            @endforelse
         </div>
 
         {{-- Table Footer / Pagination --}}

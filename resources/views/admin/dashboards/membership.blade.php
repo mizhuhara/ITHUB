@@ -408,7 +408,8 @@
             <span class="text-[12px] font-semibold text-slate-400">{{ $payments->count() }} Pengajuan</span>
         </div>
 
-        <div class="overflow-x-auto">
+        {{-- Desktop Table --}}
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-[13px] border-collapse">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
@@ -468,6 +469,59 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- Mobile Cards --}}
+        <div class="block md:hidden divide-y divide-slate-100">
+            @forelse ($payments as $p)
+                <div class="px-4 py-4 space-y-2">
+                    {{-- Top: tanggal + status --}}
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <div class="font-semibold text-slate-900 text-[13px]">{{ $p->created_at->translatedFormat('d M Y') }}</div>
+                            <div class="text-[11.5px] text-slate-400">{{ $p->created_at->format('H:i') }} WIB</div>
+                        </div>
+                        <span class="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold {{ $p->status_badge_class }}">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
+                            {{ $p->status_label }}
+                        </span>
+                    </div>
+
+                    {{-- Paket + Nominal --}}
+                    <div class="flex items-center justify-between gap-2 text-[12.5px]">
+                        <span class="text-slate-600">{{ $p->plan_label }}</span>
+                        <span class="font-bold text-slate-900">Rp {{ number_format($p->amount, 0, ',', '.') }}</span>
+                    </div>
+
+                    {{-- Pengirim --}}
+                    <div class="text-[12px] text-slate-700">
+                        <span class="font-medium">{{ $p->sender_bank }} — {{ $p->sender_name }}</span>
+                        @if($p->sender_account_number)
+                            <div class="text-[11px] text-slate-400 font-mono">Rek: {{ $p->sender_account_number }}</div>
+                        @endif
+                    </div>
+
+                    {{-- Alasan tolak --}}
+                    @if($p->status === 'rejected' && $p->admin_notes)
+                        <div class="text-[11px] text-rose-600">Alasan: {{ $p->admin_notes }}</div>
+                    @endif
+
+                    {{-- Bukti --}}
+                    <div class="pt-1">
+                        <a href="{{ $p->proof_url }}" target="_blank" rel="noopener"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 text-[12px] font-semibold transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                            Lihat Bukti Transfer
+                        </a>
+                    </div>
+                </div>
+            @empty
+                <div class="py-8 text-center text-slate-400 text-[13px]">
+                    Belum ada riwayat pengajuan pembayaran.
+                </div>
+            @endforelse
         </div>
     </div>
 
