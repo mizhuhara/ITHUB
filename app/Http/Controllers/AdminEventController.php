@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\School;
 use App\Models\University;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -114,11 +115,11 @@ class AdminEventController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = Storage::url($request->file('image')->store('events', 'public'));
+            $imagePath = Storage::url(ImageUploadService::storeAndOptimize($request->file('image'), 'events'));
         }
 
         $certificateTemplate = $request->hasFile('certificate_template')
-            ? $request->file('certificate_template')->store('events/certificates', 'public')
+            ? ImageUploadService::storeAndOptimize($request->file('certificate_template'), 'events/certificates')
             : null;
 
         $certificateEnabled = $request->boolean('certificate_enabled');
@@ -298,11 +299,11 @@ class AdminEventController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $payload['image'] = Storage::url($request->file('image')->store('events', 'public'));
+            $payload['image'] = Storage::url(ImageUploadService::storeAndOptimize($request->file('image'), 'events'));
         }
 
         if ($request->hasFile('certificate_template')) {
-            $payload['certificate_template'] = $request->file('certificate_template')->store('events/certificates', 'public');
+            $payload['certificate_template'] = ImageUploadService::storeAndOptimize($request->file('certificate_template'), 'events/certificates');
         }
 
         if ($request->boolean('certificate_enabled') && empty($payload['certificate_template'] ?? $event->certificate_template)) {
@@ -429,7 +430,7 @@ class AdminEventController extends Controller
     {
         return [
             'certificate_enabled' => ['nullable', 'boolean'],
-            'certificate_template' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'certificate_template' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'certificate_name_x' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'certificate_name_y' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'certificate_name_font_size' => ['nullable', 'integer', 'min:8', 'max:200'],

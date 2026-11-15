@@ -7,6 +7,7 @@ use App\Models\CommunityMessage;
 use App\Models\CommunityMessageAttachment;
 use App\Models\CommunityMessageRead;
 use App\Models\User;
+use App\Services\ImageUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -306,7 +307,7 @@ class CommunityChatController extends Controller
 
             // Save new direct uploaded files
             foreach ($preparedAttachments as $item) {
-                $storedPath = $item['file']->store('community_chat/'.$community->id, 'local');
+                $storedPath = ImageUploadService::storeAndOptimize($item['file'], 'community_chat/'.$community->id, 'local');
 
                 CommunityMessageAttachment::create([
                     'message_id' => $msg->id,

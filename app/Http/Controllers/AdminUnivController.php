@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\University;
 use App\Models\UserReport;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -151,9 +152,9 @@ class AdminUnivController extends Controller
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'map_link' => ['nullable', 'string', 'max:500'],
-            'logo' => ['nullable', 'image', 'max:5120'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'gallery' => ['nullable', 'array'],
-            'gallery.*' => ['image', 'max:5120'],
+            'gallery.*' => ['image', 'max:2048'],
         ]);
 
         $locations = array_map('trim', explode(',', $validated['location']));
@@ -195,7 +196,7 @@ class AdminUnivController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $path = $file->store('universities/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'universities/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -203,7 +204,7 @@ class AdminUnivController extends Controller
         if ($request->hasFile('gallery')) {
             $galleryUrls = [];
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('universities/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'universities/gallery');
                 $galleryUrls[] = Storage::url($path);
             }
             $data['gallery'] = array_values(array_slice($galleryUrls, 0, 4));
@@ -292,9 +293,9 @@ class AdminUnivController extends Controller
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'map_link' => ['nullable', 'string', 'max:500'],
-            'logo' => ['nullable', 'image', 'max:5120'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'max:5120'],
+            'gallery.*' => ['image', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'tags' => ['nullable', 'array'],
@@ -340,7 +341,7 @@ class AdminUnivController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $path = $file->store('universities/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'universities/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -353,7 +354,7 @@ class AdminUnivController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('universities/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'universities/gallery');
                 $gallery[] = Storage::url($path);
             }
         }

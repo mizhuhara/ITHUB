@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -60,7 +61,7 @@ class ProfileController extends Controller
             if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $payload['avatar'] = $request->file('avatar')->store('avatars', 'public');
+            $payload['avatar'] = ImageUploadService::storeAndOptimize($request->file('avatar'), 'avatars');
         }
 
         if ($request->boolean('remove_cv')) {
