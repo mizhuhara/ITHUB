@@ -5,7 +5,7 @@
 @section('content')
 {{-- Action Button --}}
 <div class="flex items-center justify-end mb-6">
-    <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center gap-2 h-10 px-4 rounded-lg bg-brand-600 text-white text-[13.5px] font-semibold hover:bg-blue-700 shadow-sm transition">
+    <a href="{{ route('admin.articles.create') }}" class="w-full sm:w-auto justify-center inline-flex items-center gap-2 h-10 px-4 rounded-lg bg-brand-600 text-white text-[13.5px] font-semibold hover:bg-blue-700 shadow-sm transition">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         Buat Artikel Baru
     </a>
@@ -52,30 +52,117 @@
 
 {{-- Table --}}
 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-4 border-b border-slate-100">
         <div>
             <h2 class="text-[16px] font-bold text-slate-900">Semua Artikel</h2>
             <p class="text-[12.5px] text-slate-500">Total {{ $articles->total() }} artikel</p>
         </div>
         {{-- Search + filter --}}
-        <form method="GET" action="{{ route('admin.articles.index') }}" class="flex items-center gap-2">
+        <form method="GET" action="{{ route('admin.articles.index') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <input type="text" name="search" value="{{ $search }}" placeholder="Cari judul artikel..."
-                   class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-[13px] text-slate-600 outline-none focus:border-blue-500 w-52">
-            <select name="tab" onchange="this.form.submit()"
-                    class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-[13px] text-slate-600 focus:outline-none focus:border-blue-500">
-                <option value="all"      {{ $currentTab === 'all'      ? 'selected' : '' }}>Semua Status</option>
-                <option value="pending"  {{ $currentTab === 'pending'  ? 'selected' : '' }}>Menunggu Approval ({{ $pendingCount }})</option>
-                <option value="published"{{ $currentTab === 'published' ? 'selected' : '' }}>Tayang (Published)</option>
-                <option value="draft"    {{ $currentTab === 'draft'    ? 'selected' : '' }}>Draf (Draft)</option>
-                <option value="rejected" {{ $currentTab === 'rejected' ? 'selected' : '' }}>Ditolak (Rejected)</option>
-                <option value="archived" {{ $currentTab === 'archived' ? 'selected' : '' }}>Arsip (Archived)</option>
-            </select>
-            <button type="submit" class="h-9 px-3 rounded-lg bg-brand-600 text-white text-[13px] font-semibold hover:bg-blue-700 transition">Cari</button>
+                   class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-[13px] text-slate-600 outline-none focus:border-blue-500 w-full sm:w-52">
+            <div class="flex items-center gap-2">
+                <select name="tab" onchange="this.form.submit()"
+                        class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-[13px] text-slate-600 focus:outline-none focus:border-blue-500 flex-1 sm:flex-none min-w-0">
+                    <option value="all"      {{ $currentTab === 'all'      ? 'selected' : '' }}>Semua Status</option>
+                    <option value="pending"  {{ $currentTab === 'pending'  ? 'selected' : '' }}>Menunggu Approval ({{ $pendingCount }})</option>
+                    <option value="published"{{ $currentTab === 'published' ? 'selected' : '' }}>Tayang (Published)</option>
+                    <option value="draft"    {{ $currentTab === 'draft'    ? 'selected' : '' }}>Draf (Draft)</option>
+                    <option value="rejected" {{ $currentTab === 'rejected' ? 'selected' : '' }}>Ditolak (Rejected)</option>
+                    <option value="archived" {{ $currentTab === 'archived' ? 'selected' : '' }}>Arsip (Archived)</option>
+                </select>
+                <button type="submit" class="h-9 px-4 rounded-lg bg-brand-600 text-white text-[13px] font-semibold hover:bg-blue-700 transition shrink-0">Cari</button>
+            </div>
         </form>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-left">
+    {{-- Mobile card list (visible on small screens) --}}
+    <div class="block sm:hidden divide-y divide-slate-100">
+        @forelse ($articles as $article)
+            @php
+                $initials = collect(explode(' ', $article->author_name))->take(2)->map(fn($w) => strtoupper(substr($w,0,1)))->implode('');
+                $statusCfg = match($article->status) {
+                    'published' => 'bg-emerald-50 text-emerald-700 border-emerald-200/80 before:bg-emerald-500',
+                    'pending'   => 'bg-amber-50 text-amber-700 border-amber-200/80 before:bg-amber-500',
+                    'rejected'  => 'bg-rose-50 text-rose-700 border-rose-200/80 before:bg-rose-500',
+                    'archived'  => 'bg-slate-100 text-slate-600 border-slate-200 before:bg-slate-400',
+                    default     => 'bg-slate-100 text-slate-700 border-slate-200 before:bg-slate-400',
+                };
+                $statusLabel = match($article->status) {
+                    'published' => 'Tayang',
+                    'pending'   => 'Pending',
+                    'rejected'  => 'Ditolak',
+                    'archived'  => 'Arsip',
+                    default     => 'Draf',
+                };
+                $isSuperAdmin = in_array(auth()->user()->role, ['super_admin', 'admin'], true);
+            @endphp
+            <div class="px-4 py-3.5 space-y-2.5">
+                {{-- Title + Status --}}
+                <div class="flex items-start justify-between gap-2">
+                    <a href="{{ route('admin.articles.edit', $article->id) }}" class="text-[13.5px] font-semibold text-slate-900 hover:text-blue-600 transition leading-snug line-clamp-2 flex-1 min-w-0">{{ $article->title }}</a>
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border {{ $statusCfg }} before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full shrink-0">{{ $statusLabel }}</span>
+                </div>
+                {{-- Meta row --}}
+                <div class="flex items-center gap-3 text-[12px] text-slate-500">
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-[9px] font-bold">{{ $initials }}</span>
+                        {{ $article->author_name }}
+                    </span>
+                    <span class="text-slate-300">•</span>
+                    <span>{{ $article->category }}</span>
+                    <span class="text-slate-300">•</span>
+                    <span>{{ $article->formatted_date }}</span>
+                </div>
+                {{-- Actions --}}
+                <div class="flex items-center gap-1.5 pt-0.5">
+                    @if($isSuperAdmin && $article->status !== 'published')
+                        <form action="{{ route('admin.articles.approve', $article->id) }}" method="POST" data-async data-async-reload class="inline">
+                            @csrf
+                            <button type="submit" title="Setujui"
+                                    class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-[11px] px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition shadow-2xs">
+                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
+                                Approve
+                            </button>
+                        </form>
+                    @endif
+                    @if($isSuperAdmin && $article->status === 'pending')
+                        <form action="{{ route('admin.articles.reject', $article->id) }}" method="POST" data-async data-async-reload class="inline">
+                            @csrf
+                            <button type="submit" title="Tolak"
+                                    class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/90 font-bold text-[11px] px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition shadow-2xs">
+                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+                                Reject
+                            </button>
+                        </form>
+                    @endif
+                    <div class="flex-1"></div>
+                    <a href="{{ route('admin.articles.edit', $article->id) }}"
+                       class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition" title="Edit">
+                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </a>
+                    <form method="POST" action="{{ route('admin.articles.destroy', $article->id) }}"
+                          onsubmit="return confirm('Hapus artikel ini?')" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition" title="Hapus">
+                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6m4-6v6"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="px-4 py-12 text-center text-slate-400">
+                <svg class="mx-auto mb-3 text-slate-300" width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 12h6"/></svg>
+                <p class="text-[14px] font-medium">Belum ada artikel</p>
+                <p class="text-[12.5px] mt-1">Klik <strong>Buat Artikel Baru</strong> untuk membuat artikel pertama.</p>
+            </div>
+        @endforelse
+    </div>
+
+    {{-- Desktop table (hidden on small screens) --}}
+    <div class="hidden sm:block overflow-x-auto">
+        <table class="w-full min-w-[800px] text-left">
             <thead>
                 <tr class="bg-slate-50 text-[11.5px] uppercase tracking-wider text-slate-500">
                     <th class="px-5 py-3 font-semibold">JUDUL ARTIKEL</th>

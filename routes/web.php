@@ -224,6 +224,7 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/community-approvals/{community}', [AdminCommunityApprovalController::class, 'show'])->name('admin.community-approvals.show');
     Route::post('/admin/community-approvals/{community}/approve', [AdminCommunityApprovalController::class, 'approve'])->name('admin.community-approvals.approve');
     Route::post('/admin/community-approvals/{community}/reject', [AdminCommunityApprovalController::class, 'reject'])->name('admin.community-approvals.reject');
+    Route::delete('/admin/community-approvals/{community}', [AdminCommunityApprovalController::class, 'destroy'])->name('admin.community-approvals.destroy');
 
     // Admin Jobs Management
     Route::get('/admin/jobs', [AdminJobController::class, 'index'])->name('admin.jobs.index');

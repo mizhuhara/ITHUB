@@ -6,35 +6,35 @@
 <div class="space-y-6">
 
     {{-- Action Buttons --}}
-    <div class="flex items-center justify-end gap-3">
-            {{-- Filter Button --}}
-            <div class="relative" x-data="{ open: false }">
-                <button type="button" 
-                        onclick="document.getElementById('filterModal').classList.toggle('hidden')"
-                        class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                    </svg>
-                    Filter
-                </button>
-            </div>
-
-
-            {{-- Add New University Button (hanya admin) --}}
-            @if (!empty($canManage))
-            <a href="{{ route('admin.univ.create') }}" 
-               class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold shadow-sm transition">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <path d="M12 5v14M5 12h14"/>
+    <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2.5">
+        {{-- Filter Button --}}
+        <div class="relative w-full sm:w-auto" x-data="{ open: false }">
+            <button type="button"
+                onclick="document.getElementById('filterModal').classList.toggle('hidden')"
+                class="w-full sm:w-auto justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
-                Add New University
-            </a>
-            @endif
+                Filter
+            </button>
+        </div>
+
+
+        {{-- Add New University Button (hanya admin) --}}
+        @if (!empty($canManage))
+        <a href="{{ route('admin.univ.create') }}"
+            class="w-full sm:w-auto justify-center flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold shadow-sm transition">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add New University
+        </a>
+        @endif
     </div>
 
     {{-- Filter Modal / Drawer (Collapsible) --}}
     <div id="filterModal" class="hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm transition">
-        <form method="GET" action="{{ route('admin.univ.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <form method="GET" action="{{ route('admin.univ.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div>
                 <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Status</label>
                 <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500">
@@ -85,38 +85,38 @@
 
     {{-- Main Table Container Card --}}
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        
+
         {{-- Table Toolbar: Search & Sort --}}
-        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             {{-- Search Bar --}}
-            <form method="GET" action="{{ route('admin.univ.index') }}" class="relative flex-1 max-w-md">
+            <form method="GET" action="{{ route('admin.univ.index') }}" class="relative w-full sm:max-w-md">
                 <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3.5 h-10 w-full focus-within:border-blue-500 focus-within:bg-white transition">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-400">
-                        <circle cx="11" cy="11" r="7"/>
-                        <path stroke-linecap="round" d="m21 21-4.35-4.35"/>
+                        <circle cx="11" cy="11" r="7" />
+                        <path stroke-linecap="round" d="m21 21-4.35-4.35" />
                     </svg>
-                    <input type="text" 
-                           name="search" 
-                           value="{{ request('search') }}" 
-                           placeholder="Search Universitas..." 
-                           class="bg-transparent outline-none text-[13.5px] text-slate-800 placeholder-slate-400 flex-1 min-w-0">
+                    <input type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Search Universitas..."
+                        class="bg-transparent outline-none text-[13.5px] text-slate-800 placeholder-slate-400 flex-1 min-w-0">
                     @if(request('search'))
-                        <a href="{{ route('admin.univ.index') }}" class="text-xs text-slate-400 hover:text-slate-600 font-bold">&times;</a>
+                    <a href="{{ route('admin.univ.index') }}" class="text-xs text-slate-400 hover:text-slate-600 font-bold">&times;</a>
                     @endif
                 </div>
             </form>
 
             {{-- Sort Dropdown --}}
-            <div class="flex items-center gap-2 text-[13.5px] text-slate-600 self-end sm:self-auto">
+            <div class="flex items-center justify-between sm:justify-end gap-2 text-[13.5px] text-slate-600 w-full sm:w-auto">
                 <form method="GET" action="{{ route('admin.univ.index') }}" id="sortForm" class="flex items-center gap-2">
                     @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
                     @if(request('status')) <input type="hidden" name="status" value="{{ request('status') }}"> @endif
                     @if(request('type')) <input type="hidden" name="type" value="{{ request('type') }}"> @endif
-                    
+
                     <span class="text-slate-500 font-medium">Sort by:</span>
-                    <select name="sort" 
-                            onchange="document.getElementById('sortForm').submit()"
-                            class="bg-transparent font-semibold text-slate-900 outline-none cursor-pointer pr-4 hover:text-blue-600 transition">
+                    <select name="sort"
+                        onchange="document.getElementById('sortForm').submit()"
+                        class="bg-transparent font-semibold text-slate-900 outline-none cursor-pointer pr-4 hover:text-blue-600 transition">
                         <option value="recently_added" {{ request('sort') === 'recently_added' ? 'selected' : '' }}>Recently Added ▾</option>
                         <option value="region_asc" {{ request('sort') === 'region_asc' ? 'selected' : '' }}>Daerah (A-Z) ▾</option>
                         <option value="region_desc" {{ request('sort') === 'region_desc' ? 'selected' : '' }}>Daerah (Z-A) ▾</option>
@@ -130,7 +130,7 @@
 
         {{-- Universities Table --}}
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50/75 text-[11.5px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-100">
                         <th class="cell">UNIVERSITY NAME</th>
@@ -142,110 +142,113 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 text-[13.5px]">
                     @forelse ($univs as $univ)
-                        <tr class="hover:bg-slate-50/70 transition group">
-                            {{-- University Name & NPSN & Logo --}}
-                            <td class="cell">
-                                <div class="flex items-center gap-3.5">
-                                    {{-- Logo Avatar --}}
-                                    <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-brand-600 font-bold text-xs shrink-0 overflow-hidden shadow-2xs">
-                                        @if(!empty($univ['logo_url']))
-                                            <img src="{{ $univ['logo_url'] }}" alt="{{ $univ['name'] }}" class="w-full h-full object-cover">
-                                        @else
-                                            <span class="font-extrabold">{{ $univ['logo_text'] ?? 'UNIV' }}</span>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <a href="{{ route('admin.univ.show', $univ['id']) }}" class="font-bold text-slate-900 hover:text-blue-600 transition block leading-snug">
-                                            {{ $univ['name'] }}
-                                        </a>
-                                        <div class="text-[12px] text-slate-400 mt-0.5">
-                                            NPSN: {{ $univ['npsn'] }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-
-                            {{-- Type Badge --}}
-                            <td class="cell">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-medium bg-[#eef4ff] text-brand-600">
-                                    {{ $univ['type'] ?? 'Negeri' }}
-                                </span>
-                            </td>
-
-                            {{-- Location --}}
-                            <td class="cell">
-                                <div class="font-semibold text-slate-800 leading-tight">
-                                    {{ $univ['city'] }}
-                                </div>
-                                <div class="text-[12px] text-slate-400 mt-0.5">
-                                    {{ $univ['province'] }}
-                                </div>
-                            </td>
-
-                            {{-- Status --}}
-                            <td class="cell">
-                                @if(strtolower($univ['status']) === 'active')
-                                    <span class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-800">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        Active
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-800">
-                                        <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                                        Inactive
-                                    </span>
-                                @endif
-                            </td>
-
-                            {{-- Actions --}}
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-3 text-slate-400">
-                                    {{-- View Icon (Eye) --}}
-                                    <a href="{{ route('admin.univ.show', $univ['id']) }}" class="hover:text-slate-700 transition" title="Lihat Detail Universitas">
-                                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.573 16.49 16.638 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                        </svg>
-                                    </a>
-
-                                    {{-- Edit Icon --}}
-                                    <a href="{{ route('admin.univ.edit', $univ['id']) }}" class="hover:text-blue-600 transition" title="Edit Data Universitas">
-                                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/>
-                                        </svg>
-                                    </a>
-
-                                    {{-- Delete Button with Form (admin only) --}}
-                                    @if (!empty($canManage))
-                                    <form id="delete-form-{{ $univ['id'] }}" method="POST" action="{{ route('admin.univ.destroy', $univ['id']) }}" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" 
-                                                onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ $univ['npsn'] ?? '' }}', '{{ addslashes($univ['city'] ?? '') }}')"
-                                                class="hover:text-red-600 transition" 
-                                                title="Hapus Universitas">
-                                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                            </svg>
-                                        </button>
-                                    </form>
+                    <tr class="hover:bg-slate-50/70 transition group">
+                        {{-- University Name & NPSN & Logo --}}
+                        <td class="cell">
+                            <div class="flex items-center gap-3.5">
+                                {{-- Logo Avatar --}}
+                                <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-brand-600 font-bold text-xs shrink-0 overflow-hidden shadow-2xs">
+                                    @if(!empty($univ['logo_url']))
+                                    <img src="{{ $univ['logo_url'] }}" alt="{{ $univ['name'] }}" class="w-full h-full object-cover">
+                                    @else
+                                    <span class="font-extrabold">{{ $univ['logo_text'] ?? 'UNIV' }}</span>
                                     @endif
                                 </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-500">
-                                <div class="max-w-sm mx-auto space-y-3">
-                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
-                                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+                                <div>
+                                    <a href="{{ route('admin.univ.show', $univ['id']) }}" class="font-bold text-slate-900 hover:text-blue-600 transition block leading-snug">
+                                        {{ $univ['name'] }}
+                                    </a>
+                                    <div class="text-[12px] text-slate-400 mt-0.5">
+                                        NPSN: {{ $univ['npsn'] }}
                                     </div>
-                                    <div class="font-bold text-slate-800">Tidak ada data universitas ditemukan</div>
-                                    <p class="text-xs text-slate-400">Coba ubah kata kunci pencarian atau filter status Anda.</p>
-                                    <a href="{{ route('admin.univ.index') }}" class="inline-block text-xs font-semibold text-blue-600 hover:underline">Reset Pencarian</a>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+
+                        {{-- Type Badge --}}
+                        <td class="cell">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-medium bg-[#eef4ff] text-brand-600">
+                                {{ $univ['type'] ?? 'Negeri' }}
+                            </span>
+                        </td>
+
+                        {{-- Location --}}
+                        <td class="cell">
+                            <div class="font-semibold text-slate-800 leading-tight">
+                                {{ $univ['city'] }}
+                            </div>
+                            <div class="text-[12px] text-slate-400 mt-0.5">
+                                {{ $univ['province'] }}
+                            </div>
+                        </td>
+
+                        {{-- Status --}}
+                        <td class="cell">
+                            @if(strtolower($univ['status']) === 'active')
+                            <span class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-800">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Active
+                            </span>
+                            @else
+                            <span class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-slate-800">
+                                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                Inactive
+                            </span>
+                            @endif
+                        </td>
+
+                        {{-- Actions --}}
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-3 text-slate-400">
+                                {{-- View Icon (Eye) --}}
+                                <a href="{{ route('admin.univ.show', $univ['id']) }}" class="hover:text-slate-700 transition" title="Lihat Detail Universitas">
+                                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.573 16.49 16.638 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                </a>
+
+                                {{-- Edit Icon --}}
+                                <a href="{{ route('admin.univ.edit', $univ['id']) }}" class="hover:text-blue-600 transition" title="Edit Data Universitas">
+                                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>
+                                </a>
+
+                                {{-- Delete Button with Form (admin only) --}}
+                                @if (!empty($canManage))
+                                <form id="delete-form-{{ $univ['id'] }}" method="POST" action="{{ route('admin.univ.destroy', $univ['id']) }}" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                        onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ $univ['npsn'] ?? '' }}', '{{ addslashes($univ['city'] ?? '') }}')"
+                                        class="hover:text-red-600 transition"
+                                        title="Hapus Universitas">
+                                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                            <div class="max-w-sm mx-auto space-y-3">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <circle cx="11" cy="11" r="7" />
+                                        <path d="m21 21-4.35-4.35" />
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-slate-800">Tidak ada data universitas ditemukan</div>
+                                <p class="text-xs text-slate-400">Coba ubah kata kunci pencarian atau filter status Anda.</p>
+                                <a href="{{ route('admin.univ.index') }}" class="inline-block text-xs font-semibold text-blue-600 hover:underline">Reset Pencarian</a>
+                            </div>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -261,26 +264,26 @@
             <div class="flex items-center gap-1.5 text-[13.5px]">
                 {{-- Previous Link --}}
                 @if ($univs->onFirstPage())
-                    <span class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-100 text-slate-300 cursor-not-allowed select-none">‹</span>
+                <span class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-100 text-slate-300 cursor-not-allowed select-none">‹</span>
                 @else
-                    <a href="{{ $univs->previousPageUrl() }}" class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition">‹</a>
+                <a href="{{ $univs->previousPageUrl() }}" class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition">‹</a>
                 @endif
 
                 {{-- Page Number Links --}}
                 @for ($page = 1; $page <= max(1, $univs->lastPage()); $page++)
                     @if ($page == $univs->currentPage())
-                        <span class="w-8 h-8 rounded-lg flex items-center justify-center bg-brand-600 text-white font-bold shadow-xs select-none">{{ $page }}</span>
+                    <span class="w-8 h-8 rounded-lg flex items-center justify-center bg-brand-600 text-white font-bold shadow-xs select-none">{{ $page }}</span>
                     @else
-                        <a href="{{ $univs->url($page) }}" class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition">{{ $page }}</a>
+                    <a href="{{ $univs->url($page) }}" class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition">{{ $page }}</a>
                     @endif
-                @endfor
+                    @endfor
 
-                {{-- Next Link --}}
-                @if ($univs->hasMorePages())
+                    {{-- Next Link --}}
+                    @if ($univs->hasMorePages())
                     <a href="{{ $univs->nextPageUrl() }}" class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition">›</a>
-                @else
+                    @else
                     <span class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-100 text-slate-300 cursor-not-allowed select-none">›</span>
-                @endif
+                    @endif
             </div>
         </div>
 
@@ -292,7 +295,7 @@
 <script>
     function openDeleteModal(id, name, npsn, city) {
         let extra = npsn && city ? ` (${npsn} - ${city})` : (npsn ? ` (${npsn})` : (city ? ` (${city})` : ''));
-        window.confirmDelete(`{{ url('/admin/univ') }}/${id}`, `${name}${extra}`, {
+        window.confirmDelete(`{{ route('admin.univ.destroy', ['id' => '__ID__']) }}`.replace('__ID__', id), `${name}${extra}`, {
             title: 'Konfirmasi Hapus Universitas',
             warning: 'Peringatan: Tindakan ini permanen dan data universitas tidak dapat dikembalikan.'
         });

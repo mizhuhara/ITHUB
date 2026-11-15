@@ -1,7 +1,8 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Status Membership & Perpanjangan — ITHub')
-@section('header_title', 'Status Keanggotaan & Perpanjangan Membership')
+@section('header_title', 'Status Keanggotaan & Perpanjangan')
+@section('header_breadcrumb', 'Status Keanggotaan')
 @section('header_subtitle', 'Pantau masa aktif keanggotaan institusi, informasi rekening pembayaran, dan ajukan perpanjangan keanggotaan.')
 
 @section('content')
@@ -95,8 +96,8 @@
     {{-- Main Status Overview Card --}}
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         {{-- Header Identitas Institusi --}}
-        <div class="px-6 py-5 sm:px-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div class="flex items-center gap-4 min-w-0">
+        <div class="px-5 py-4 sm:px-8 sm:py-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3 sm:gap-4 min-w-0">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
                     @php
                         $role = $user->role;
@@ -159,7 +160,7 @@
         {{-- Stat Cards Grid --}}
         <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
             {{-- Sisa Masa Aktif --}}
-            <div class="p-6">
+            <div class="p-4 sm:p-6">
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Sisa Masa Aktif</span>
                 <div class="mt-2 flex items-baseline gap-1.5">
                     <span class="text-[28px] font-bold tracking-tight leading-none
@@ -178,7 +179,7 @@
             </div>
 
             {{-- Mulai Berlangganan --}}
-            <div class="p-6">
+            <div class="p-4 sm:p-6">
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Mulai Terdaftar</span>
                 <div class="mt-2">
                     <span class="text-[17px] font-bold text-slate-900 leading-snug">
@@ -195,7 +196,7 @@
             </div>
 
             {{-- Status Fitur Premium --}}
-            <div class="p-6">
+            <div class="p-4 sm:p-6">
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Status Akses</span>
                 <div class="mt-2 flex items-center gap-2">
                     @if ($user->is_premium_active)
@@ -217,7 +218,7 @@
         {{-- Kolom Kiri: Informasi Rekening --}}
         <div class="space-y-4">
             {{-- Card Rekening Resmi ITHub --}}
-            <div class="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-xs space-y-4">
+            <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-xs space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-800">
                     <span class="text-[11px] font-bold tracking-wider uppercase text-slate-400">Rekening Resmi</span>
                     <span class="text-[11px] font-semibold text-blue-400">ITHub</span>
@@ -287,7 +288,7 @@
         </div>
 
         {{-- Kolom Kanan: Form Konfirmasi Pembayaran --}}
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 sm:p-7">
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 sm:p-7">
             <div class="flex items-center gap-3 pb-5 border-b border-slate-100">
                 <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
@@ -400,16 +401,78 @@
 
     {{-- Riwayat Pengajuan Pembayaran --}}
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
                 <h3 class="text-[15px] font-bold text-slate-900">Riwayat Pengajuan Pembayaran</h3>
                 <p class="text-[12px] text-slate-500">Daftar konfirmasi pembayaran membership institusi.</p>
             </div>
-            <span class="text-[12px] font-semibold text-slate-400">{{ $payments->count() }} Pengajuan</span>
+            <span class="self-start sm:self-auto text-[12px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">{{ $payments->count() }} Pengajuan</span>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-[13px] border-collapse">
+        {{-- Mobile Card List View --}}
+        <div class="block sm:hidden divide-y divide-slate-100">
+            @forelse ($payments as $p)
+                <div class="p-4 space-y-3 bg-white">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="font-bold text-[13.5px] text-slate-900 block">{{ $p->plan_label }}</span>
+                            <span class="text-[11.5px] text-slate-400">{{ $p->created_at->translatedFormat('d M Y, H:i') }} WIB</span>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold shrink-0 {{ $p->status_badge_class }}">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
+                            {{ $p->status_label }}
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-50/80 rounded-xl p-3 border border-slate-100 space-y-1.5 text-[12px]">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500">Nominal:</span>
+                            <span class="font-bold text-slate-900 text-[13px]">Rp {{ number_format($p->amount, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500">Pengirim:</span>
+                            <span class="font-medium text-slate-800 text-right">{{ $p->sender_bank }} — {{ $p->sender_name }}</span>
+                        </div>
+                        @if($p->sender_account_number)
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500">No. Rekening:</span>
+                                <span class="font-mono text-slate-600">{{ $p->sender_account_number }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    @if($p->status === 'rejected' && $p->admin_notes)
+                        <div class="p-2.5 rounded-xl bg-rose-50 border border-rose-100 text-[11.5px] text-rose-700">
+                            <strong class="font-semibold block mb-0.5">Catatan Penolakan:</strong>
+                            {{ $p->admin_notes }}
+                        </div>
+                    @endif
+
+                    <div class="pt-1">
+                        <a href="{{ $p->proof_url }}" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 text-[12px] font-semibold transition border border-blue-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                            Lihat Bukti Transfer
+                        </a>
+                    </div>
+                </div>
+            @empty
+                <div class="py-10 px-4 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                    </div>
+                    <span class="font-bold text-[13.5px] text-slate-800 block">Belum ada riwayat pengajuan pembayaran</span>
+                    <span class="text-[12px] text-slate-400 mt-1 block max-w-xs mx-auto">Setelah Anda mengirim konfirmasi bukti transfer, riwayat pengajuan akan tampil di sini.</span>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Desktop Table View --}}
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full text-left text-[13px] border-collapse min-w-[700px]">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
                         <th class="py-3 px-4">Tanggal</th>
@@ -461,8 +524,14 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-8 text-center text-slate-400 text-[13px]">
-                                Belum ada riwayat pengajuan pembayaran.
+                            <td colspan="6" class="py-10 text-center text-slate-400 text-[13px]">
+                                <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 mx-auto flex items-center justify-center mb-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-slate-700 block">Belum ada riwayat pengajuan pembayaran.</span>
+                                <span class="text-[12px] text-slate-400 mt-0.5 block">Setelah Anda mengirim bukti pembayaran, statusnya akan tampil di sini.</span>
                             </td>
                         </tr>
                     @endforelse

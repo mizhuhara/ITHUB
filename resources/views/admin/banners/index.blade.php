@@ -10,19 +10,19 @@
         <p class="text-[13px] text-slate-500">Maksimal 5 slide aktif di beranda. Banner promosi berikutnya otomatis masuk sistem antrean bergilir.</p>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 w-full sm:w-auto">
         @if ($canCreateBanner)
-            <a href="{{ route('admin.banners.create') }}" class="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-brand-600 text-white text-[13.5px] font-semibold hover:bg-blue-700 shadow-sm transition">
+            <a href="{{ route('admin.banners.create') }}" class="w-full sm:w-auto justify-center inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-brand-600 text-white text-[13.5px] font-semibold hover:bg-blue-700 shadow-sm transition whitespace-nowrap">
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                 Tambah Banner
             </a>
         @elseif (! $membershipActive)
-            <a href="{{ route('dashboard.membership') }}" class="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[13px] font-semibold hover:brightness-105 shadow-sm transition">
+            <a href="{{ route('dashboard.membership') }}" class="w-full sm:w-auto justify-center inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[13px] font-semibold hover:brightness-105 shadow-sm transition whitespace-nowrap">
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
                 Upgrade Membership untuk Pasang Banner
             </a>
         @else
-            <button type="button" disabled class="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-slate-100 text-slate-400 text-[13px] font-semibold cursor-not-allowed border border-slate-200">
+            <button type="button" disabled class="w-full sm:w-auto justify-center inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-slate-100 text-slate-400 text-[13px] font-semibold cursor-not-allowed border border-slate-200">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>
                 Kuota Minggu Ini Terpakai (1x/Minggu)
             </button>
@@ -142,25 +142,174 @@
 </div>
 
 {{-- Filter Tabs --}}
-<div class="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
-    <button type="button" onclick="filterBanners('all')" id="tab-all" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-bold bg-slate-900 text-white transition">
+<div class="flex items-center gap-2 mb-4 overflow-x-auto pb-2 scrollbar-none flex-nowrap">
+    <button type="button" onclick="filterBanners('all')" id="tab-all" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-[12.5px] font-bold bg-slate-900 text-white transition shadow-2xs">
         Semua ({{ $totalBanners }})
     </button>
-    <button type="button" onclick="filterBanners('active')" id="tab-active" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
+    <button type="button" onclick="filterBanners('active')" id="tab-active" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition shadow-2xs">
         Slide Aktif Beranda ({{ $activeBanners }}/{{ $maxSlots }})
     </button>
-    <button type="button" onclick="filterBanners('queued')" id="tab-queued" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
+    <button type="button" onclick="filterBanners('queued')" id="tab-queued" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition shadow-2xs">
         Antrean ({{ $queuedBanners }})
     </button>
-    <button type="button" onclick="filterBanners('expired')" id="tab-expired" class="filter-tab px-3.5 py-1.5 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition">
+    <button type="button" onclick="filterBanners('expired')" id="tab-expired" class="filter-tab shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-[12.5px] font-medium bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition shadow-2xs">
         Riwayat / Expired
     </button>
 </div>
 
-{{-- Table --}}
+{{-- Container Card --}}
 <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-left">
+
+    {{-- Mobile Card List (visible on small screens) --}}
+    <div class="block sm:hidden divide-y divide-slate-100" id="banners-mobile-list">
+        @forelse ($banners as $banner)
+            @php
+                $isCurrentActive = $banner->isCurrentlyActive();
+                $isQueued = $banner->status === 'queued';
+                $isExpired = $banner->status === 'expired' || ($banner->expires_at && $banner->expires_at->isPast());
+                $rowCategory = $isCurrentActive ? 'active' : ($isQueued ? 'queued' : 'expired');
+                $isOwner = $banner->user_id === auth()->id();
+            @endphp
+            <div class="banner-row p-4 space-y-3" data-category="{{ $rowCategory }}">
+                {{-- Preview Image & Title --}}
+                <div class="flex items-start gap-3">
+                    <div class="relative w-24 h-14 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs shrink-0">
+                        <img src="{{ $banner->image }}" alt="{{ $banner->title }}" class="h-full w-full object-cover">
+                        @if ($isCurrentActive)
+                            <span class="absolute top-1 left-1 flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                        @endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-start justify-between gap-1.5">
+                            <h3 class="text-[13.5px] font-bold text-slate-900 leading-snug line-clamp-1">{{ $banner->title }}</h3>
+                            @if ($banner->sort_order)
+                                <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">#{{ $banner->sort_order }}</span>
+                            @endif
+                        </div>
+                        @if($banner->subtitle)
+                            <p class="text-[11.5px] text-slate-500 line-clamp-1 mt-0.5">{{ $banner->subtitle }}</p>
+                        @endif
+                        <div class="mt-1.5">
+                            @if ($isCurrentActive)
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Aktif di Slide
+                                </span>
+                            @elseif ($isQueued)
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/80 px-2 py-0.5 text-[11px] font-bold text-amber-700">
+                                    <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+                                    Antrean Ke-{{ $banner->queue_position ?? 1 }}
+                                </span>
+                            @elseif ($isExpired)
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span> Selesai
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                                    Nonaktif
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Info Box: Masa Tayang & Pembuat --}}
+                <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-100 space-y-1.5 text-xs">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-slate-400 font-medium text-[11px]">Pembuat:</span>
+                        <div class="text-right truncate">
+                            @if ($banner->user)
+                                <span class="font-semibold text-slate-700">
+                                    {{ $banner->user->school?->name ?? $banner->user->university?->name ?? $banner->user->company?->name ?? $banner->user->name }}
+                                </span>
+                                <span class="text-slate-400 text-[10.5px]">({{ ucfirst($banner->user->role) }})</span>
+                            @else
+                                <span class="font-bold text-blue-700">Admin Utama</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-slate-400 font-medium text-[11px]">Masa Tayang:</span>
+                        <div class="text-right text-[11.5px] font-medium text-slate-700">
+                            @if ($isCurrentActive)
+                                @if ($banner->expires_at)
+                                    <span class="text-emerald-700 font-bold">Sisa {{ $banner->expires_at->diffForHumans(null, true) }}</span>
+                                @else
+                                    <span class="text-blue-700 font-bold">Permanen</span>
+                                @endif
+                            @elseif ($isQueued)
+                                <span class="text-amber-700 font-semibold">Menunggu Antrean</span>
+                            @elseif ($isExpired)
+                                <span class="text-slate-500">Masa Tayang Selesai</span>
+                            @else
+                                <span class="text-slate-400">-</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if ($banner->link)
+                        <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                            <span class="text-slate-400 font-medium text-[11px]">Tautan:</span>
+                            <a href="{{ $banner->link }}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-brand-600 font-semibold hover:underline flex items-center gap-0.5 truncate max-w-[200px]">
+                                {{ Str::limit($banner->link, 30) }} &rarr;
+                            </a>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex items-center justify-end gap-2 pt-0.5">
+                    @if ($isAdmin && $isQueued)
+                        <form action="{{ route('admin.banners.promote', $banner->id) }}" method="POST" data-async data-async-follow class="inline">
+                            @csrf
+                            <button type="submit" title="Promosikan langsung ke slide aktif" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer">
+                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"/></svg>
+                                Tayangkan
+                            </button>
+                        </form>
+                    @endif
+
+                    @if ($isAdmin || $isOwner)
+                        <a href="{{ route('admin.banners.edit', $banner->id) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 transition cursor-pointer" title="Edit Banner">
+                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
+                            Edit
+                        </a>
+
+                        <button type="button" 
+                                onclick="openDeleteModal('{{ $banner->id }}', '{{ addslashes($banner->title) }}')" 
+                                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200/60 transition cursor-pointer" 
+                                title="Hapus Banner">
+                            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                            Hapus
+                        </button>
+
+                        <form id="delete-banner-form-{{ $banner->id }}" action="{{ route('admin.banners.destroy', $banner->id) }}" method="POST" class="hidden">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="py-12 px-4 text-center text-slate-400">
+                <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2 shadow-2xs">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path stroke-linecap="round" d="M2 10h20"/>
+                    </svg>
+                </div>
+                <p class="font-bold text-slate-600 text-sm">Belum ada banner terdaftar</p>
+                <p class="text-xs text-slate-400 mt-0.5">Klik tombol "Tambah Banner" untuk membuat banner baru.</p>
+            </div>
+        @endforelse
+    </div>
+
+    {{-- Desktop Table (hidden on mobile, visible on sm and up) --}}
+    <div class="hidden sm:block overflow-x-auto">
+        <table class="w-full min-w-[850px] text-left">
             <thead>
                 <tr class="bg-slate-50 text-[11.5px] uppercase tracking-wider text-slate-500 border-b border-slate-100">
                     <th class="px-5 py-3 font-semibold">PREVIEW</th>
@@ -378,7 +527,7 @@
 
     function openDeleteModal(id, title) {
         if (typeof window.confirmDelete === 'function') {
-            window.confirmDelete(`{{ url('/admin/banners') }}/${id}`, title, {
+            window.confirmDelete(`{{ route('admin.banners.destroy', ['id' => '__ID__']) }}`.replace('__ID__', id), title, {
                 title: 'Konfirmasi Hapus Banner',
                 warning: 'Peringatan: Banner akan dihapus secara permanen. Jika ada antrean, banner berikutnya akan otomatis naik ke slide beranda.',
                 submitText: 'Hapus Banner'

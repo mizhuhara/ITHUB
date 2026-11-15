@@ -54,7 +54,9 @@ class AdminCommunityController extends Controller
 
     public function create(): View
     {
-        return view('admin.community.create');
+        return view('admin.community.create', [
+            'categories' => ['Technology', 'Design', 'Business', 'Education', 'Science', 'Other'],
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -80,7 +82,8 @@ class AdminCommunityController extends Controller
     public function edit(int $id): View
     {
         return view('admin.community.edit', [
-            'community' => Community::findOrFail($id),
+            'community' => Community::with(['creator', 'approver'])->findOrFail($id),
+            'categories' => ['Technology', 'Design', 'Business', 'Education', 'Science', 'Other'],
         ]);
     }
 
@@ -90,6 +93,11 @@ class AdminCommunityController extends Controller
         $validated = $this->validateCommunity($request);
 
         $community->update($validated);
+
+        if ($request->input('return_to') === 'approvals') {
+            return redirect()->route('admin.community-approvals.index')
+                ->with('success', "Data komunitas \"{$community->name}\" berhasil diperbarui.");
+        }
 
         return redirect()->route('admin.community.index')
             ->with('success', "Data komunitas \"{$community->name}\" berhasil diperbarui.");
@@ -120,19 +128,38 @@ class AdminCommunityController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:100'],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'type' => ['nullable', 'string', 'in:public,private,publik,privat'],
+            'mode' => ['nullable', 'string', 'in:online,offline,hybrid,Online,Offline,Hybrid'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'language' => ['nullable', 'string', 'max:100'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'rules' => ['nullable', 'string', 'max:3000'],
             'website' => ['nullable', 'url', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
             'status' => ['required', 'in:active,inactive'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048'],
+            'approval_status' => ['nullable', 'in:pending,approved,rejected'],
+            'tags' => ['nullable'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
+            'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:4096'],
         ]);
 
-        unset($validated['logo']);
+        unset($validated['logo'], $validated['banner']);
 
         if ($request->hasFile('logo')) {
             $validated['logo_url'] = Storage::disk('public')->url(
                 $request->file('logo')->store('communities', 'public')
             );
+        }
+
+        if ($request->hasFile('banner')) {
+            $validated['cover_url'] = Storage::disk('public')->url(
+                $request->file('banner')->store('communities/covers', 'public')
+            );
+        }
+
+        if (isset($validated['tags']) && is_string($validated['tags'])) {
+            $tagsArray = array_values(array_filter(array_map('trim', explode(',', $validated['tags']))));
+            $validated['tags'] = $tagsArray;
         }
 
         return $validated;

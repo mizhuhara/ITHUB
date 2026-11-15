@@ -3,7 +3,7 @@
 @section('title', 'Tambah Sekolah Baru — IndoTech')
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Summernote Lite CSS -->
@@ -11,9 +11,10 @@
 <style>
     .leaflet-popup-content-wrapper {
         border-radius: 1rem;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         padding: 4px;
     }
+
     .leaflet-popup-content {
         margin: 10px 14px;
         font-family: inherit;
@@ -21,6 +22,7 @@
         line-height: 1.5;
         color: #1e293b;
     }
+
     /* Summernote styling adjustments for clean Tailwind admin integration */
     .note-editor.note-frame {
         border: 1px solid #cbd5e1 !important;
@@ -28,12 +30,14 @@
         box-shadow: none !important;
         overflow: hidden !important;
     }
+
     .note-toolbar {
         background: #f8fafc !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-radius: 0 !important;
         padding: 8px 10px !important;
     }
+
     /* Standard toolbar buttons (exclude color swatches and reset buttons) */
     .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset) {
         background: #ffffff !important;
@@ -42,9 +46,10 @@
         color: #334155 !important;
         padding: 5px 9px !important;
         font-size: 13px !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
         transition: all 0.15s ease !important;
     }
+
     .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset):hover,
     .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset).active {
         background: #eff6ff !important;
@@ -56,6 +61,7 @@
     .note-toolbar .note-current-color-button {
         padding: 4px 6px !important;
     }
+
     .note-toolbar .note-current-color-button .note-recent-color {
         display: inline-flex !important;
         align-items: center !important;
@@ -70,12 +76,14 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
         font-style: normal !important;
     }
-    .note-btn-group.note-color > .note-current-color-button {
+
+    .note-btn-group.note-color>.note-current-color-button {
         border-top-right-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         border-right: none !important;
     }
-    .note-btn-group.note-color > .dropdown-toggle {
+
+    .note-btn-group.note-color>.dropdown-toggle {
         border-top-left-radius: 0 !important;
         border-bottom-left-radius: 0 !important;
         padding-left: 5px !important;
@@ -84,17 +92,20 @@
 
     /* Color Dropdown Menu styling */
     .note-color .note-dropdown-menu {
-        min-width: 380px !important;
+        max-width: calc(100vw - 32px) !important;
+        min-width: min(380px, calc(100vw - 32px)) !important;
         padding: 12px !important;
         background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
         border-radius: 10px !important;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12), 0 8px 10px -6px rgba(0,0,0,0.08) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
     }
-    .note-color .note-dropdown-menu > div {
+
+    .note-color .note-dropdown-menu>div {
         display: flex !important;
         gap: 16px !important;
     }
+
     .note-color .btn-background-color,
     .note-color .btn-foreground-color {
         flex: 1 !important;
@@ -102,6 +113,7 @@
         display: flex !important;
         flex-direction: column !important;
     }
+
     .note-color .note-palette-title {
         font-size: 11.5px !important;
         font-weight: 700 !important;
@@ -113,6 +125,7 @@
         border-bottom: 1px solid #f1f5f9 !important;
         text-align: left !important;
     }
+
     .note-color .note-color-reset {
         display: block !important;
         width: 100% !important;
@@ -129,6 +142,7 @@
         box-shadow: none !important;
         transition: all 0.15s ease !important;
     }
+
     .note-color .note-color-reset:hover {
         background: #eff6ff !important;
         border-color: #bfdbfe !important;
@@ -139,6 +153,7 @@
     .note-color-palette {
         line-height: 1 !important;
     }
+
     .note-color-palette .note-color-row {
         display: flex !important;
         flex-direction: row !important;
@@ -146,6 +161,7 @@
         margin-bottom: 2px !important;
         gap: 2px !important;
     }
+
     .note-color-palette .note-color-btn {
         width: 18px !important;
         height: 18px !important;
@@ -163,6 +179,7 @@
         cursor: pointer !important;
         transition: transform 0.12s ease, box-shadow 0.12s ease !important;
     }
+
     .note-color-palette .note-color-btn:hover {
         transform: scale(1.35) !important;
         z-index: 20 !important;
@@ -183,42 +200,51 @@
         margin-top: 6px !important;
         box-sizing: border-box !important;
     }
+
     .note-dropdown-menu {
         border: 1px solid #e2e8f0 !important;
         border-radius: 8px !important;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
         padding: 6px !important;
         z-index: 1050 !important;
     }
+
     .note-dropdown-item {
         color: #334155 !important;
         padding: 6px 10px !important;
         border-radius: 6px !important;
         font-size: 13px !important;
     }
+
     .note-dropdown-item:hover {
         background: #eff6ff !important;
         color: #2563eb !important;
     }
+
     .note-modal {
         z-index: 1050 !important;
     }
+
     .note-modal-backdrop {
         z-index: 1040 !important;
     }
+
     .note-modal .modal-content {
         border-radius: 12px !important;
         border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
     }
+
     .note-modal .modal-header {
         border-bottom: 1px solid #e2e8f0 !important;
         padding: 16px 20px !important;
     }
+
     .note-modal .modal-footer {
         border-top: 1px solid #e2e8f0 !important;
         padding: 14px 20px !important;
     }
+
     .note-modal .btn-primary {
         background: #2563eb !important;
         border-color: #2563eb !important;
@@ -226,6 +252,7 @@
         font-weight: 600 !important;
         padding: 8px 16px !important;
     }
+
     .note-editable {
         font-family: inherit !important;
         font-size: 14px !important;
@@ -234,22 +261,64 @@
         padding: 18px !important;
         background-color: #ffffff !important;
     }
+
     .note-editable ul {
         list-style-type: disc !important;
         padding-left: 24px !important;
     }
+
     .note-editable ol {
         list-style-type: decimal !important;
         padding-left: 24px !important;
     }
-    .note-editable h1 { font-size: 2rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
-    .note-editable h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
-    .note-editable h3 { font-size: 1.25rem !important; font-weight: 600 !important; margin-bottom: 0.5rem !important; }
-    .note-editable h4 { font-size: 1.125rem !important; font-weight: 600 !important; margin-bottom: 0.5rem !important; }
-    .note-editable p { margin-bottom: 0.75rem !important; }
-    .note-editable table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 1rem !important; }
-    .note-editable table td, .note-editable table th { border: 1px solid #cbd5e1 !important; padding: 6px 10px !important; }
-    .note-editable blockquote { border-left: 4px solid #2563eb !important; padding-left: 16px !important; color: #64748b !important; font-style: italic !important; }
+
+    .note-editable h1 {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable h3 {
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable h4 {
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable p {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .note-editable table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .note-editable table td,
+    .note-editable table th {
+        border: 1px solid #cbd5e1 !important;
+        padding: 6px 10px !important;
+    }
+
+    .note-editable blockquote {
+        border-left: 4px solid #2563eb !important;
+        padding-left: 16px !important;
+        color: #64748b !important;
+        font-style: italic !important;
+    }
+
     .note-statusbar {
         border-top: 1px solid #f1f5f9 !important;
         background: #f8fafc !important;
@@ -263,34 +332,38 @@
 
     {{-- Flash Messages --}}
     @if (session('info'))
-        <div class="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-[13.5px]">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-blue-500"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>{{ session('info') }}</span>
-        </div>
+    <div class="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-[13.5px]">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-blue-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ session('info') }}</span>
+    </div>
     @endif
     @if (session('success'))
-        <div class="flex items-start gap-3 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-[13.5px]">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <span>{{ session('success') }}</span>
-        </div>
+    <div class="flex items-start gap-3 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-[13.5px]">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-green-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <span>{{ session('success') }}</span>
+    </div>
     @endif
 
     {{-- Top Back Link & Breadcrumb --}}
     <div>
         @if (auth()->user()->role === 'school')
-            <a href="{{ route('dashboard.school') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Dashboard
-            </a>
+        <a href="{{ route('dashboard.school') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Dashboard
+        </a>
         @else
-            <a href="{{ route('admin.schools.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Kembali
-            </a>
+        <a href="{{ route('admin.schools.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Kembali
+        </a>
         @endif
     </div>
 
@@ -306,8 +379,8 @@
                 <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
                     <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="16" rx="3"/>
-                            <path stroke-linecap="round" d="M7 8h10M7 12h4m-4 4h7"/>
+                            <rect x="3" y="4" width="18" height="16" rx="3" />
+                            <path stroke-linecap="round" d="M7 8h10M7 12h4m-4 4h7" />
                         </svg>
                     </div>
                     <div>
@@ -321,29 +394,29 @@
                     {{-- Nama Sekolah --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nama Sekolah</label>
-                        <input type="text" 
-                               name="name" 
-                               id="schoolNameInput"
-                               value="{{ old('name') }}" 
-                               required
-                               placeholder="Contoh: SMK Telkom Jakarta"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="text"
+                            name="name"
+                            id="schoolNameInput"
+                            value="{{ old('name') }}"
+                            required
+                            placeholder="Contoh: SMK Telkom Jakarta"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- NPSN --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
-                        <input type="text" 
-                               name="npsn" 
-                               value="{{ old('npsn') }}" 
-                               required
-                               placeholder="Contoh: 20109988"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="text"
+                            name="npsn"
+                            value="{{ old('npsn') }}"
+                            required
+                            placeholder="Contoh: 20109988"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('npsn')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -351,15 +424,17 @@
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Jenis Institusi</label>
                         <div class="relative">
-                            <select name="institution_type" 
-                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
+                            <select name="institution_type"
+                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="SMK IT" {{ old('institution_type') == 'SMK IT' ? 'selected' : '' }}>SMK IT</option>
                                 <option value="SMK" {{ old('institution_type') == 'SMK' ? 'selected' : '' }}>SMK</option>
                                 <option value="SMA IT" {{ old('institution_type') == 'SMA IT' ? 'selected' : '' }}>SMA IT</option>
                                 <option value="Vokasi IT" {{ old('institution_type') == 'Vokasi IT' ? 'selected' : '' }}>Vokasi IT</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -367,15 +442,15 @@
                     {{-- Lokasi --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Lokasi</label>
-                        <input type="text" 
-                               name="location" 
-                               id="schoolLocationInput"
-                               value="{{ old('location') }}" 
-                               required
-                               placeholder="Contoh: Jakarta Barat, DKI Jakarta"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="text"
+                            name="location"
+                            id="schoolLocationInput"
+                            value="{{ old('location') }}"
+                            required
+                            placeholder="Contoh: Jakarta Barat, DKI Jakarta"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('location')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -387,7 +462,7 @@
                 <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
                     <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z" />
                         </svg>
                     </div>
                     <div>
@@ -398,10 +473,10 @@
 
                 <div>
                     <label class="block text-[13px] font-semibold text-slate-700 mb-2">Profil & Detail Kurikulum</label>
-                    <textarea name="description" 
-                              id="schoolDescription">{{ old('description') }}</textarea>
+                    <textarea name="description"
+                        id="schoolDescription">{{ old('description') }}</textarea>
                     @error('description')
-                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                    <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
@@ -411,7 +486,7 @@
                 <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
                     <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
                         </svg>
                     </div>
                     <div>
@@ -424,12 +499,14 @@
                     <label class="block text-[13px] font-semibold text-slate-700">Daftar Kompetensi Keahlian</label>
                     <div class="flex gap-2">
                         <input type="text" id="competencyInputField"
-                               placeholder="Contoh: Teknik Komputer & Jaringan"
-                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
-                               onkeydown="if(event.key==='Enter'){event.preventDefault();addCompetency();}">
+                            placeholder="Contoh: Teknik Komputer & Jaringan"
+                            class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();addCompetency();}">
                         <button type="button" onclick="addCompetency()"
-                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-lg transition shrink-0 shadow-xs flex items-center gap-1.5 cursor-pointer">
-                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                            class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-lg transition shrink-0 shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
                             Tambah
                         </button>
                     </div>
@@ -441,13 +518,13 @@
             {{-- Card 4: Galeri Sekolah --}}
             <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
                 {{-- Card Header with Action --}}
-                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                    <div class="flex items-center gap-2.5 text-slate-900">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div class="flex items-start sm:items-center gap-2.5 text-slate-900">
                         <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                                <rect x="3" y="3" width="18" height="18" rx="3" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21" />
                             </svg>
                         </div>
                         <div>
@@ -460,9 +537,9 @@
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer shrink-0 self-start sm:self-center">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                         Tambah Foto
                     </label>
@@ -475,7 +552,7 @@
                     <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
                         </div>
                         <span class="text-[12px] font-bold">Tambah Foto</span>
@@ -495,7 +572,7 @@
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <h2 class="text-[16px] font-bold text-slate-900">Logo & Profil</h2>
@@ -506,10 +583,10 @@
                 {{-- Logo Preview Box --}}
                 <div class="w-full aspect-square max-w-[200px] rounded-2xl bg-[#f0f4f9] border border-slate-200/80 flex items-center justify-center p-4 mb-4 relative overflow-hidden group shadow-inner">
                     {{-- Actual Image Preview --}}
-                    <img id="logoPreviewImg" 
-                         src="" 
-                         alt="Preview Logo" 
-                         class="hidden w-full h-full object-contain rounded-xl transition duration-300">
+                    <img id="logoPreviewImg"
+                        src=""
+                        alt="Preview Logo"
+                        class="hidden w-full h-full object-contain rounded-xl transition duration-300">
 
                     {{-- Default Icon Placeholder when no image --}}
                     <div id="logoDefaultPlaceholder" class="flex flex-col items-center justify-center text-slate-400">
@@ -522,7 +599,7 @@
                     {{-- Hover Overlay to Change --}}
                     <label for="logoInput" class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white cursor-pointer gap-1.5 backdrop-blur-xs">
                         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                         </svg>
                         <span class="text-xs font-bold">Pilih Foto</span>
                     </label>
@@ -538,7 +615,7 @@
                 {{-- Upload Button --}}
                 <label for="logoInput" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-brand-600 font-bold text-[13.5px] cursor-pointer transition">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                     </svg>
                     Pilih Logo
                 </label>
@@ -551,8 +628,8 @@
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
                         <h2 class="text-[16px] font-bold text-slate-900">Peta Lokasi Sekolah</h2>
@@ -569,12 +646,12 @@
                         <label class="block text-[13px] font-semibold text-slate-700">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
-                    <textarea name="address" 
-                              id="schoolAddressInput" 
-                              rows="2" 
-                              autocomplete="off" 
-                              placeholder="Ketik alamat jalan di Indonesia..." 
-                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address') }}</textarea>
+                    <textarea name="address"
+                        id="schoolAddressInput"
+                        rows="2"
+                        autocomplete="off"
+                        placeholder="Ketik alamat jalan di Indonesia..."
+                        class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address') }}</textarea>
 
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
                     <div id="locationStatus" class="hidden text-xs mt-1.5 font-medium flex items-center gap-1.5"></div>
@@ -596,8 +673,8 @@
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-[12px] flex items-center justify-between text-slate-600">
                     <div class="flex items-center gap-1.5 truncate max-w-[70%]">
                         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2.2" class="shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                         </svg>
                         <span id="coordinateDisplay" class="font-mono font-medium truncate">Titik peta akan otomatis muncul</span>
                     </div>
@@ -606,7 +683,9 @@
                         <span class="text-slate-300">•</span>
                         <button type="button" onclick="openInGoogleMaps()" class="text-slate-600 hover:text-blue-600 font-bold text-[11.5px] flex items-center gap-0.5 cursor-pointer">
                             Maps
-                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -618,15 +697,15 @@
 
     {{-- Bottom Action Bar --}}
     <div class="pt-6 border-t border-slate-200/80 flex items-center justify-end gap-4">
-        <a href="{{ route('admin.schools.index') }}" 
-           class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
+        <a href="{{ route('admin.schools.index') }}"
+            class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
             Batal
         </a>
 
-        <button type="submit" 
-                class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
+        <button type="submit"
+            class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             Simpan Sekolah
         </button>
@@ -672,7 +751,10 @@
             var $btn = $el.closest('.note-current-color-button');
             var bg = $btn.attr('data-backcolor') || '#FFFF00';
             var fg = $btn.attr('data-forecolor') || '#000000';
-            $el.css({ 'background-color': bg, 'color': fg });
+            $el.css({
+                'background-color': bg,
+                'color': fg
+            });
         });
 
         // Listen for color changes in the palette to update the recent color preview
@@ -863,7 +945,8 @@
     const locationStatus = document.getElementById('locationStatus');
 
     const INDONESIA_BOUNDS = L.latLngBounds(L.latLng(-11.5, 94.5), L.latLng(6.5, 141.5));
-    const defaultLat = -6.2088, defaultLng = 106.8456;
+    const defaultLat = -6.2088,
+        defaultLng = 106.8456;
 
     document.addEventListener('DOMContentLoaded', function() {
         if (!document.getElementById('schoolMap')) return;
@@ -871,20 +954,28 @@
         map = L.map('schoolMap', {
             maxBounds: INDONESIA_BOUNDS,
             maxBoundsViscosity: 1.0,
-            minZoom: 4, maxZoom: 19
+            minZoom: 4,
+            maxZoom: 19
         }).setView([defaultLat, defaultLng], 10);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19, attribution: '© OpenStreetMap'
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
         }).addTo(map);
 
         const pinIcon = L.icon({
             iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
             shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
         });
 
-        marker = L.marker([defaultLat, defaultLng], { draggable: true, icon: pinIcon }).addTo(map);
+        marker = L.marker([defaultLat, defaultLng], {
+            draggable: true,
+            icon: pinIcon
+        }).addTo(map);
         marker.bindPopup('<b>Sekolah Baru</b><br>Titik Lokasi').openPopup();
 
         marker.on('dragend', function(e) {
@@ -934,7 +1025,10 @@
     function triggerAutoSearch(targetField) {
         clearTimeout(geocodeTimer);
         let query = targetField === 'address' ? (addressInput ? addressInput.value.trim() : '') : (locationInput ? locationInput.value.trim() : '');
-        if (!query || query.length < 2) { hideSuggestions(); return; }
+        if (!query || query.length < 2) {
+            hideSuggestions();
+            return;
+        }
 
         if (locationStatus) {
             locationStatus.className = 'text-xs mt-1.5 font-medium flex items-center gap-1.5 text-blue-600';
@@ -957,10 +1051,14 @@
                 const data = await res.json();
                 if (data && data.length > 0) {
                     const valid = data.filter(item => {
-                        const lat = parseFloat(item.lat), lon = parseFloat(item.lon);
+                        const lat = parseFloat(item.lat),
+                            lon = parseFloat(item.lon);
                         return lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
                     });
-                    if (valid.length > 0) { results = valid; break; }
+                    if (valid.length > 0) {
+                        results = valid;
+                        break;
+                    }
                 }
             } catch (err) {}
         }
@@ -968,9 +1066,12 @@
         if (results.length > 0) {
             renderSuggestions(results);
             const top = results[0];
-            const lat = parseFloat(top.lat), lon = parseFloat(top.lon);
+            const lat = parseFloat(top.lat),
+                lon = parseFloat(top.lon);
             if (map && marker) {
-                map.flyTo([lat, lon], 14, { duration: 0.9 });
+                map.flyTo([lat, lon], 14, {
+                    duration: 0.9
+                });
                 marker.setLatLng([lat, lon]);
                 updateCoordinates(lat, lon);
                 marker.bindPopup(`<b>${nameInput?.value || 'Lokasi'}</b><br>${top.display_name}`).openPopup();
@@ -998,9 +1099,12 @@
             option.addEventListener('click', () => {
                 if (addressInput) addressInput.value = item.display_name;
                 hideSuggestions();
-                const lat = parseFloat(item.lat), lon = parseFloat(item.lon);
+                const lat = parseFloat(item.lat),
+                    lon = parseFloat(item.lon);
                 if (map && marker) {
-                    map.flyTo([lat, lon], 16, { duration: 0.9 });
+                    map.flyTo([lat, lon], 16, {
+                        duration: 0.9
+                    });
                     marker.setLatLng([lat, lon]);
                     updateCoordinates(lat, lon);
                     marker.bindPopup(`<b>${nameInput?.value || 'Lokasi'}</b><br>${item.display_name}`).openPopup();
@@ -1027,13 +1131,19 @@
     }
 
     function getCurrentLocation() {
-        if (!navigator.geolocation) { alert('Browser tidak mendukung GPS.'); return; }
+        if (!navigator.geolocation) {
+            alert('Browser tidak mendukung GPS.');
+            return;
+        }
         navigator.geolocation.getCurrentPosition(
             function(pos) {
-                const lat = pos.coords.latitude, lng = pos.coords.longitude;
+                const lat = pos.coords.latitude,
+                    lng = pos.coords.longitude;
                 if (INDONESIA_BOUNDS.contains([lat, lng])) {
                     if (map && marker) {
-                        map.flyTo([lat, lng], 16, { duration: 1.0 });
+                        map.flyTo([lat, lng], 16, {
+                            duration: 1.0
+                        });
                         marker.setLatLng([lat, lng]);
                         updateCoordinates(lat, lng);
                         reverseGeocode(lat, lng);
@@ -1042,13 +1152,18 @@
                     alert('Posisi GPS Anda berada di luar wilayah Indonesia.');
                 }
             },
-            function(err) { alert('Gagal deteksi lokasi: ' + err.message); },
-            { enableHighAccuracy: true, timeout: 10000 }
+            function(err) {
+                alert('Gagal deteksi lokasi: ' + err.message);
+            }, {
+                enableHighAccuracy: true,
+                timeout: 10000
+            }
         );
     }
 
     function openInGoogleMaps() {
-        const lat = latInput ? latInput.value : '', lng = lngInput ? lngInput.value : '';
+        const lat = latInput ? latInput.value : '',
+            lng = lngInput ? lngInput.value : '';
         if (lat && lng) {
             window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
         } else if (addressInput && addressInput.value.trim()) {

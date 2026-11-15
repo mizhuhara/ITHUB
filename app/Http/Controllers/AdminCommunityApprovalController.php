@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Community;
 use App\Notifications\CommunityApprovedNotification;
 use App\Notifications\CommunityRejectedNotification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminCommunityApprovalController extends Controller
@@ -173,5 +175,43 @@ class AdminCommunityApprovalController extends Controller
 
         return redirect()->back()
             ->with('success', "Pengajuan komunitas \"{$community->name}\" telah ditolak dengan alasan yang tercatat.");
+    }
+
+    /**
+     * Delete a community submission.
+     */
+    public function destroy(Request $request, Community $community): RedirectResponse|JsonResponse
+    {
+        abort_unless(
+            $request->user()?->role === 'super_admin',
+            403,
+            'Akses ditolak. Hanya Super Admin yang dapat menghapus komunitas.'
+        );
+
+        $name = $community->name;
+
+        // Clean up logo if stored locally
+        $logoPath = parse_url((string) $community->logo_url, PHP_URL_PATH);
+        if ($logoPath && str_starts_with($logoPath, '/storage/communities/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $logoPath));
+        }
+
+        // Clean up cover if stored locally
+        $coverPath = parse_url((string) $community->cover_url, PHP_URL_PATH);
+        if ($coverPath && str_starts_with($coverPath, '/storage/communities/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $coverPath));
+        }
+
+        $community->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Komunitas \"{$name}\" berhasil dihapus.",
+            ]);
+        }
+
+        return redirect()->back()
+            ->with('success', "Komunitas \"{$name}\" berhasil dihapus.");
     }
 }
