@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -21,7 +21,7 @@ class AdminBannerController extends Controller
      */
     private function authorizeBannerAccess(): void
     {
-        $user = Auth::user();
+        $user = $this->authUser();
         abort_if(! $user || ! in_array($user->role, self::ALLOWED_ROLES, true), 403, 'Anda tidak memiliki hak akses ke modul banner.');
     }
 
@@ -30,7 +30,7 @@ class AdminBannerController extends Controller
      */
     private function isAdmin(): bool
     {
-        return in_array(Auth::user()?->role, ['super_admin', 'admin'], true);
+        return in_array($this->authUser()?->role, ['super_admin', 'admin'], true);
     }
 
     /**
@@ -43,7 +43,7 @@ class AdminBannerController extends Controller
         // Always sync queue before rendering
         Banner::syncActiveQueue();
 
-        $user = Auth::user();
+        $user = $this->authUser();
         $isAdmin = $this->isAdmin();
 
         $bannersQuery = Banner::with('user')
@@ -112,7 +112,7 @@ class AdminBannerController extends Controller
     {
         $this->authorizeBannerAccess();
 
-        $user = Auth::user();
+        $user = $this->authUser();
         $isAdmin = $this->isAdmin();
 
         if (! $isAdmin && $user->isInstitution()) {
@@ -160,7 +160,7 @@ class AdminBannerController extends Controller
     {
         $this->authorizeBannerAccess();
 
-        $user = Auth::user();
+        $user = $this->authUser();
         $isAdmin = $this->isAdmin();
 
         if (! $isAdmin && $user->isInstitution()) {
@@ -186,7 +186,7 @@ class AdminBannerController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'string', 'max:500'],
-            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'link' => ['nullable', 'string', 'max:500'],
             'link_text' => ['nullable', 'string', 'max:100'],
             'is_active' => ['nullable'],
@@ -194,7 +194,7 @@ class AdminBannerController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('banners', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('image_file'), 'banners');
             $imageUrl = Storage::disk('public')->url($path);
         } else {
             $imageUrl = $validated['image'] ?? '';
@@ -278,7 +278,7 @@ class AdminBannerController extends Controller
         $this->authorizeBannerAccess();
 
         $banner = Banner::findOrFail($id);
-        $user = Auth::user();
+        $user = $this->authUser();
 
         if (! $this->isAdmin() && $banner->user_id !== $user->id) {
             abort(403, 'Anda hanya dapat mengubah banner milik institusi Anda sendiri.');
@@ -298,7 +298,7 @@ class AdminBannerController extends Controller
         $this->authorizeBannerAccess();
 
         $banner = Banner::findOrFail($id);
-        $user = Auth::user();
+        $user = $this->authUser();
         $isAdmin = $this->isAdmin();
 
         if (! $isAdmin && $banner->user_id !== $user->id) {
@@ -309,7 +309,7 @@ class AdminBannerController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'string', 'max:500'],
-            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'link' => ['nullable', 'string', 'max:500'],
             'link_text' => ['nullable', 'string', 'max:100'],
             'is_active' => ['nullable'],
@@ -317,7 +317,7 @@ class AdminBannerController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('banners', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('image_file'), 'banners');
             $imageUrl = Storage::disk('public')->url($path);
         } else {
             $imageUrl = $validated['image'] ?? $banner->image;
@@ -371,7 +371,7 @@ class AdminBannerController extends Controller
         $this->authorizeBannerAccess();
 
         $banner = Banner::findOrFail($id);
-        $user = Auth::user();
+        $user = $this->authUser();
 
         if (! $this->isAdmin() && $banner->user_id !== $user->id) {
             abort(403, 'Anda hanya dapat menghapus banner milik institusi Anda sendiri.');

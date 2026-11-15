@@ -286,9 +286,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
                     @foreach ($memberUsers as $member)
                         <div class="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-2.5">
-                            <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
-                                {{ strtoupper(substr($member->name, 0, 2)) }}
-                            </div>
+                            @if ($member->avatar_url)
+                                <img src="{{ $member->avatar_url }}" alt="{{ $member->name }}" class="w-9 h-9 rounded-full object-cover shrink-0">
+                            @else
+                                <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
+                                    {{ strtoupper(substr($member->name, 0, 2)) }}
+                                </div>
+                            @endif
                             <div class="min-w-0">
                                 <p class="text-sm font-semibold text-slate-800 truncate">
                                     {{ $member->name }}

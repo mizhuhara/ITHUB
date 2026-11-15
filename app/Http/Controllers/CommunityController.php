@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Community;
 use App\Models\CommunityPost;
 use App\Models\User;
+use App\Services\ImageUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -83,7 +84,7 @@ class CommunityController extends Controller
             'category' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:1500'],
             'logo' => ['required', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
-            'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:4096'],
+            'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'type' => ['required', 'in:public,private,publik,privat'],
             'mode' => ['nullable', 'in:online,offline,hybrid,Online,Offline,Hybrid'],
             'location' => ['nullable', 'string', 'max:255'],
@@ -105,13 +106,13 @@ class CommunityController extends Controller
 
         $logoUrl = null;
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('communities', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('logo'), 'communities');
             $logoUrl = Storage::disk('public')->url($path);
         }
 
         $coverUrl = null;
         if ($request->hasFile('banner')) {
-            $path = $request->file('banner')->store('communities', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('banner'), 'communities');
             $coverUrl = Storage::disk('public')->url($path);
         }
 
@@ -211,16 +212,16 @@ class CommunityController extends Controller
             'resubmit_notes' => ['nullable', 'string', 'max:2000'],
             'tags' => ['nullable'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
-            'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:4096'],
+            'banner' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
         ]);
 
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('communities', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('logo'), 'communities');
             $validated['logo_url'] = Storage::disk('public')->url($path);
         }
 
         if ($request->hasFile('banner')) {
-            $path = $request->file('banner')->store('communities', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('banner'), 'communities');
             $validated['cover_url'] = Storage::disk('public')->url($path);
         }
 
@@ -280,6 +281,9 @@ class CommunityController extends Controller
 
         $isBanned = (bool) ($membership?->pivot->is_banned ?? false);
         $joinedAt = $membership?->pivot->created_at ?: ($isOwner ? $community->created_at : $user->created_at);
+        if ($joinedAt) {
+            $joinedAt = $joinedAt->copy()->timezone('Asia/Jakarta');
+        }
 
         $currentUser = $request->user();
         $canKick = $community->canKickMember($currentUser, $user);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Community;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -147,7 +148,7 @@ class AdminCommunityController extends Controller
 
         if ($request->hasFile('logo')) {
             $validated['logo_url'] = Storage::disk('public')->url(
-                $request->file('logo')->store('communities', 'public')
+                ImageUploadService::storeAndOptimize($request->file('logo'), 'communities')
             );
         }
 

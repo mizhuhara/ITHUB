@@ -8,6 +8,7 @@ use App\Models\University;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -187,7 +188,7 @@ class AdminUserController extends Controller
         }
 
         // Prevent hiding own account
-        if (auth()->check() && auth()->id() === $user->id) {
+        if (Auth::check() && Auth::id() === $user->id) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'Anda tidak dapat menyembunyikan akun Anda sendiri.');
         }
@@ -230,7 +231,7 @@ class AdminUserController extends Controller
         }
 
         // Prevent self deletion
-        if (auth()->check() && auth()->id() === $user->id) {
+        if (Auth::check() && Auth::id() === $user->id) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
@@ -269,7 +270,7 @@ class AdminUserController extends Controller
 
     private function currentUserIsSuperAdmin(): bool
     {
-        return auth()->user()?->role === 'super_admin';
+        return $this->authUser()?->role === 'super_admin';
     }
 
     private function syncInstitutionStatus(User $user, string $status): void

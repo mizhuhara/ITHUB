@@ -7,8 +7,10 @@ use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\JobSeeker;
 use App\Models\User;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -191,12 +193,12 @@ class CareerController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('job-seekers', 'public');
-        } elseif (auth()->check() && auth()->user()->avatar) {
-            $photoPath = auth()->user()->avatar;
+            $photoPath = ImageUploadService::storeAndOptimize($request->file('photo'), 'job-seekers');
+        } elseif (Auth::check() && $this->authUser()?->avatar) {
+            $photoPath = $this->authUser()?->avatar;
         }
 
-        $userId = auth()->id() ?? User::where('email', $validated['email'])->value('id');
+        $userId = Auth::id() ?? User::where('email', $validated['email'])->value('id');
 
         $seeker = JobSeeker::create([
             'user_id' => $userId,

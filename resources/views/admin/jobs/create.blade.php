@@ -19,7 +19,7 @@
     @endif
 
     {{-- Action Buttons --}}
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <a href="{{ route('admin.jobs.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/>
@@ -27,11 +27,11 @@
             Kembali
         </a>
 
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.jobs.index') }}" class="inline-flex items-center justify-center bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-lg text-[13.5px] transition">
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+            <a href="{{ route('admin.jobs.index') }}" class="flex-1 sm:flex-initial inline-flex items-center justify-center bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-lg text-[13.5px] transition text-center">
                 Batal
             </a>
-            <button type="submit" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg text-[13.5px] shadow-2xs transition">
+            <button type="submit" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg text-[13.5px] shadow-2xs transition">
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.8"><path d="M12 5v14M5 12h14"/></svg>
                 <span>Publikasikan Lowongan</span>
             </button>

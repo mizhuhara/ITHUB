@@ -10,6 +10,7 @@ use App\Notifications\AccountApprovedNotification;
 use App\Notifications\AccountRejectedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -164,7 +165,7 @@ class AdminVerificationController extends Controller
     private function ensureVerifiable(User $user): void
     {
         abort_if(in_array($user->role, ['super_admin', 'admin'], true), 403, 'Akun admin tidak dapat diproses dari halaman verifikasi.');
-        abort_if(auth()->id() === $user->id, 403, 'Anda tidak dapat memproses akun sendiri.');
+        abort_if(Auth::id() === $user->id, 403, 'Anda tidak dapat memproses akun sendiri.');
     }
 
     public function document(User $user): StreamedResponse

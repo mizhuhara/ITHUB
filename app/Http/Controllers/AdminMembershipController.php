@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AdminMembershipController extends Controller
@@ -161,7 +162,7 @@ class AdminMembershipController extends Controller
         $payment->status = 'approved';
         $payment->admin_notes = $request->input('admin_notes');
         $payment->approved_at = now();
-        $payment->approved_by = auth()->id();
+        $payment->approved_by = Auth::id();
         $payment->save();
 
         return back()->with('success', "Validasi pembayaran {$user->name} berhasil disetujui. Fitur premium telah diaktifkan hingga {$user->membership_expires_at->format('d/m/Y')}.");
@@ -185,7 +186,7 @@ class AdminMembershipController extends Controller
         $payment->status = 'rejected';
         $payment->admin_notes = $validated['admin_notes'];
         $payment->approved_at = now();
-        $payment->approved_by = auth()->id();
+        $payment->approved_by = Auth::id();
         $payment->save();
 
         return back()->with('success', 'Pengajuan pembayaran telah ditolak.');

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\School;
 use App\Models\UserReport;
+use App\Services\ImageUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -45,7 +47,22 @@ class AdminSchoolController extends Controller
         }
 
         if ($request->filled('status') && $request->input('status') !== 'all') {
-            $query->where('status', $request->input('status'));
+            $status = strtolower($request->input('status'));
+            if ($status === 'active') {
+                $query->whereRaw('LOWER(status) = ?', ['active']);
+            } elseif ($status === 'inactive') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(status) = ?', ['inactive'])
+                        ->orWhereRaw('LOWER(status) != ?', ['active'])
+                        ->orWhereNull('status');
+                });
+            } else {
+                $query->whereRaw('LOWER(status) = ?', [$status]);
+            }
+        }
+
+        if ($request->filled('type') && $request->input('type') !== 'all') {
+            $query->whereRaw('LOWER(institution_type) = ?', [strtolower($request->input('type'))]);
         }
 
         if ($request->filled('sort')) {
@@ -81,7 +98,7 @@ class AdminSchoolController extends Controller
      */
     public function create(): View|RedirectResponse
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Jika role school sudah punya sekolah, arahkan ke edit
         if ($user->role === 'school') {
@@ -129,7 +146,7 @@ class AdminSchoolController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $path = $file->store('schools/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'schools/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -137,7 +154,7 @@ class AdminSchoolController extends Controller
         $gallery = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('schools/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'schools/gallery');
                 $gallery[] = Storage::url($path);
             }
         }
@@ -212,7 +229,7 @@ class AdminSchoolController extends Controller
             }
 
             $file = $request->file('logo');
-            $path = $file->store('schools/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'schools/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -225,7 +242,7 @@ class AdminSchoolController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('schools/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'schools/gallery');
                 $gallery[] = Storage::url($path);
             }
         }
@@ -269,7 +286,7 @@ class AdminSchoolController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        abort_if(auth()->user()->role !== 'super_admin' && auth()->user()->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
+        abort_if($this->authUser()?->role !== 'super_admin' && $this->authUser()?->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
 
         $school = $this->findVisibleSchool($id);
         $name = $school->name;
@@ -285,7 +302,7 @@ class AdminSchoolController extends Controller
      */
     private function visibleSchools()
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if ($user && $user->role === 'school') {
             return School::where('user_id', $user->id);
@@ -304,7 +321,7 @@ class AdminSchoolController extends Controller
 
     private function authorizeCreate(): void
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Role school boleh membuat sekolah pertama mereka; role lain (university, company) tidak
         if (in_array($user->role, ['university', 'company'], true)) {
@@ -318,10 +335,10 @@ class AdminSchoolController extends Controller
     public function editorUpload(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:25600'],
+            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:2048'],
         ]);
 
-        $path = $request->file('file')->store('editor', 'public');
+        $path = ImageUploadService::storeAndOptimize($request->file('file'), 'editor');
 
         return response()->json(['url' => Storage::url($path)]);
     }
@@ -348,7 +365,7 @@ class AdminSchoolController extends Controller
 
         UserReport::create([
             ...$validated,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'status' => 'pending',
         ]);
 
@@ -367,7 +384,7 @@ class AdminSchoolController extends Controller
             'location' => ['required', 'string', 'max:150'],
             'address' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string', 'max:20'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'logo_url' => ['nullable', 'string', 'max:500'],
             'logo_text' => ['nullable', 'string', 'max:50'],
             'logo_bg' => ['nullable', 'string', 'max:50'],
@@ -380,7 +397,7 @@ class AdminSchoolController extends Controller
             'competencies' => ['nullable', 'array'],
             'competencies.*' => ['string', 'max:100'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
+            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'total_students' => ['nullable', 'integer', 'min:0'],

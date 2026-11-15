@@ -58,7 +58,7 @@
             </div>
 
             {{-- Action Buttons --}}
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 <a href="{{ route('admin.events.edit', $event['id']) }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs inline-flex items-center gap-1.5 transition">
                     <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -67,6 +67,17 @@
                     </svg>
                     <span>Edit Event</span>
                 </a>
+
+                <form action="{{ route('admin.events.complete', $event['id']) }}" method="POST" data-async data-async-reload>
+                    @csrf
+                    <button type="submit"
+                            class="font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs inline-flex items-center gap-1.5 transition {{ $event->completed_at ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }}">
+                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>{{ $event->completed_at ? 'Batalkan Selesai' : 'Selesaikan Acara' }}</span>
+                    </button>
+                </form>
 
                 @if(!$isSchool)
                     <form action="{{ route('admin.events.approve', $event['id']) }}" method="POST" data-async data-async-reload>
@@ -128,6 +139,12 @@
                 <div>
                     <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Lokasi Event</span>
                     <div class="font-bold text-slate-900 text-sm">{{ $event['location'] ?? 'Lokasi belum ditentukan' }}</div>
+                    @if ($event->requiresOnlineAttendance())
+                        <a href="{{ $event->meeting_url }}" target="_blank" rel="noopener"
+                           class="mt-1 inline-block break-all text-[11px] font-bold text-blue-600 hover:underline">
+                            Link Meeting: {{ $event->meeting_url }}
+                        </a>
+                    @endif
                 </div>
 
                 <div>
@@ -162,7 +179,7 @@
                         Peserta Terdaftar
                     </h3>
                     <span class="text-xs font-bold text-slate-500">
-                        {{ $registrations->count() }} peserta · {{ $registrations->whereNotNull('checked_in_at')->count() }} check-in
+                        {{ $registrations->count() }} peserta · {{ $registrations->filter(fn ($registration) => $registration->checked_in_at || $registration->joined_at)->count() }} hadir
                     </span>
                 </div>
 
@@ -234,9 +251,12 @@
                                         @endif
                                     </td>
                                     <td class="px-4 py-3">
-                                        @if ($registration->checked_in_at)
+                                        @php
+                                            $attendedAt = $event->isOnline() ? $registration->joined_at : $registration->checked_in_at;
+                                        @endphp
+                                        @if ($attendedAt)
                                             <span class="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-700">
-                                                Hadir · {{ $registration->checked_in_at->format('d M H:i') }}
+                                                Hadir · {{ $attendedAt->format('d M H:i') }}
                                             </span>
                                         @else
                                             <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 font-semibold text-slate-500">
@@ -257,8 +277,8 @@
                                             <form action="{{ route('admin.events.registrations.check-in', [$event, $registration]) }}" method="POST" data-async data-async-reload>
                                                 @csrf
                                                 <button type="submit"
-                                                        class="font-semibold {{ $registration->checked_in_at ? 'text-rose-600 hover:underline' : 'text-blue-600 hover:underline' }}">
-                                                    {{ $registration->checked_in_at ? 'Batalkan Hadir' : 'Check-in' }}
+                                                        class="font-semibold {{ $attendedAt ? 'text-rose-600 hover:underline' : 'text-blue-600 hover:underline' }}">
+                                                    {{ $attendedAt ? 'Batalkan Hadir' : 'Check-in' }}
                                                 </button>
                                             </form>
                                         </div>

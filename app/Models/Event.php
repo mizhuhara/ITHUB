@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,7 @@ class Event extends Model
         'full_date',
         'time',
         'location',
+        'meeting_url',
         'quota',
         'total_quota',
         'contact_email',
@@ -42,6 +44,13 @@ class Event extends Model
         'image',
         'status',
         'is_verified',
+        'certificate_enabled',
+        'certificate_template',
+        'certificate_name_x',
+        'certificate_name_y',
+        'certificate_name_font_size',
+        'certificate_name_color',
+        'completed_at',
     ];
 
     /**
@@ -54,6 +63,11 @@ class Event extends Model
             'speakers' => 'array',
             'is_verified' => 'boolean',
             'total_quota' => 'integer',
+            'certificate_enabled' => 'boolean',
+            'certificate_name_x' => 'float',
+            'certificate_name_y' => 'float',
+            'certificate_name_font_size' => 'integer',
+            'completed_at' => 'datetime',
         ];
     }
 
@@ -65,6 +79,95 @@ class Event extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    /**
+     * Limit events to those the given user may manage.
+     *
+     * @param  Builder<Event>  $query
+     * @return Builder<Event>
+     */
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        if (! $user || ! in_array($user->role, ['super_admin', 'admin', 'school', 'university', 'company'], true)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if (in_array($user->role, ['super_admin', 'admin'], true)) {
+            return $query;
+        }
+
+        $companyName = $user->role === 'company'
+            ? Company::where('user_id', $user->id)->value('name')
+            : null;
+
+        return $query->where(function (Builder $q) use ($user, $companyName) {
+            $q->where('user_id', $user->id);
+
+            if (! empty($companyName)) {
+                $q->orWhere('organizer', $companyName);
+            }
+        });
+    }
+
+    /**
+     * Check if the given user may manage this event.
+     */
+    public function isManageableBy(?User $user): bool
+    {
+        return static::whereKey($this->getKey())->visibleTo($user)->exists();
+    }
+
+    /**
+     * Check if the event has a usable certificate template.
+     */
+    public function hasCertificate(): bool
+    {
+        return $this->certificate_enabled
+            && $this->completed_at !== null
+            && ! empty($this->certificate_template);
+    }
+
+    /**
+     * Check if the registration is eligible for a certificate.
+     */
+    public function certificateAvailableFor(EventRegistration $registration): bool
+    {
+        return $this->hasCertificate()
+            && $registration->isConfirmed()
+            && (! $this->requiresOnlineAttendance() || $registration->hasJoinedOnline());
+    }
+
+    /**
+     * Check if the event takes place offline.
+     */
+    public function isOffline(): bool
+    {
+        return strtolower(trim((string) $this->mode)) !== 'online';
+    }
+
+    /**
+     * Check if the event takes place online.
+     */
+    public function isOnline(): bool
+    {
+        return ! $this->isOffline();
+    }
+
+    /**
+     * Check if the organizer has configured a meeting link.
+     */
+    public function hasMeetingLink(): bool
+    {
+        return ! empty($this->meeting_url);
+    }
+
+    /**
+     * Check if certificates require the participant to join the meeting first.
+     */
+    public function requiresOnlineAttendance(): bool
+    {
+        return $this->isOnline() && $this->hasMeetingLink();
     }
 
     /**
@@ -171,13 +274,48 @@ class Event extends Model
     }
 
     /**
-     * Convenience for Blade — organizer logo image URL.
+     * Convenience for Blade — organizer logo / profile image URL.
      */
     public function getOrganizerLogoAttribute(): ?string
     {
-        return $this->attributes['organizer_logo']
-            ?? ($this->relationLoaded('organizer') ? $this->organizer->logo ?? null : null)
-            ?? null;
+        if (! empty($this->attributes['organizer_logo'])) {
+            $logo = $this->attributes['organizer_logo'];
+            if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://')) {
+                return $logo;
+            }
+            if (str_starts_with($logo, '/storage/')) {
+                return asset(ltrim($logo, '/'));
+            }
+
+            return asset('storage/'.ltrim($logo, '/'));
+        }
+
+        if ($this->user_id) {
+            $user = $this->relationLoaded('user') ? $this->user : $this->user;
+            if ($user && $user->avatar_url) {
+                return $user->avatar_url;
+            }
+        }
+
+        if (! empty($this->organizer)) {
+            $instLogo = Company::where('name', $this->organizer)->value('logo_url')
+                ?? School::where('name', $this->organizer)->value('logo_url')
+                ?? University::where('name', $this->organizer)->value('logo_url')
+                ?? User::where('name', $this->organizer)->first()?->avatar_url;
+
+            if ($instLogo) {
+                if (str_starts_with($instLogo, 'http://') || str_starts_with($instLogo, 'https://')) {
+                    return $instLogo;
+                }
+                if (str_starts_with($instLogo, '/storage/')) {
+                    return asset(ltrim($instLogo, '/'));
+                }
+
+                return asset('storage/'.ltrim($instLogo, '/'));
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Internship;
 use App\Models\User;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -66,8 +68,8 @@ class AdminInternshipController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (! $request->filled('user_id') && auth()->check()) {
-            $request->merge(['user_id' => auth()->id()]);
+        if (! $request->filled('user_id') && Auth::check()) {
+            $request->merge(['user_id' => Auth::id()]);
         }
 
         $validated = $request->validate([
@@ -84,7 +86,7 @@ class AdminInternshipController extends Controller
 
         // Handle profile picture upload
         if ($request->hasFile('profile_picture')) {
-            $validated['profile_picture'] = $request->file('profile_picture')->store('internships', 'public');
+            $validated['profile_picture'] = ImageUploadService::storeAndOptimize($request->file('profile_picture'), 'internships');
         }
 
         $internship = Internship::create($validated);
@@ -128,7 +130,7 @@ class AdminInternshipController extends Controller
             if ($internship->profile_picture && Storage::disk('public')->exists($internship->profile_picture)) {
                 Storage::disk('public')->delete($internship->profile_picture);
             }
-            $validated['profile_picture'] = $request->file('profile_picture')->store('internships', 'public');
+            $validated['profile_picture'] = ImageUploadService::storeAndOptimize($request->file('profile_picture'), 'internships');
         }
 
         $internship->update($validated);

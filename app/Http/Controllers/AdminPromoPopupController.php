@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppSetting;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +13,7 @@ class AdminPromoPopupController extends Controller
 {
     private function authorizeSuperAdmin(): void
     {
-        abort_if(auth()->user()?->role !== 'super_admin', 403, 'Hanya Super Admin yang dapat mengelola promo popup.');
+        abort_if($this->authUser()?->role !== 'super_admin', 403, 'Hanya Super Admin yang dapat mengelola promo popup.');
     }
 
     public function edit(): View
@@ -33,7 +34,7 @@ class AdminPromoPopupController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:500'],
             'image' => ['nullable', 'string', 'max:500'],
-            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'remove_image' => ['nullable'],
             'button_text' => ['nullable', 'string', 'max:100'],
             'button_link' => ['nullable', 'string', 'max:500', function (string $attribute, mixed $value, \Closure $fail) {
@@ -50,7 +51,7 @@ class AdminPromoPopupController extends Controller
         if ($request->boolean('remove_image')) {
             $image = '';
         } elseif ($request->hasFile('image_file')) {
-            $image = Storage::disk('public')->url($request->file('image_file')->store('promo-popup', 'public'));
+            $image = Storage::disk('public')->url(ImageUploadService::storeAndOptimize($request->file('image_file'), 'promo-popup'));
         } elseif (! empty($validated['image'])) {
             $image = $validated['image'];
         }

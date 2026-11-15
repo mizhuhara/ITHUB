@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\University;
 use App\Models\UserReport;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -46,7 +48,18 @@ class AdminUnivController extends Controller
         }
 
         if ($request->filled('status') && $request->input('status') !== 'all') {
-            $query->whereRaw('LOWER(status) = ?', [strtolower($request->input('status'))]);
+            $status = strtolower($request->input('status'));
+            if ($status === 'active') {
+                $query->whereRaw('LOWER(status) = ?', ['active']);
+            } elseif ($status === 'inactive') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(status) = ?', ['inactive'])
+                        ->orWhereRaw('LOWER(status) != ?', ['active'])
+                        ->orWhereNull('status');
+                });
+            } else {
+                $query->whereRaw('LOWER(status) = ?', [$status]);
+            }
         }
 
         if ($request->filled('type') && $request->input('type') !== 'all') {
@@ -93,7 +106,7 @@ class AdminUnivController extends Controller
      */
     public function create(): View|RedirectResponse
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Jika role university sudah punya universitas, arahkan ke edit
         if ($user->role === 'university') {
@@ -139,9 +152,9 @@ class AdminUnivController extends Controller
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'map_link' => ['nullable', 'string', 'max:500'],
-            'logo' => ['nullable', 'image', 'max:5120'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'gallery' => ['nullable', 'array'],
-            'gallery.*' => ['image', 'max:5120'],
+            'gallery.*' => ['image', 'max:2048'],
         ]);
 
         $locations = array_map('trim', explode(',', $validated['location']));
@@ -183,7 +196,7 @@ class AdminUnivController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $path = $file->store('universities/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'universities/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -191,7 +204,7 @@ class AdminUnivController extends Controller
         if ($request->hasFile('gallery')) {
             $galleryUrls = [];
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('universities/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'universities/gallery');
                 $galleryUrls[] = Storage::url($path);
             }
             $data['gallery'] = array_values(array_slice($galleryUrls, 0, 4));
@@ -220,7 +233,7 @@ class AdminUnivController extends Controller
 
     private function authorizeCreate(): void
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if (! in_array($user->role, ['super_admin', 'admin', 'university'], true)) {
             abort(403, 'Akses ditolak. Akun ini tidak dapat menambah data universitas.');
@@ -229,7 +242,7 @@ class AdminUnivController extends Controller
 
     private function visibleUnivs()
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         if ($user && $user->role === 'university') {
             return University::where('user_id', $user->id);
         }
@@ -280,9 +293,9 @@ class AdminUnivController extends Controller
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'map_link' => ['nullable', 'string', 'max:500'],
-            'logo' => ['nullable', 'image', 'max:5120'],
+            'logo' => ['nullable', 'image', 'max:2048'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'max:5120'],
+            'gallery.*' => ['image', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'tags' => ['nullable', 'array'],
@@ -328,7 +341,7 @@ class AdminUnivController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $path = $file->store('universities/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'universities/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -341,7 +354,7 @@ class AdminUnivController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('universities/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'universities/gallery');
                 $gallery[] = Storage::url($path);
             }
         }
@@ -376,7 +389,7 @@ class AdminUnivController extends Controller
 
         UserReport::create([
             ...$validated,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'status' => 'pending',
         ]);
 
@@ -389,7 +402,7 @@ class AdminUnivController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        abort_if(auth()->user()->role !== 'super_admin' && auth()->user()->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
+        abort_if($this->authUser()?->role !== 'super_admin' && $this->authUser()?->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
 
         $univ = $this->findVisibleUniv($id);
         $name = $univ->name;

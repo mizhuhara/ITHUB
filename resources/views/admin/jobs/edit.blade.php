@@ -20,7 +20,7 @@
     @endif
 
     {{-- Action Buttons --}}
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <a href="{{ route('admin.jobs.show', $job['id']) }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/>
@@ -28,11 +28,11 @@
             Kembali
         </a>
 
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.jobs.show', $job['id']) }}" class="inline-flex items-center justify-center bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-lg text-[13.5px] transition">
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+            <a href="{{ route('admin.jobs.show', $job['id']) }}" class="flex-1 sm:flex-initial inline-flex items-center justify-center bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-lg text-[13.5px] transition text-center">
                 Batal
             </a>
-            <button type="submit" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg text-[13.5px] shadow-2xs transition">
+            <button type="submit" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-lg text-[13.5px] shadow-2xs transition">
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/></svg>
                 <span>Simpan Perubahan</span>
             </button>
@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                @php $existingRequirements = old('requirements', $job->requirements ?? []); @endphp
+                @php $existingRequirements = is_array($er = old('requirements', $job->requirements)) ? $er : (empty($er) ? [] : (array) $er); @endphp
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Persyaratan</label>
                     <div class="flex gap-2">
@@ -166,7 +166,7 @@
                         @foreach ($existingRequirements as $req)
                             <span class="tag-badge-green">
                                 {{ $req }}
-                                <button type="button" onclick="removeTag(this)" class="ml-1 text-green-800 hover:text-red-600 font-bold leading-none">&times;</button>
+                                <button type="button" onclick="removeTag(this)" class="ml-1 text-slate-500 hover:text-red-600 font-bold leading-none">&times;</button>
                                 <input type="hidden" name="requirements[]" value="{{ $req }}">
                             </span>
                         @endforeach
@@ -186,7 +186,7 @@
                     </div>
                 </div>
 
-                @php $existingResponsibilities = old('responsibilities', $job->responsibilities ?? []); @endphp
+                @php $existingResponsibilities = is_array($er = old('responsibilities', $job->responsibilities)) ? $er : (empty($er) ? [] : (array) $er); @endphp
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Tanggung Jawab</label>
                     <div class="flex gap-2">
@@ -221,7 +221,7 @@
                     </div>
                 </div>
 
-                @php $existingSkills = old('skills', $job->skills ?? []); @endphp
+                @php $existingSkills = is_array($es = old('skills', $job->skills)) ? $es : (empty($es) ? [] : (array) $es); @endphp
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tambah Skill / Tag</label>
                     <div class="flex gap-2">
@@ -374,15 +374,26 @@
                 </div>
 
                 {{-- Deadline --}}
+                @php
+                    $rawDeadline = old('deadline', $job['deadline'] ?? '');
+                    $deadlineFormatted = '';
+                    if (!empty($rawDeadline)) {
+                        try {
+                            $deadlineFormatted = \Carbon\Carbon::parse($rawDeadline)->format('Y-m-d');
+                        } catch (\Throwable $e) {
+                            $deadlineFormatted = $rawDeadline;
+                        }
+                    }
+                @endphp
                 <div>
-                    <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Deadline Lamaran</label>
+                    <label for="deadline-input" class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Deadline Lamaran</label>
                     <div class="relative">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="absolute left-3.5 top-3 text-slate-400 pointer-events-none">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
                         </svg>
-                        <input type="text" name="deadline" value="{{ old('deadline', $job['deadline'] ?? '') }}"
-                               placeholder="mis. 30 Nov 2026 atau 2026-11-30"
-                               class="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="date" id="deadline-input" name="deadline" value="{{ $deadlineFormatted }}"
+                               onclick="this.showPicker && this.showPicker()"
+                               class="w-full h-11 pl-10 pr-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
                     </div>
                 </div>
 
@@ -404,7 +415,7 @@
 
 @push('scripts')
 <style>
-.tag-badge-green { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#166534; border:1px solid #bbf7d0; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
+.tag-badge-green { display:inline-flex; align-items:center; gap:4px; background:#f1f5f9; color:#334155; border:1px solid #e2e8f0; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
 .tag-badge-indigo { display:inline-flex; align-items:center; gap:4px; background:#e0e7ff; color:#3730a3; border:1px solid #c7d2fe; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
 .tag-badge-blue { display:inline-flex; align-items:center; gap:4px; background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px; }
 </style>

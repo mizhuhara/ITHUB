@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Services\ImageUploadService;
+use chillerlan\QRCode\QRCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -86,6 +88,7 @@ class EventController extends Controller
     {
         $event = Event::where('status', 'Approved')
             ->where('is_verified', true)
+            ->with(['user.school', 'user.university', 'user.company'])
             ->findOrFail($id);
 
         $event->loadLearningAndSpeakers();
@@ -101,6 +104,13 @@ class EventController extends Controller
         $isFull = $event->total_quota > 0 && $registeredCount >= $event->total_quota;
         $bankAccount = $event->bank_account;
 
+        $ticketQr = $event->isOffline() && $registration?->isConfirmed()
+            ? (new QRCode)->render(route('ticket.show', $registration->ticket_code))
+            : null;
+
+        $certificateAvailable = $registration !== null
+            && $event->certificateAvailableFor($registration);
+
         return view('event.show', [
             'event' => $event,
             'registeredCount' => $registeredCount,
@@ -108,6 +118,8 @@ class EventController extends Controller
             'isRegistered' => $isRegistered,
             'isFull' => $isFull,
             'bankAccount' => $bankAccount,
+            'ticketQr' => $ticketQr,
+            'certificateAvailable' => $certificateAvailable,
         ]);
     }
 
@@ -136,7 +148,7 @@ class EventController extends Controller
 
         $proofPath = null;
         if ($isPaid && $request->hasFile('payment_proof')) {
-            $proofPath = Storage::url($request->file('payment_proof')->store('events/payments', 'public'));
+            $proofPath = Storage::url(ImageUploadService::storeAndOptimize($request->file('payment_proof'), 'events/payments'));
         }
 
         $result = DB::transaction(function () use ($event, $request, $validated, $isPaid, $proofPath) {
@@ -197,7 +209,7 @@ class EventController extends Controller
             'payment_notes' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $proofPath = Storage::url($request->file('payment_proof')->store('events/payments', 'public'));
+        $proofPath = Storage::url(ImageUploadService::storeAndOptimize($request->file('payment_proof'), 'events/payments'));
 
         $registration->update([
             'payment_proof' => $proofPath,

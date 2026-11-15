@@ -6,6 +6,7 @@ use App\Http\Controllers\CommunityChatController;
 use App\Models\Company;
 use App\Models\School;
 use App\Models\University;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -27,11 +28,12 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('partials.navbar', function ($view) {
             if (Auth::check()) {
-                $summary = CommunityChatController::getUserChatSummary(Auth::user());
+                /** @var User $user */
+                $user = Auth::user();
+                $summary = CommunityChatController::getUserChatSummary($user);
                 $view->with('navbarChatSummary', $summary);
 
                 // Ambil logo institusi berdasarkan role agar tampil di navbar
-                $user = Auth::user();
                 $navbarLogoUrl = null;
                 if ($user->role === 'school') {
                     $institution = School::where('user_id', $user->id)->first();

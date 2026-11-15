@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AppSetting;
 use App\Models\MembershipPayment;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -56,7 +57,7 @@ class InstitutionMembershipController extends Controller
             'sender_bank' => 'required|string|max:100',
             'sender_name' => 'required|string|max:150',
             'sender_account_number' => 'nullable|string|max:100',
-            'payment_proof' => 'required|file|mimes:jpeg,png,jpg,webp,pdf|max:5120',
+            'payment_proof' => 'required|file|mimes:jpeg,png,jpg,webp,pdf|max:2048',
             'notes' => 'nullable|string|max:1000',
         ], [
             'plan.required' => 'Pilih paket perpanjangan membership.',
@@ -64,7 +65,7 @@ class InstitutionMembershipController extends Controller
             'sender_name.required' => 'Nama pemilik rekening pengirim wajib diisi.',
             'payment_proof.required' => 'Bukti transfer pembayaran wajib dilampirkan.',
             'payment_proof.mimes' => 'Bukti pembayaran harus berupa gambar (JPG, PNG, WEBP) atau PDF.',
-            'payment_proof.max' => 'Ukuran file bukti pembayaran maksimal 5MB.',
+            'payment_proof.max' => 'Ukuran file bukti pembayaran maksimal 2MB.',
         ]);
 
         $bankSettings = AppSetting::getMembershipBankSettings();
@@ -72,7 +73,7 @@ class InstitutionMembershipController extends Controller
             ? $bankSettings['price_yearly']
             : $bankSettings['price_monthly'];
 
-        $proofPath = $request->file('payment_proof')->store('payment-proofs', 'public');
+        $proofPath = ImageUploadService::storeAndOptimize($request->file('payment_proof'), 'payment-proofs');
 
         MembershipPayment::create([
             'user_id' => $user->id,

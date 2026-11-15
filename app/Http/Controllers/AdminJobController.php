@@ -6,8 +6,10 @@ use App\Models\Company;
 use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Notifications\ApplicationStatusUpdated;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -276,14 +278,14 @@ class AdminJobController extends Controller
 
         // Process image and logo
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('jobs', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('image_file'), 'jobs');
             $imageUrl = Storage::url($path);
         } else {
             $imageUrl = $validated['image'] ?? null;
         }
 
         if ($request->hasFile('logo_file')) {
-            $logoPath = $request->file('logo_file')->store('jobs/logos', 'public');
+            $logoPath = ImageUploadService::storeAndOptimize($request->file('logo_file'), 'jobs/logos');
             $logoUrl = Storage::url($logoPath);
         } else {
             $logoUrl = $validated['logo_url'] ?? $imageUrl;
@@ -394,7 +396,7 @@ class AdminJobController extends Controller
             $jobApp->statusHistories()->create([
                 'status' => $validated['status'],
                 'note' => $note,
-                'changed_by' => auth()->id(),
+                'changed_by' => Auth::id(),
             ]);
         });
 
@@ -473,7 +475,7 @@ class AdminJobController extends Controller
 
         // Process image
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('jobs', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('image_file'), 'jobs');
             $imageUrl = Storage::url($path);
             $logoUrl = $imageUrl;
         } elseif ($request->filled('image')) {
@@ -486,7 +488,7 @@ class AdminJobController extends Controller
 
         // Process logo if explicitly uploaded
         if ($request->hasFile('logo_file')) {
-            $logoPath = $request->file('logo_file')->store('jobs/logos', 'public');
+            $logoPath = ImageUploadService::storeAndOptimize($request->file('logo_file'), 'jobs/logos');
             $logoUrl = Storage::url($logoPath);
         } elseif ($request->filled('logo_url')) {
             $logoUrl = $validated['logo_url'];

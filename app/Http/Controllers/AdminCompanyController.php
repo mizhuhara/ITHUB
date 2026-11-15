@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\UserReport;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -50,7 +52,18 @@ class AdminCompanyController extends Controller
 
         // Status Filter
         if ($request->filled('status') && strtolower($request->input('status')) !== 'all') {
-            $query->whereRaw('LOWER(status) = ?', [strtolower($request->input('status'))]);
+            $status = strtolower($request->input('status'));
+            if ($status === 'active') {
+                $query->whereRaw('LOWER(status) = ?', ['active']);
+            } elseif ($status === 'inactive') {
+                $query->where(function ($q) {
+                    $q->whereRaw('LOWER(status) = ?', ['inactive'])
+                        ->orWhereRaw('LOWER(status) != ?', ['active'])
+                        ->orWhereNull('status');
+                });
+            } else {
+                $query->whereRaw('LOWER(status) = ?', [$status]);
+            }
         }
 
         // Type Filter (Swasta, BUMN, Multinasional, Startup)
@@ -98,7 +111,7 @@ class AdminCompanyController extends Controller
      */
     public function create(): View|RedirectResponse
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         // Jika role company sudah punya perusahaan, arahkan ke edit
         if ($user->role === 'company') {
@@ -156,9 +169,9 @@ class AdminCompanyController extends Controller
             'tech_stack.*' => ['string', 'max:100'],
             'status' => [$user->role === 'company' ? 'nullable' : 'required', 'string'],
             'map_link' => ['nullable', 'string', 'max:1000'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
         ], [
@@ -177,7 +190,7 @@ class AdminCompanyController extends Controller
         // Process logo upload
         $logoUrl = null;
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('company-logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('logo'), 'company-logos');
             $logoUrl = Storage::url($path);
         }
 
@@ -185,7 +198,7 @@ class AdminCompanyController extends Controller
         $galleryPaths = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
-                $path = $file->store('company-gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($file, 'company-gallery');
                 $galleryPaths[] = Storage::url($path);
             }
         }
@@ -256,7 +269,7 @@ class AdminCompanyController extends Controller
 
     private function visibleCompanies()
     {
-        $user = auth()->user();
+        $user = $this->authUser();
         if ($user && $user->role === 'company') {
             return Company::where('user_id', $user->id);
         }
@@ -314,9 +327,9 @@ class AdminCompanyController extends Controller
             'tech_stack.*' => ['string', 'max:100'],
             'status' => [$request->user()->role === 'company' ? 'nullable' : 'required', 'string'],
             'map_link' => ['nullable', 'string', 'max:1000'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'remove_gallery' => ['nullable', 'array'],
@@ -380,7 +393,7 @@ class AdminCompanyController extends Controller
                 $oldPath = str_replace('/storage/', '', parse_url($company->logo_url, PHP_URL_PATH));
                 Storage::disk('public')->delete($oldPath);
             }
-            $path = $request->file('logo')->store('company-logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('logo'), 'company-logos');
             $payload['logo_url'] = Storage::url($path);
         }
 
@@ -397,7 +410,7 @@ class AdminCompanyController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
-                $path = $file->store('company-gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($file, 'company-gallery');
                 $gallery[] = Storage::url($path);
             }
         }
@@ -420,7 +433,7 @@ class AdminCompanyController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        abort_if(auth()->user()->role !== 'super_admin' && auth()->user()->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
+        abort_if($this->authUser()?->role !== 'super_admin' && $this->authUser()?->role !== 'admin', 403, 'Akses ditolak. Hanya admin.');
 
         $company = $this->findVisibleCompany($id);
         $name = $company->name;
@@ -505,7 +518,7 @@ class AdminCompanyController extends Controller
 
         UserReport::create([
             ...$validated,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'status' => 'pending',
         ]);
 

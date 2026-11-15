@@ -15,6 +15,8 @@ class EventRegistration extends Model
         'email',
         'phone',
         'ticket_code',
+        'meeting_token',
+        'joined_at',
         'checked_in_at',
         'amount',
         'payment_status',
@@ -32,6 +34,7 @@ class EventRegistration extends Model
     protected function casts(): array
     {
         return [
+            'joined_at' => 'datetime',
             'checked_in_at' => 'datetime',
             'confirmed_at' => 'datetime',
             'rejected_at' => 'datetime',
@@ -43,6 +46,7 @@ class EventRegistration extends Model
     {
         static::creating(function (self $registration) {
             $registration->ticket_code ??= 'EVT-'.Str::upper(Str::random(8));
+            $registration->meeting_token ??= 'MTG-'.Str::upper(Str::random(40));
         });
     }
 
@@ -79,5 +83,33 @@ class EventRegistration extends Model
     public function isRejected(): bool
     {
         return $this->payment_status === 'rejected';
+    }
+
+    public function hasJoinedOnline(): bool
+    {
+        return $this->joined_at !== null;
+    }
+
+    public function getMaskedEmailAttribute(): ?string
+    {
+        if (! $this->email || ! str_contains($this->email, '@')) {
+            return $this->email;
+        }
+
+        [$name, $domain] = explode('@', $this->email, 2);
+        $visible = substr($name, 0, 2);
+
+        return $visible.str_repeat('*', max(1, strlen($name) - 2)).'@'.$domain;
+    }
+
+    public function getMaskedPhoneAttribute(): ?string
+    {
+        $digits = preg_replace('/\D/', '', (string) $this->phone);
+
+        if (strlen($digits) < 4) {
+            return $this->phone;
+        }
+
+        return str_repeat('*', strlen($digits) - 4).substr($digits, -4);
     }
 }

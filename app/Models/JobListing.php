@@ -248,4 +248,51 @@ class JobListing extends Model
 
         return $value;
     }
+
+    public function getRequirementsAttribute($value): array
+    {
+        return $this->normalizeListAttribute($value);
+    }
+
+    public function getResponsibilitiesAttribute($value): array
+    {
+        return $this->normalizeListAttribute($value);
+    }
+
+    public function getSkillsAttribute($value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (empty($value)) {
+            return [];
+        }
+        $decoded = json_decode((string) $value, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', (string) $value))));
+    }
+
+    private function normalizeListAttribute($value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (empty($value)) {
+            return [];
+        }
+        $decoded = json_decode((string) $value, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        $str = trim(is_string($decoded) ? $decoded : (string) $value, " \t\n\r\0\x0B\"");
+
+        return array_values(array_filter(array_map(
+            fn ($l) => trim(ltrim($l, "-* \t")),
+            preg_split('/(?:\\\\n|[\r\n])+/', $str)
+        )));
+    }
 }

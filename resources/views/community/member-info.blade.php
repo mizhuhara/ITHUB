@@ -47,9 +47,12 @@
         {{-- Main Member Profile Card --}}
         <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
             
-            {{-- Header Cover Banner (matches community show & manage page cover sizing) --}}
-            <div class="relative h-44 sm:h-60 bg-slate-100 overflow-hidden">
-                @if ($community->cover_url)
+            {{-- Header Cover Banner: Mengikuti foto profil dari akun anggota --}}
+            <div class="relative h-44 sm:h-60 bg-slate-900 overflow-hidden">
+                @if ($member->avatar_url)
+                    <img src="{{ $member->avatar_url }}" alt="{{ $member->name }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-slate-950/25 backdrop-blur-[1px]"></div>
+                @elseif ($community->cover_url)
                     <img src="{{ $community->cover_url }}" alt="{{ $community->name }}" class="w-full h-full object-cover">
                 @else
                     <div class="w-full h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500"></div>
@@ -169,7 +172,7 @@
                                 Bergabung dengan Komunitas
                             </p>
                             <p class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
-                                {{ $joinedAt ? $joinedAt->translatedFormat('d F Y') : '-' }}
+                                {{ $joinedAt ? $joinedAt->timezone('Asia/Jakarta')->translatedFormat('d F Y') : '-' }}
                             </p>
                             @if ($joinedAt)
                                 <div class="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-600 font-medium">
@@ -178,7 +181,7 @@
                                             <circle cx="12" cy="12" r="10"/>
                                             <polyline points="12 6 12 12 16 14"/>
                                         </svg>
-                                        Pukul {{ $joinedAt->format('H:i') }} WIB
+                                        Pukul {{ $joinedAt->timezone('Asia/Jakarta')->format('H:i') }} WIB
                                     </span>
                                     <span class="text-slate-300">•</span>
                                     <span class="text-blue-700 font-semibold bg-blue-100/70 px-2 py-0.5 rounded-md">
@@ -250,7 +253,7 @@
                                 Kapan Join Komunitas
                             </span>
                             <div class="text-slate-900 font-bold text-left sm:text-right">
-                                <span>{{ $joinedAt ? $joinedAt->translatedFormat('d F Y, H:i') . ' WIB' : '-' }}</span>
+                                <span>{{ $joinedAt ? $joinedAt->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') . ' WIB' : '-' }}</span>
                                 @if ($joinedAt)
                                     <span class="block text-xs font-medium text-blue-600">({{ $joinedAt->diffForHumans() }})</span>
                                 @endif

@@ -8,10 +8,12 @@ use App\Models\EventRegistration;
 use App\Models\OrganizerBankAccount;
 use App\Models\School;
 use App\Models\University;
+use App\Services\ImageUploadService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -87,7 +89,7 @@ class AdminEventPaymentController extends Controller
         $registration->update([
             'payment_status' => 'confirmed',
             'confirmed_at' => now(),
-            'confirmed_by' => auth()->id(),
+            'confirmed_by' => Auth::id(),
             'rejected_at' => null,
             'rejected_by' => null,
             'rejection_reason' => null,
@@ -120,7 +122,7 @@ class AdminEventPaymentController extends Controller
         $registration->update([
             'payment_status' => 'rejected',
             'rejected_at' => now(),
-            'rejected_by' => auth()->id(),
+            'rejected_by' => Auth::id(),
             'rejection_reason' => $validated['rejection_reason'],
         ]);
 
@@ -246,7 +248,7 @@ class AdminEventPaymentController extends Controller
         $bankAccount->is_active = true;
 
         if ($request->hasFile('qr_code_image')) {
-            $qrPath = Storage::url($request->file('qr_code_image')->store('events/qr', 'public'));
+            $qrPath = Storage::url(ImageUploadService::storeAndOptimize($request->file('qr_code_image'), 'events/qr'));
             $bankAccount->qr_code_image = $qrPath;
         }
 
@@ -262,7 +264,7 @@ class AdminEventPaymentController extends Controller
      */
     private function visibleEventIds(): array
     {
-        $user = auth()->user();
+        $user = $this->authUser();
 
         if ($user && in_array($user->role, ['school', 'university', 'company'], true)) {
             $school = $user->role === 'school' ? School::where('user_id', $user->id)->first() : null;
