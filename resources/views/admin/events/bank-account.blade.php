@@ -16,26 +16,16 @@
             </p>
         </div>
 
-<<<<<<< HEAD
         <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
             <a href="{{ route('admin.events.finance') }}"
                class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition whitespace-nowrap">
-=======
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-            <a href="{{ route('admin.events.finance') }}"
-               class="inline-flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
->>>>>>> origin/main
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span>Penghasilan Event</span>
             </a>
             <a href="{{ route('admin.events.confirmations') }}"
-<<<<<<< HEAD
                class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition whitespace-nowrap">
-=======
-               class="inline-flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
->>>>>>> origin/main
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -49,7 +39,7 @@
         <form method="POST" action="{{ route('admin.events.bank-account.update') }}" enctype="multipart/form-data">
             @csrf
 
-            <div class="p-5 sm:p-8 space-y-5 sm:space-y-6">
+            <div class="p-6 sm:p-8 space-y-6">
                 {{-- Info Callout --}}
                 <div class="rounded-2xl bg-blue-50/70 border border-blue-200 p-4 flex items-start gap-3.5">
                     <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 text-sm font-bold">
@@ -142,20 +132,12 @@
             </div>
 
             {{-- Footer Button --}}
-<<<<<<< HEAD
             <div class="p-5 sm:p-6 bg-slate-50 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
-=======
-            <div class="p-4 sm:p-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
->>>>>>> origin/main
                 <span class="text-xs text-slate-500 text-center sm:text-left">
                     Pastikan nomor rekening aktif dan benar.
                 </span>
                 <button type="submit"
-<<<<<<< HEAD
                         class="w-full sm:w-auto justify-center inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-sm transition">
-=======
-                        class="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-sm transition w-full sm:w-auto">
->>>>>>> origin/main
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>

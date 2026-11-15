@@ -224,7 +224,6 @@
                         @enderror
                     </div>
 
-<<<<<<< HEAD
                     {{-- NPSN --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
@@ -239,8 +238,6 @@
                         @enderror
                     </div>
 
-=======
->>>>>>> origin/main
                     {{-- University Type --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tipe Institusi</label>

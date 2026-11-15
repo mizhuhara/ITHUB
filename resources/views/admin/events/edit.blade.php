@@ -25,19 +25,11 @@
 
         <div class="flex items-center gap-2.5 w-full sm:w-auto">
             <a href="{{ route('admin.events.index') }}" 
-<<<<<<< HEAD
                class="flex-1 sm:flex-none justify-center inline-flex items-center h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition shadow-2xs">
                 Batal
             </a>
             <button type="submit" form="event-form" 
                     class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-sm transition">
-=======
-               class="flex-1 sm:flex-initial inline-flex items-center justify-center h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-600 text-xs font-bold hover:bg-slate-50 transition shadow-2xs">
-                Batal
-            </a>
-            <button type="submit" form="event-form" 
-                    class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 h-10 px-5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-sm transition">
->>>>>>> origin/main
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
@@ -129,15 +121,13 @@
                     {{-- Lokasi / Venue --}}
                     <div>
                         <label for="location" class="block text-xs font-bold text-slate-700 mb-1.5">
-                            Lokasi / Venue (Event Offline)
+                            Lokasi / Link Platform
                         </label>
                         <input id="location" name="location" type="text"
                                value="{{ old('location', $event->location) }}"
-                               placeholder="Contoh: Gedung Serbaguna Kampus 1"
+                               placeholder="Contoh: Gedung Serbaguna Kampus 1 / Zoom Meeting link"
                                class="w-full h-10 px-3.5 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder-slate-400 bg-slate-50/50 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10">
                     </div>
-
-                    @include('admin.events.partials.meeting-fields', ['event' => $event])
 
                     {{-- Deskripsi Event --}}
                     <div>
@@ -180,8 +170,6 @@
                         <img id="image-preview" src="" alt="Preview" class="w-full h-full object-cover">
                     </div>
                 </div>
-
-                @include('admin.events.partials.certificate-fields', ['event' => $event])
 
             </div>
 
