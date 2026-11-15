@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\UserReport;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -168,9 +169,9 @@ class AdminCompanyController extends Controller
             'tech_stack.*' => ['string', 'max:100'],
             'status' => [$user->role === 'company' ? 'nullable' : 'required', 'string'],
             'map_link' => ['nullable', 'string', 'max:1000'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
         ], [
@@ -189,7 +190,7 @@ class AdminCompanyController extends Controller
         // Process logo upload
         $logoUrl = null;
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('company-logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('logo'), 'company-logos');
             $logoUrl = Storage::url($path);
         }
 
@@ -197,7 +198,7 @@ class AdminCompanyController extends Controller
         $galleryPaths = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
-                $path = $file->store('company-gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($file, 'company-gallery');
                 $galleryPaths[] = Storage::url($path);
             }
         }
@@ -326,9 +327,9 @@ class AdminCompanyController extends Controller
             'tech_stack.*' => ['string', 'max:100'],
             'status' => [$request->user()->role === 'company' ? 'nullable' : 'required', 'string'],
             'map_link' => ['nullable', 'string', 'max:1000'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
+            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'remove_gallery' => ['nullable', 'array'],
@@ -392,7 +393,7 @@ class AdminCompanyController extends Controller
                 $oldPath = str_replace('/storage/', '', parse_url($company->logo_url, PHP_URL_PATH));
                 Storage::disk('public')->delete($oldPath);
             }
-            $path = $request->file('logo')->store('company-logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('logo'), 'company-logos');
             $payload['logo_url'] = Storage::url($path);
         }
 
@@ -409,7 +410,7 @@ class AdminCompanyController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $file) {
-                $path = $file->store('company-gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($file, 'company-gallery');
                 $gallery[] = Storage::url($path);
             }
         }

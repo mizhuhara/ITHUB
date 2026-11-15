@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\School;
 use App\Models\UserReport;
+use App\Services\ImageUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -145,7 +146,7 @@ class AdminSchoolController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $path = $file->store('schools/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'schools/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -153,7 +154,7 @@ class AdminSchoolController extends Controller
         $gallery = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('schools/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'schools/gallery');
                 $gallery[] = Storage::url($path);
             }
         }
@@ -228,7 +229,7 @@ class AdminSchoolController extends Controller
             }
 
             $file = $request->file('logo');
-            $path = $file->store('schools/logos', 'public');
+            $path = ImageUploadService::storeAndOptimize($file, 'schools/logos');
             $data['logo_url'] = Storage::url($path);
             $data['logo_name'] = $file->getClientOriginalName();
         }
@@ -241,7 +242,7 @@ class AdminSchoolController extends Controller
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                $path = $image->store('schools/gallery', 'public');
+                $path = ImageUploadService::storeAndOptimize($image, 'schools/gallery');
                 $gallery[] = Storage::url($path);
             }
         }
@@ -334,10 +335,10 @@ class AdminSchoolController extends Controller
     public function editorUpload(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:25600'],
+            'file' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:2048'],
         ]);
 
-        $path = $request->file('file')->store('editor', 'public');
+        $path = ImageUploadService::storeAndOptimize($request->file('file'), 'editor');
 
         return response()->json(['url' => Storage::url($path)]);
     }
@@ -383,7 +384,7 @@ class AdminSchoolController extends Controller
             'location' => ['required', 'string', 'max:150'],
             'address' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string', 'max:20'],
-            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'logo_url' => ['nullable', 'string', 'max:500'],
             'logo_text' => ['nullable', 'string', 'max:50'],
             'logo_bg' => ['nullable', 'string', 'max:50'],
@@ -396,7 +397,7 @@ class AdminSchoolController extends Controller
             'competencies' => ['nullable', 'array'],
             'competencies.*' => ['string', 'max:100'],
             'gallery' => ['nullable', 'array', 'max:4'],
-            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
+            'gallery.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:2048'],
             'existing_gallery' => ['nullable', 'array', 'max:4'],
             'existing_gallery.*' => ['string'],
             'total_students' => ['nullable', 'integer', 'min:0'],

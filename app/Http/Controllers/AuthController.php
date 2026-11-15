@@ -7,6 +7,7 @@ use App\Models\School;
 use App\Models\University;
 use App\Models\User;
 use App\Notifications\InstitutionVerificationNotification;
+use App\Services\ImageUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class AuthController extends Controller
             $rules['org_phone'] = ['required', 'string', 'max:30', 'unique:users,org_phone'];
             $rules['org_address'] = ['required', 'string'];
             $rules['org_doc'] = ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'];
-            $rules['logo'] = ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'];
+            $rules['logo'] = ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'];
         }
 
         $data = $request->validate($rules);
@@ -69,7 +70,7 @@ class AuthController extends Controller
                 'company' => 'company-logos',
                 default => 'avatars',
             };
-            $logoPath = $file->store($folder, 'public');
+            $logoPath = ImageUploadService::storeAndOptimize($file, $folder);
             $logoUrl = Storage::url($logoPath);
         }
 

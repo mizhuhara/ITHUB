@@ -8,6 +8,7 @@ use App\Models\EventRegistration;
 use App\Models\OrganizerBankAccount;
 use App\Models\School;
 use App\Models\University;
+use App\Services\ImageUploadService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -247,7 +248,7 @@ class AdminEventPaymentController extends Controller
         $bankAccount->is_active = true;
 
         if ($request->hasFile('qr_code_image')) {
-            $qrPath = Storage::url($request->file('qr_code_image')->store('events/qr', 'public'));
+            $qrPath = Storage::url(ImageUploadService::storeAndOptimize($request->file('qr_code_image'), 'events/qr'));
             $bankAccount->qr_code_image = $qrPath;
         }
 

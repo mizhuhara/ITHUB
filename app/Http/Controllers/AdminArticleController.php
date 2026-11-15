@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\School;
 use App\Models\University;
 use App\Models\User;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -127,7 +128,7 @@ class AdminArticleController extends Controller
 
         // Determine image URL: either uploaded file or provided URL
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('articles', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('image_file'), 'articles');
             $imageUrl = Storage::disk('public')->url($path);
         } else {
             $imageUrl = $validated['image'] ?? null;
@@ -216,7 +217,7 @@ class AdminArticleController extends Controller
 
         // Determine image URL: uploaded file overrides URL if present
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('articles', 'public');
+            $path = ImageUploadService::storeAndOptimize($request->file('image_file'), 'articles');
             $imageUrl = Storage::disk('public')->url($path);
         } else {
             $imageUrl = $validated['image'] ?? $article->image;
