@@ -301,6 +301,31 @@
                                         </svg>
                                     </button>
 
+                                    {{-- Tombol Edit --}}
+                                    <a href="{{ route('admin.community.edit', $community->id) }}?return_to=approvals" 
+                                       class="p-2 rounded-xl text-blue-600 hover:text-blue-800 hover:bg-blue-50 transition" 
+                                       title="Edit Komunitas">
+                                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                        </svg>
+                                    </a>
+
+                                    {{-- Tombol Hapus --}}
+                                    <button type="button" 
+                                            class="btn-delete-community p-2 rounded-xl text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition cursor-pointer" 
+                                            data-id="{{ $community->id }}"
+                                            data-name="{{ $community->name }}"
+                                            onclick="openDeleteModal({{ $community->id }}, {{ json_encode($community->name) }})"
+                                            title="Hapus Komunitas">
+                                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            <line x1="10" y1="11" x2="10" y2="17"/>
+                                            <line x1="14" y1="11" x2="14" y2="17"/>
+                                        </svg>
+                                    </button>
+
                                     {{-- Tombol Setujui (hanya tampil jika status masih pending) --}}
                                     @if($community->approval_status === 'pending')
                                         <button type="button" 
@@ -485,6 +510,23 @@
             </button>
 
             <div class="flex items-center gap-2">
+                <a id="modal-btn-edit" 
+                   href="#" 
+                   class="px-3.5 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white border border-blue-200 transition flex items-center gap-1.5 shadow-2xs"
+                   title="Edit Komunitas">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    <span>Edit</span>
+                </a>
+
+                <button type="button" 
+                        id="modal-btn-delete" 
+                        onclick="triggerDeleteFromDetail()" 
+                        class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-600 hover:text-white border border-rose-200 transition flex items-center gap-1.5 shadow-2xs"
+                        title="Hapus Komunitas">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    <span>Hapus</span>
+                </button>
+
                 <button type="button" 
                         id="modal-btn-reject" 
                         onclick="triggerRejectFromDetail()" 
@@ -709,6 +751,11 @@
         const resubmitBox = document.getElementById('modal-resubmit-box');
         const btnReject = document.getElementById('modal-btn-reject');
         const btnApprove = document.getElementById('modal-btn-approve');
+        const btnEdit = document.getElementById('modal-btn-edit');
+
+        if (btnEdit) {
+            btnEdit.href = `{{ route('admin.community.edit', ['id' => '__ID__']) }}`.replace('__ID__', data.id) + '?return_to=approvals';
+        }
 
         if (data.resubmit_notes) {
             resubmitBox.classList.remove('hidden');
@@ -766,10 +813,41 @@
         openRejectModal(currentDetailData.id, currentDetailData.name, currentDetailData.creator_name);
     }
 
+    function triggerDeleteFromDetail() {
+        if (!currentDetailData) return;
+        closeDetailModal();
+        openDeleteModal(currentDetailData.id, currentDetailData.name);
+    }
+
+    function openDeleteModal(id, name) {
+        closeDetailModal();
+        const deleteUrl = `{{ route('admin.community-approvals.destroy', ['community' => '__ID__']) }}`.replace('__ID__', id);
+        if (typeof window.confirmDelete === 'function') {
+            window.confirmDelete(deleteUrl, name, {
+                title: 'Konfirmasi Hapus Komunitas',
+                warning: 'Peringatan: Komunitas ini akan dihapus secara permanen dari sistem.',
+                submitText: 'Hapus Komunitas'
+            });
+        } else if (confirm(`Apakah Anda yakin ingin menghapus komunitas "${name}"? Tindakan ini permanen.`)) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = deleteUrl;
+            form.innerHTML = `@csrf @method('DELETE')`;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function closeDeleteModal() {
+        if (typeof window.closeGlobalDeleteModal === 'function') {
+            window.closeGlobalDeleteModal();
+        }
+    }
+
     function openApproveModal(id, name, creatorName) {
         closeDetailModal();
         const form = document.getElementById('form-approve-approval');
-        form.action = `{{ url('/admin/community-approvals') }}/${id}/approve`;
+        form.action = `{{ route('admin.community-approvals.approve', ['community' => '__ID__']) }}`.replace('__ID__', id);
         document.getElementById('approve_community_name').textContent = name;
         document.getElementById('approve_creator_name').textContent = creatorName;
 
@@ -785,7 +863,7 @@
     function openRejectModal(id, name, creatorName) {
         closeDetailModal();
         const form = document.getElementById('form-reject-approval');
-        form.action = `{{ url('/admin/community-approvals') }}/${id}/reject`;
+        form.action = `{{ route('admin.community-approvals.reject', ['community' => '__ID__']) }}`.replace('__ID__', id);
         document.getElementById('reject_community_name').textContent = name;
         document.getElementById('reject_creator_name').textContent = creatorName;
         document.getElementById('rejection_reason').value = '';
@@ -832,12 +910,22 @@
         openApproveModal(comm.id, comm.name, comm.creator_name);
     }
 
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-delete-community');
+        if (btn) {
+            e.preventDefault();
+            e.stopPropagation();
+            openDeleteModal(btn.dataset.id, btn.dataset.name);
+        }
+    });
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeDetailModal();
             closeApproveModal();
             closeRejectModal();
             closeNotesModal();
+            closeDeleteModal();
         }
     });
 </script>

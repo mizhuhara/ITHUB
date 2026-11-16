@@ -332,6 +332,7 @@ class CommunityApprovalTest extends TestCase
         $this->actingAs($this->regularUser)->post(route('admin.community-approvals.reject', $community), [
             'rejection_reason' => 'Hacking attempt',
         ])->assertForbidden();
+        $this->actingAs($this->regularUser)->delete(route('admin.community-approvals.destroy', $community))->assertForbidden();
 
         // Regular admin (not super_admin) attempts - MUST ALSO BE FORBIDDEN as per instructions
         $this->actingAs($this->admin)->get(route('admin.community-approvals.index'))->assertForbidden();
@@ -340,5 +341,58 @@ class CommunityApprovalTest extends TestCase
         $this->actingAs($this->admin)->post(route('admin.community-approvals.reject', $community), [
             'rejection_reason' => 'Admin attempt',
         ])->assertForbidden();
+        $this->actingAs($this->admin)->delete(route('admin.community-approvals.destroy', $community))->assertForbidden();
+    }
+
+    public function test_super_admin_can_delete_community_from_approvals(): void
+    {
+        $community = Community::create([
+            'user_id' => $this->regularUser->id,
+            'name' => 'Community To Delete',
+            'category' => 'Technology',
+            'status' => 'pending',
+            'approval_status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->superAdmin)->delete(route('admin.community-approvals.destroy', $community));
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('communities', ['id' => $community->id]);
+    }
+
+    public function test_super_admin_sees_edit_and_delete_actions_on_approvals_page(): void
+    {
+        $community = Community::create([
+            'user_id' => $this->regularUser->id,
+            'name' => 'Action Buttons Test Community',
+            'category' => 'Technology',
+            'status' => 'pending',
+            'approval_status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->superAdmin)->get(route('admin.community-approvals.index'));
+        $response->assertOk();
+        $response->assertSee(route('admin.community.edit', $community->id));
+        $response->assertSee('openDeleteModal('.$community->id, false);
+    }
+
+    public function test_super_admin_can_delete_community_via_ajax(): void
+    {
+        $community = Community::create([
+            'user_id' => $this->regularUser->id,
+            'name' => 'Community To Delete Ajax',
+            'category' => 'Technology',
+            'status' => 'pending',
+            'approval_status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($this->superAdmin)->deleteJson(route('admin.community-approvals.destroy', $community));
+        $response->assertOk();
+        $response->assertJson([
+            'success' => true,
+        ]);
+
+        $this->assertDatabaseMissing('communities', ['id' => $community->id]);
     }
 }

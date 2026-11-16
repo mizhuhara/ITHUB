@@ -8,31 +8,31 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Konfirmasi Pembayaran Event</h1>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+                <span>Konfirmasi Pembayaran Event</span>
                 @if($totalPending > 0)
                     <span class="inline-flex items-center justify-center px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-700 rounded-full border border-amber-200">
                         {{ $totalPending }} Menunggu
                     </span>
                 @endif
-            </div>
+            </h1>
             <p class="text-xs text-slate-500 mt-0.5">
                 Verifikasi bukti transfer pembayaran dari peserta event berbayar dan setujui tiket masuk.
             </p>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
-            <a href="{{ route('admin.events.finance') }}" class="inline-flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
+        <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
+            <a href="{{ route('admin.events.finance') }}" class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition whitespace-nowrap">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                Penghasilan Event
+                <span>Penghasilan Event</span>
             </a>
-            <a href="{{ route('admin.events.bank-account') }}" class="inline-flex items-center justify-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
+            <a href="{{ route('admin.events.bank-account') }}" class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition whitespace-nowrap">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                 </svg>
-                Kelola Rekening
+                <span>Kelola Rekening</span>
             </a>
         </div>
     </div>
@@ -84,7 +84,7 @@
 
     {{-- Filter Toolbar --}}
     <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-        <form method="GET" action="{{ route('admin.events.confirmations') }}" class="flex flex-col md:flex-row items-center gap-3">
+        <form method="GET" action="{{ route('admin.events.confirmations') }}" class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
             <input type="hidden" name="status" value="{{ $selectedStatus }}">
 
             {{-- Event Selector --}}
@@ -101,36 +101,37 @@
             </div>
 
             {{-- Status Tabs --}}
-            <div class="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+            <div class="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
                 <a href="{{ route('admin.events.confirmations', ['status' => 'all', 'event_id' => $selectedEventId, 'q' => $searchQuery]) }}"
-                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'all' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'all' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100' }}">
                     Semua
                 </a>
                 <a href="{{ route('admin.events.confirmations', ['status' => 'pending', 'event_id' => $selectedEventId, 'q' => $searchQuery]) }}"
-                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'pending' ? 'bg-amber-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'pending' ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100' }}">
                     Menunggu Konfirmasi
                 </a>
                 <a href="{{ route('admin.events.confirmations', ['status' => 'confirmed', 'event_id' => $selectedEventId, 'q' => $searchQuery]) }}"
-                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'confirmed' ? 'bg-emerald-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'confirmed' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100' }}">
                     Dikonfirmasi
                 </a>
                 <a href="{{ route('admin.events.confirmations', ['status' => 'rejected', 'event_id' => $selectedEventId, 'q' => $searchQuery]) }}"
-                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'rejected' ? 'bg-red-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap {{ $selectedStatus === 'rejected' ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100' }}">
                     Ditolak
                 </a>
             </div>
 
-            {{-- Search Input & Submit --}}
-            <div class="flex items-center gap-2 w-full md:w-auto md:flex-1 md:ml-auto">
-                <div class="relative flex-1">
+            {{-- Search Input & Action --}}
+            <div class="flex items-center gap-2 w-full md:flex-1 md:ml-auto">
+                <div class="relative flex-1 min-w-0">
                     <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     <input type="text" name="q" value="{{ $searchQuery }}"
-                           placeholder="Cari nama, email, hp, atau kode..."
+                           placeholder="Cari nama, email, hp, atau kode tiket..."
                            class="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none">
                 </div>
-                <button type="submit" class="h-10 px-4 rounded-xl bg-slate-800 text-white text-xs font-bold hover:bg-slate-900 transition shrink-0">
+
+                <button type="submit" class="h-10 px-4 rounded-xl bg-slate-800 text-white text-xs font-bold hover:bg-slate-900 transition shrink-0 cursor-pointer">
                     Cari
                 </button>
                 @if(!empty($searchQuery) || $selectedStatus !== 'all' || $selectedEventId !== 'all')
@@ -142,11 +143,140 @@
         </form>
     </div>
 
-    {{-- Registrations Table & Mobile Cards --}}
+    {{-- Registrations Container Card --}}
     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        {{-- Table for Desktop --}}
-        <div class="hidden md:block overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-600">
+        
+        {{-- Mobile Card List (visible on small screens) --}}
+        <div class="block sm:hidden divide-y divide-slate-100">
+            @forelse($registrations as $reg)
+                @php
+                    $amountText = $reg->amount > 0 ? 'Rp ' . number_format($reg->amount, 0, ',', '.') : 'Gratis';
+                    $senderInfo = ($reg->sender_bank ? $reg->sender_bank : 'Bank') . ($reg->sender_name ? ' a.n ' . $reg->sender_name : '');
+                    $isPending = $reg->payment_status === 'pending';
+                @endphp
+                <div class="p-4 space-y-3">
+                    {{-- Header: Nama Peserta & Status --}}
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-900 text-sm leading-snug">{{ $reg->name }}</div>
+                            <div class="text-[11px] text-slate-500 truncate">{{ $reg->email }}</div>
+                            @if($reg->phone)
+                                <div class="text-[11px] text-slate-500">{{ $reg->phone }}</div>
+                            @endif
+                            <div class="mt-1 font-mono text-[10.5px] text-blue-600 font-bold bg-blue-50 inline-block px-1.5 py-0.5 rounded border border-blue-200">
+                                {{ $reg->ticket_code }}
+                            </div>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            @if($reg->payment_status === 'pending')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                    Menunggu
+                                </span>
+                            @elseif(in_array($reg->payment_status, ['confirmed', 'free']))
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Dikonfirmasi
+                                </span>
+                                @if($reg->checked_in_at)
+                                    <div class="text-[10px] text-emerald-600 font-semibold mt-0.5">Sudah Check-in</div>
+                                @endif
+                            @elseif($reg->payment_status === 'rejected')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-800 border border-red-200">
+                                    Ditolak
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Event & Nominal Box --}}
+                    <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-100 space-y-1.5 text-xs">
+                        <div class="flex items-start justify-between gap-2">
+                            <span class="text-slate-400 font-medium text-[11px] shrink-0">Event:</span>
+                            <a href="{{ route('event.show', $reg->event_id) }}" target="_blank" class="font-bold text-slate-800 hover:text-blue-600 text-right line-clamp-1">
+                                {{ $reg->event?->title }}
+                            </a>
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-slate-400 font-medium text-[11px]">Waktu:</span>
+                            <span class="text-[11px] text-slate-500">{{ $reg->created_at->format('d M Y, H:i') }}</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                            <span class="text-slate-400 font-medium text-[11px]">Nominal:</span>
+                            <div class="text-right">
+                                <span class="font-extrabold text-slate-900 text-xs">{{ $amountText }}</span>
+                                @if($reg->sender_bank || $reg->sender_name)
+                                    <div class="text-[10px] text-slate-500">{{ $senderInfo }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Action & Bukti Transfer row --}}
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div>
+                            @if($reg->payment_proof)
+                                <button type="button"
+                                        onclick="openProofModal('{{ $reg->payment_proof }}', '{{ addslashes($reg->name) }}', '{{ addslashes($reg->event?->title ?? '') }}', '{{ $amountText }}', '{{ addslashes($senderInfo) }}', {{ $reg->id }}, {{ $isPending ? 'true' : 'false' }})"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition cursor-pointer">
+                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Lihat Bukti
+                                </button>
+                            @else
+                                <span class="text-[11px] text-slate-400 italic">Event Gratis</span>
+                            @endif
+                        </div>
+
+                        <div>
+                            @if($reg->payment_status === 'pending')
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button"
+                                            onclick="openRejectModal({{ $reg->id }}, '{{ addslashes($reg->name) }}')"
+                                            class="h-8 px-2.5 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-red-600 text-xs font-bold transition cursor-pointer">
+                                        Tolak
+                                    </button>
+                                    <button type="button"
+                                            onclick="openConfirmModal({{ $reg->id }}, '{{ addslashes($reg->name) }}', '{{ $amountText }}')"
+                                            class="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-1 cursor-pointer">
+                                        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        Konfirmasi
+                                    </button>
+                                </div>
+                            @elseif(in_array($reg->payment_status, ['confirmed', 'free']))
+                                <form method="POST" action="{{ route('admin.events.registrations.check-in', [$reg->event_id, $reg->id]) }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="h-8 px-3 rounded-lg border text-xs font-semibold transition {{ $reg->checked_in_at ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100' }}">
+                                        {{ $reg->checked_in_at ? 'Batal Check-in' : 'Check-in Peserta' }}
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="py-12 px-4 text-center text-slate-400">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2 shadow-2xs">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <p class="font-bold text-slate-600 text-sm">Belum ada data pendaftaran</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Pendaftaran peserta event berbayar akan muncul di sini untuk dikonfirmasi.</p>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Desktop Table Component (hidden on mobile, visible on sm and up) --}}
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full min-w-[750px] text-left text-xs text-slate-600">
                 <thead class="bg-slate-50/80 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
                     <tr>
                         <th class="py-3.5 px-4">Peserta</th>
@@ -300,156 +430,6 @@
             </table>
         </div>
 
-        {{-- Mobile Cards (No Horizontal Scrolling Needed!) --}}
-        <div class="block md:hidden divide-y divide-slate-100">
-            @forelse($registrations as $reg)
-                @php
-                    $amountText = $reg->amount > 0 ? 'Rp ' . number_format($reg->amount, 0, ',', '.') : 'Gratis';
-                    $senderInfo = ($reg->sender_bank ? $reg->sender_bank : 'Bank') . ($reg->sender_name ? ' a.n ' . $reg->sender_name : '');
-                    $isPending = $reg->payment_status === 'pending';
-                @endphp
-                <div class="p-4 space-y-3">
-                    {{-- Peserta Header & Status --}}
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="min-w-0 flex-1">
-                            <span class="font-bold text-slate-900 text-sm block leading-snug break-words">
-                                {{ $reg->name }}
-                            </span>
-                            <span class="text-xs text-slate-500 block truncate mt-0.5">
-                                {{ $reg->email }}
-                            </span>
-                            @if($reg->phone)
-                                <span class="text-xs text-slate-500 block mt-0.5">
-                                    {{ $reg->phone }}
-                                </span>
-                            @endif
-                        </div>
-                        <div class="shrink-0">
-                            @if($reg->payment_status === 'pending')
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                    Menunggu
-                                </span>
-                            @elseif(in_array($reg->payment_status, ['confirmed', 'free']))
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                    <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    Dikonfirmasi
-                                </span>
-                            @elseif($reg->payment_status === 'rejected')
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-800 border border-red-200">
-                                    Ditolak
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- Event Info & Ticket Code --}}
-                    <div class="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100 space-y-1.5 text-xs">
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-slate-500 text-[11px]">Kode Tiket:</span>
-                            <span class="font-mono text-[11px] text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                                {{ $reg->ticket_code }}
-                            </span>
-                        </div>
-                        <div>
-                            <span class="text-slate-500 text-[11px] block">Event:</span>
-                            <a href="{{ route('event.show', $reg->event_id) }}" target="_blank" class="font-bold text-slate-800 hover:text-blue-600 line-clamp-1">
-                                {{ $reg->event?->title }}
-                            </a>
-                            <span class="text-[10.5px] text-slate-400 block mt-0.5">{{ $reg->created_at->format('d M Y, H:i') }}</span>
-                        </div>
-                    </div>
-
-                    {{-- Payment & Transfer Proof --}}
-                    <div class="flex items-center justify-between gap-2 pt-1 text-xs">
-                        <div>
-                            <span class="text-[11px] text-slate-400 block">Nominal:</span>
-                            <span class="font-extrabold text-slate-900 text-sm">
-                                {{ $amountText }}
-                            </span>
-                            @if($reg->sender_bank || $reg->sender_name)
-                                <div class="text-[10.5px] text-slate-500">
-                                    {{ $senderInfo }}
-                                </div>
-                            @endif
-                        </div>
-                        <div class="shrink-0">
-                            @if($reg->payment_proof)
-                                <button type="button"
-                                        onclick="openProofModal('{{ $reg->payment_proof }}', '{{ addslashes($reg->name) }}', '{{ addslashes($reg->event?->title ?? '') }}', '{{ $amountText }}', '{{ addslashes($senderInfo) }}', {{ $reg->id }}, {{ $isPending ? 'true' : 'false' }})"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold text-xs transition cursor-pointer">
-                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                    Lihat Bukti
-                                </button>
-                            @else
-                                <span class="text-[11px] text-slate-400 italic">Event Gratis</span>
-                            @endif
-                        </div>
-                    </div>
-
-                    @if($reg->rejection_reason && $reg->payment_status === 'rejected')
-                        <div class="p-2 rounded-lg bg-red-50 border border-red-200 text-[11px] text-red-700">
-                            <strong>Alasan Ditolak:</strong> {{ $reg->rejection_reason }}
-                        </div>
-                    @endif
-
-                    {{-- Actions for Mobile --}}
-                    @if($reg->payment_status === 'pending')
-                        <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
-                            <button type="button"
-                                    onclick="openConfirmModal({{ $reg->id }}, '{{ addslashes($reg->name) }}', '{{ $amountText }}')"
-                                    class="flex-1 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center justify-center gap-1 cursor-pointer">
-                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                                </svg>
-                                Konfirmasi
-                            </button>
-                            <button type="button"
-                                    onclick="openRejectModal({{ $reg->id }}, '{{ addslashes($reg->name) }}')"
-                                    class="h-9 px-4 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 text-xs font-bold transition cursor-pointer">
-                                Tolak
-                            </button>
-                        </div>
-                    @elseif(in_array($reg->payment_status, ['confirmed', 'free']))
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-                            @if($reg->checked_in_at)
-                                <span class="text-[11px] text-emerald-600 font-bold inline-flex items-center gap-1">
-                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    Sudah Check-in
-                                </span>
-                            @else
-                                <span class="text-[11px] text-slate-400">Belum check-in</span>
-                            @endif
-                            <form method="POST" action="{{ route('admin.events.registrations.check-in', [$reg->event_id, $reg->id]) }}">
-                                @csrf
-                                <button type="submit"
-                                        class="h-8 px-3 rounded-lg border text-xs font-semibold transition {{ $reg->checked_in_at ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100' }}">
-                                    {{ $reg->checked_in_at ? 'Batalkan Check-in' : 'Check-in Peserta' }}
-                                </button>
-                            </form>
-                        </div>
-                    @endif
-                </div>
-            @empty
-                <div class="py-12 text-center text-slate-400 px-4">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2">
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <p class="font-bold text-slate-600 text-sm">Belum ada data pendaftaran</p>
-                    <p class="text-xs text-slate-400 mt-0.5">Pendaftaran peserta event berbayar akan muncul di sini untuk dikonfirmasi.</p>
-                </div>
-            @endforelse
-        </div>
-
         {{-- Pagination --}}
         @if($registrations->hasPages())
             <div class="p-4 border-t border-slate-100">
@@ -509,17 +489,17 @@
         </div>
 
         {{-- Footer with Direct Actions --}}
-        <div class="p-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-2.5">
-            <a id="proofFullLink" href="#" target="_blank" class="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline">
+        <div class="p-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-3">
+            <a id="proofFullLink" href="#" target="_blank" class="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline order-2 sm:order-1 self-start sm:self-auto">
                 Buka Tab Baru &rarr;
             </a>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <div id="proofActionButtons" class="flex items-center gap-2">
-                    <button type="button" id="proofModalRejectBtn" class="h-9 px-3 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 font-bold text-xs transition cursor-pointer">
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end order-1 sm:order-2">
+                <div id="proofActionButtons" class="flex items-center gap-2 flex-1 sm:flex-none">
+                    <button type="button" id="proofModalRejectBtn" class="flex-1 sm:flex-none h-9 px-3 rounded-xl border border-red-200 bg-white hover:bg-red-50 text-red-600 font-bold text-xs transition cursor-pointer">
                         Tolak
                     </button>
-                    <button type="button" id="proofModalConfirmBtn" class="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+                    <button type="button" id="proofModalConfirmBtn" class="flex-1 sm:flex-none h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm cursor-pointer whitespace-nowrap">
                         Konfirmasi Pembayaran
                     </button>
                 </div>
@@ -553,11 +533,11 @@
                 </div>
             </div>
 
-            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-                <button type="button" onclick="closeConfirmModal()" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer">
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-2">
+                <button type="button" onclick="closeConfirmModal()" class="w-full sm:w-auto h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="h-10 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+                <button type="submit" class="w-full sm:w-auto h-10 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
                     Ya, Konfirmasi Pembayaran
                 </button>
             </div>
@@ -598,11 +578,11 @@
                 </p>
             </div>
 
-            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-                <button type="button" onclick="closeRejectModal()" class="h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer">
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-2">
+                <button type="button" onclick="closeRejectModal()" class="w-full sm:w-auto h-10 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="h-10 px-5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+                <button type="submit" class="w-full sm:w-auto h-10 px-5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
                     Ya, Tolak Pembayaran
                 </button>
             </div>
