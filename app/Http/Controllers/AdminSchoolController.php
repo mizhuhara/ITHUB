@@ -40,7 +40,6 @@ class AdminSchoolController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
-                ->orWhere('npsn', 'like', "%{$search}%")
                 ->orWhere('city', 'like', "%{$search}%")
                 ->orWhere('province', 'like', "%{$search}%")
                 ->orWhere('location', 'like', "%{$search}%"));
@@ -376,7 +375,6 @@ class AdminSchoolController extends Controller
     private function validateSchool(Request $request): array
     {
         $validated = $request->validate([
-            'npsn' => ['required', 'string', 'max:20'],
             'name' => ['required', 'string', 'max:255'],
             'institution_type' => ['required', 'string', 'max:100', 'in:SMK IT,SMK,SMA IT,SMK Non-IT,Sekolah IT,Vokasi IT'],
             'city' => ['nullable', 'string', 'max:100'],

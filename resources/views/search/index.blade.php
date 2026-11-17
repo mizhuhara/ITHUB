@@ -163,7 +163,7 @@
                                             <div class="p-5">
                                                 <div class="flex items-center justify-between gap-2 mb-1.5">
                                                     <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
-                                                        <a href="{{ route('campus.show', $c->npsn ?: $c->id) }}">
+                                                        <a href="{{ route('campus.show', $c->id) }}">
                                                             {{ $c->name }}
                                                         </a>
                                                     </h3>
@@ -207,7 +207,7 @@
                                                     {{ $c->accreditation ? 'Akreditasi ' . $c->accreditation : 'Terverifikasi' }}
                                                 </span>
                                             </div>
-                                            <a href="{{ route('campus.show', $c->npsn ?: $c->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
+                                            <a href="{{ route('campus.show', $c->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
                                                 Lihat Profil
                                             </a>
                                         </div>
@@ -272,7 +272,7 @@
                                             <div class="p-5">
                                                 <div class="flex items-center justify-between gap-2 mb-1.5">
                                                     <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
-                                                        <a href="{{ route('education.show', $s->npsn ?: $s->id) }}">
+                                                        <a href="{{ route('education.show', $s->id) }}">
                                                             {{ $s->name }}
                                                         </a>
                                                     </h3>
@@ -316,7 +316,7 @@
                                                     {{ $s->accreditation ? 'Akreditasi ' . $s->accreditation : 'Terverifikasi' }}
                                                 </span>
                                             </div>
-                                            <a href="{{ route('education.show', $s->npsn ?: $s->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
+                                            <a href="{{ route('education.show', $s->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
                                                 Lihat Profil
                                             </a>
                                         </div>
@@ -973,7 +973,7 @@
                                             <div class="p-5">
                                                 <div class="flex items-center justify-between gap-2 mb-1.5">
                                                     <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
-                                                        <a href="{{ route('campus.show', $item->npsn ?: $item->id) }}">
+                                                        <a href="{{ route('campus.show', $item->id) }}">
                                                             {{ $item->name }}
                                                         </a>
                                                     </h3>
@@ -1016,7 +1016,7 @@
                                                     {{ $item->accreditation ? 'Akreditasi ' . $item->accreditation : 'Terverifikasi' }}
                                                 </span>
                                             </div>
-                                            <a href="{{ route('campus.show', $item->npsn ?: $item->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
+                                            <a href="{{ route('campus.show', $item->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
                                                 Lihat Profil
                                             </a>
                                         </div>
@@ -1054,7 +1054,7 @@
                                             <div class="p-5">
                                                 <div class="flex items-center justify-between gap-2 mb-1.5">
                                                     <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
-                                                        <a href="{{ route('education.show', $item->npsn ?: $item->id) }}">
+                                                        <a href="{{ route('education.show', $item->id) }}">
                                                             {{ $item->name }}
                                                         </a>
                                                     </h3>
@@ -1097,7 +1097,7 @@
                                                     {{ $item->accreditation ? 'Akreditasi ' . $item->accreditation : 'Terverifikasi' }}
                                                 </span>
                                             </div>
-                                            <a href="{{ route('education.show', $item->npsn ?: $item->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
+                                            <a href="{{ route('education.show', $item->id) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline transition">
                                                 Lihat Profil
                                             </a>
                                         </div>

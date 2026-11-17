@@ -83,7 +83,7 @@ class InstitutionMembershipTest extends TestCase
             'membership_expires_at' => now()->subDay(), // Expired!
         ]);
 
-        School::create([
+        $school = School::create([
             'user_id' => $user->id,
             'npsn' => 'SMK-2222',
             'name' => 'SMK Kadaluarsa',
@@ -99,7 +99,7 @@ class InstitutionMembershipTest extends TestCase
             ->assertOk()
             ->assertDontSee('SMK Kadaluarsa');
 
-        $this->get(route('education.show', 'SMK-2222'))
+        $this->get(route('education.show', $school->id))
             ->assertNotFound();
     }
 

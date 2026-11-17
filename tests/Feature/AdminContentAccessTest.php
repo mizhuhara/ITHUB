@@ -191,7 +191,7 @@ class AdminContentAccessTest extends TestCase
             ->post(route('admin.schools.store'), $payload)
             ->assertRedirect(route('admin.schools.index'));
 
-        $school = School::where('npsn', '33333333')->firstOrFail();
+        $school = School::where('name', 'SMK Baru')->firstOrFail();
 
         $this->actingAs($admin)->put(route('admin.schools.update', $school->id), [
             ...$payload,

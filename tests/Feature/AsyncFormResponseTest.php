@@ -28,7 +28,7 @@ class AsyncFormResponseTest extends TestCase
         $response->assertOk()
             ->assertJsonPath('message', 'Universitas "Universitas Async" berhasil ditambahkan.');
 
-        $this->assertDatabaseHas('universities', ['npsn' => '77777777']);
+        $this->assertDatabaseHas('universities', ['name' => 'Universitas Async']);
     }
 
     public function test_redirect_with_error_flash_is_converted_to_422_json(): void

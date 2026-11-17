@@ -43,8 +43,6 @@
                     <div class="min-w-0">
                         <h2 class="text-xl font-bold text-slate-900 break-words">{{ $school['name'] }}</h2>
                         <div class="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500">
-                            <span class="font-semibold text-slate-700">NPSN: {{ $school['npsn'] }}</span>
-                            <span>•</span>
                             <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-brand-600 font-semibold">{{ $school['type'] }}</span>
                             <span>•</span>
                             <span class="break-words">{{ $school['location'] }}</span>
