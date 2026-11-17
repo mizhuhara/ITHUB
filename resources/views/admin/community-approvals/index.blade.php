@@ -31,48 +31,48 @@
     @endif
 
     {{-- Stats Cards Summary --}}
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs flex items-center justify-between">
-            <div>
-                <div class="text-[11px] font-bold tracking-wider text-amber-600 uppercase">PENDING REVIEW</div>
-                <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($pendingCount) }}</div>
-                <div class="text-xs text-slate-500 mt-0.5">Menunggu keputusan</div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+                <div class="text-[10.5px] sm:text-[11px] font-bold tracking-wider text-amber-600 uppercase truncate">PENDING REVIEW</div>
+                <div class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($pendingCount) }}</div>
+                <div class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Menunggu keputusan</div>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-bold">
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs flex items-center justify-between">
-            <div>
-                <div class="text-[11px] font-bold tracking-wider text-emerald-600 uppercase">DISETUJUI (APPROVED)</div>
-                <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($approvedCount) }}</div>
-                <div class="text-xs text-slate-500 mt-0.5">Aktif di halaman publik</div>
-            </div>
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center font-bold">
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-bold shrink-0">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs flex items-center justify-between">
-            <div>
-                <div class="text-[11px] font-bold tracking-wider text-rose-600 uppercase">DITOLAK (REJECTED)</div>
-                <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($rejectedCount) }}</div>
-                <div class="text-xs text-slate-500 mt-0.5">Dapat diajukan kembali</div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+                <div class="text-[10.5px] sm:text-[11px] font-bold tracking-wider text-emerald-600 uppercase truncate">DISETUJUI</div>
+                <div class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($approvedCount) }}</div>
+                <div class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Aktif di halaman publik</div>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center font-bold">
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center font-bold shrink-0">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs flex items-center justify-between">
-            <div>
-                <div class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">TOTAL PENGAJUAN</div>
-                <div class="text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($totalCount) }}</div>
-                <div class="text-xs text-slate-500 mt-0.5">Seluruh riwayat komunitas</div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+                <div class="text-[10.5px] sm:text-[11px] font-bold tracking-wider text-rose-600 uppercase truncate">DITOLAK</div>
+                <div class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($rejectedCount) }}</div>
+                <div class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Dapat diajukan kembali</div>
             </div>
-            <div class="w-11 h-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center font-bold">
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center font-bold shrink-0">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+                <div class="text-[10.5px] sm:text-[11px] font-bold tracking-wider text-slate-400 uppercase truncate">TOTAL PENGAJUAN</div>
+                <div class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">{{ number_format($totalCount) }}</div>
+                <div class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Seluruh riwayat</div>
+            </div>
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center font-bold shrink-0">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </div>
         </div>
     </div>
@@ -80,71 +80,211 @@
     {{-- Filter & Search Container Card --}}
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         {{-- Toolbar: Tabs & Search --}}
-        <div class="p-5 border-b border-slate-100 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5 sm:gap-4">
             
             {{-- Status Quick Filter Tabs --}}
-            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-semibold overflow-x-auto shrink-0">
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-semibold overflow-x-auto whitespace-nowrap">
                 <a href="{{ route('admin.community-approvals.index', ['status' => 'all', 'search' => request('search'), 'category' => request('category')]) }}" 
-                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {{ request('status', 'all') === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 {{ request('status', 'all') === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                     <span>Semua</span>
                     <span class="bg-slate-200/70 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $totalCount }}</span>
                 </a>
 
                 <a href="{{ route('admin.community-approvals.index', ['status' => 'pending', 'search' => request('search'), 'category' => request('category')]) }}" 
-                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {{ request('status') === 'pending' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 {{ request('status') === 'pending' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                     <span>Pending</span>
                     <span class="bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $pendingCount }}</span>
                 </a>
 
                 <a href="{{ route('admin.community-approvals.index', ['status' => 'approved', 'search' => request('search'), 'category' => request('category')]) }}" 
-                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {{ request('status') === 'approved' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 {{ request('status') === 'approved' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                     <span>Disetujui</span>
                     <span class="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $approvedCount }}</span>
                 </a>
 
                 <a href="{{ route('admin.community-approvals.index', ['status' => 'rejected', 'search' => request('search'), 'category' => request('category')]) }}" 
-                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {{ request('status') === 'rejected' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                   class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 {{ request('status') === 'rejected' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                     <span>Ditolak</span>
                     <span class="bg-rose-100 text-rose-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">{{ $rejectedCount }}</span>
                 </a>
             </div>
 
             {{-- Search & Category Filter Form --}}
-            <form method="GET" action="{{ route('admin.community-approvals.index') }}" class="flex items-center gap-2 flex-1 max-w-xl">
+            <form method="GET" action="{{ route('admin.community-approvals.index') }}" class="flex flex-col sm:flex-row sm:items-center gap-2 flex-1 lg:max-w-xl">
                 <input type="hidden" name="status" value="{{ request('status', 'all') }}">
 
                 {{-- Category Select --}}
-                <select name="category" onchange="this.form.submit()" class="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shrink-0">
+                <select name="category" onchange="this.form.submit()" class="w-full sm:w-auto px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 shrink-0">
                     <option value="all" {{ request('category', 'all') === 'all' ? 'selected' : '' }}>Semua Kategori</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat }}" {{ request('category') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
                     @endforeach
                 </select>
 
-                {{-- Search Input --}}
-                <div class="relative flex-1">
-                    <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input type="text" 
-                           name="search" 
-                           value="{{ request('search') }}" 
-                           placeholder="Cari nama komunitas, deskripsi, pembuat..." 
-                           class="w-full pl-9 pr-9 py-2 text-xs font-medium rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
-                    @if(request('search'))
-                        <a href="{{ route('admin.community-approvals.index', ['status' => request('status', 'all'), 'category' => request('category')]) }}" 
-                           class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold">&times;</a>
-                    @endif
-                </div>
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                    {{-- Search Input --}}
+                    <div class="relative flex-1 min-w-0">
+                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request('search') }}" 
+                               placeholder="Cari komunitas..." 
+                               class="w-full pl-9 pr-9 py-2 text-xs font-medium rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+                        @if(request('search'))
+                            <a href="{{ route('admin.community-approvals.index', ['status' => request('status', 'all'), 'category' => request('category')]) }}" 
+                               class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold">&times;</a>
+                        @endif
+                    </div>
 
-                <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold transition shrink-0">
-                    Cari
-                </button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer">
+                        Cari
+                    </button>
+                </div>
             </form>
         </div>
 
-        {{-- Table --}}
-        <div class="overflow-x-auto">
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse($communities as $community)
+                @php
+                    $initials = strtoupper(substr($community->name, 0, 2));
+                    $colors = [
+                        ['#3b82f6', '#1d4ed8'],
+                        ['#8b5cf6', '#6d28d9'],
+                        ['#ec4899', '#be185d'],
+                        ['#10b981', '#047857'],
+                        ['#f59e0b', '#b45309'],
+                    ];
+                    $c = $colors[$community->id % count($colors)];
+                @endphp
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-start gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-slate-200/80 bg-white flex items-center justify-center shadow-2xs">
+                                @if($community->logo_url)
+                                    <img src="{{ $community->logo_url }}" alt="{{ $community->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full text-white font-bold text-xs flex items-center justify-center" style="background: linear-gradient(135deg, {{ $c[0] }}, {{ $c[1] }})">
+                                        {{ $initials }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-bold text-slate-900 text-[14px] leading-snug">
+                                    {{ $community->name }}
+                                </div>
+                                <p class="text-[12px] text-slate-500 line-clamp-2 mt-0.5">
+                                    {{ $community->description ?: 'Tidak ada deskripsi.' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        @if($community->approval_status === 'pending')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                Pending
+                            </span>
+                        @elseif($community->approval_status === 'approved')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
+                                Disetujui
+                            </span>
+                        @elseif($community->approval_status === 'rejected')
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shrink-0">
+                                Ditolak
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                        <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold border border-blue-100">{{ $community->category }}</span>
+                        <span class="px-2 py-0.5 rounded-md {{ $community->type === 'private' ? 'bg-purple-50 text-purple-700 border-purple-100' : 'bg-slate-100 text-slate-700 border-slate-200' }} font-medium border">{{ $community->type === 'private' ? 'Privat' : 'Publik' }}</span>
+                        <span class="text-slate-500 font-medium">· {{ $community->formatted_mode }}</span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-slate-500">
+                        <span>Oleh: <strong class="text-slate-700">{{ $community->creator?->name ?? 'Sistem / Admin' }}</strong></span>
+                        <span>{{ $community->created_at->format('d M Y, H:i') }} WIB</span>
+                    </div>
+
+                    @if($community->resubmit_notes && $community->approval_status === 'pending')
+                        <div>
+                            <button type="button" 
+                                    onclick="openNotesModal({{ json_encode([
+                                        'id' => $community->id,
+                                        'name' => $community->name,
+                                        'creator_name' => $community->creator?->name ?? 'Pembuat',
+                                        'rejection_reason' => $community->rejection_reason,
+                                        'resubmit_notes' => $community->resubmit_notes,
+                                    ]) }})"
+                                    class="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg border border-amber-300 shadow-2xs transition cursor-pointer">
+                                <span>Ada Catatan Perbaikan</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                        <button type="button" 
+                                onclick="openDetailModal({{ json_encode([
+                                    'id' => $community->id,
+                                    'name' => $community->name,
+                                    'category' => $community->category,
+                                    'description' => $community->description,
+                                    'type' => $community->type,
+                                    'mode' => $community->formatted_mode,
+                                    'location' => $community->location,
+                                    'language' => $community->language,
+                                    'rules' => $community->rules,
+                                    'logo_url' => $community->logo_url,
+                                    'cover_url' => $community->cover_url,
+                                    'creator_name' => $community->creator?->name ?? 'Sistem',
+                                    'creator_email' => $community->creator?->email ?? '-',
+                                    'created_at' => $community->created_at->format('d M Y, H:i') . ' WIB',
+                                    'approval_status' => $community->approval_status,
+                                    'rejection_reason' => $community->rejection_reason,
+                                    'resubmit_notes' => $community->resubmit_notes,
+                                    'rejected_at' => $community->rejected_at ? $community->rejected_at->format('d M Y, H:i') . ' WIB' : null,
+                                    'rejecter_name' => $community->rejecter?->name,
+                                    'approved_at' => $community->approved_at ? $community->approved_at->format('d M Y, H:i') . ' WIB' : null,
+                                    'approver_name' => $community->approver?->name,
+                                ]) }})"
+                                class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs transition cursor-pointer">
+                            Detail
+                        </button>
+
+                        @if($community->approval_status === 'pending')
+                            <button type="button" 
+                                    onclick="openApproveModal({{ $community->id }}, '{{ addslashes($community->name) }}', '{{ addslashes($community->creator?->name ?? 'Pembuat') }}')"
+                                    class="flex-1 inline-flex items-center justify-center gap-1 min-h-[38px] px-3 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 transition font-bold text-xs cursor-pointer">
+                                Setujui
+                            </button>
+                            <button type="button" 
+                                    onclick="openRejectModal({{ $community->id }}, '{{ addslashes($community->name) }}', '{{ addslashes($community->creator?->name ?? 'Pembuat') }}')"
+                                    class="flex-1 inline-flex items-center justify-center gap-1 min-h-[38px] px-3 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 transition font-bold text-xs cursor-pointer">
+                                Tolak
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="py-12 px-4 text-center">
+                    <div class="max-w-xs mx-auto text-slate-400 space-y-2">
+                        <p class="text-sm font-semibold text-slate-700">Tidak ada pengajuan komunitas</p>
+                        <p class="text-xs text-slate-400">
+                            @if(request('search') || request('status') || request('category'))
+                                Tidak ditemukan hasil sesuai filter yang dipilih.
+                            @else
+                                Belum ada pengajuan komunitas yang membutuhkan review saat ini.
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Table (Desktop/Tablet) --}}
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider">

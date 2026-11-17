@@ -84,4 +84,60 @@ class AdminSchoolTest extends TestCase
 
         $this->assertSame('SMK Baru', $school->fresh()->name);
     }
+
+    public function test_super_admin_can_update_school_views_without_npsn(): void
+    {
+        $superAdmin = User::factory()->create([
+            'role' => 'super_admin',
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        $school = School::create([
+            'name' => 'SMK Awal',
+            'npsn' => '44444444',
+            'institution_type' => 'SMK IT',
+            'location' => 'Jakarta',
+            'views' => 10,
+        ]);
+
+        $response = $this->actingAs($superAdmin)
+            ->put(route('admin.schools.update', $school->id), [
+                'name' => 'SMK Update',
+                'institution_type' => 'SMK IT',
+                'location' => 'Jakarta',
+                'views' => 750,
+            ]);
+
+        $response->assertRedirect(route('admin.schools.index'));
+
+        $fresh = $school->fresh();
+        $this->assertSame('SMK Update', $fresh->name);
+        $this->assertSame('44444444', $fresh->npsn);
+        $this->assertSame(750, $fresh->views);
+    }
+
+    public function test_super_admin_can_create_school_without_npsn_and_with_views(): void
+    {
+        $superAdmin = User::factory()->create([
+            'role' => 'super_admin',
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($superAdmin)
+            ->post(route('admin.schools.store'), [
+                'name' => 'SMK Tanpa NPSN',
+                'institution_type' => 'SMK IT',
+                'location' => 'Yogyakarta',
+                'views' => 250,
+            ]);
+
+        $response->assertRedirect(route('admin.schools.index'));
+
+        $school = School::where('name', 'SMK Tanpa NPSN')->first();
+        $this->assertNotNull($school);
+        $this->assertNotEmpty($school->npsn);
+        $this->assertSame(250, $school->views);
+    }
 }

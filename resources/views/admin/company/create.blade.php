@@ -131,7 +131,7 @@
         <div class="lg:col-span-8 space-y-6">
 
             {{-- Card 1: Basic Information --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-5">
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
@@ -159,6 +159,16 @@
                         @error('name')
                             <p class="form-error">{{ $message }}</p>
                         @enderror
+                    </div>
+
+                    {{-- Company Code --}}
+                    <div>
+                        <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Kode Perusahaan / NIB</label>
+                        <input type="text" 
+                               name="npsn" 
+                               value="{{ old('npsn') }}" 
+                               placeholder="Contoh: CMP001"
+                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
 
                     {{-- Company Type --}}
@@ -275,7 +285,7 @@
             </div>
 
             {{-- Card 2: Company Description with Summernote --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
@@ -300,7 +310,7 @@
             </div>
 
             {{-- Card 3: Layanan Utama & Keunggulan --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
@@ -318,10 +328,10 @@
                     <div class="flex gap-2">
                         <input type="text" id="specialtyInputField"
                                placeholder="Contoh: Pengembangan Sistem Terdistribusi & Cloud"
-                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
+                               class="flex-1 min-w-0 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();addSpecialty();}">
                         <button type="button" onclick="addSpecialty()"
-                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0">
+                                class="h-11 px-4 sm:px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0 cursor-pointer">
                             Tambah
                         </button>
                     </div>
@@ -344,7 +354,7 @@
             </div>
 
             {{-- Card 4: Teknologi & Tech Stack --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
@@ -362,10 +372,10 @@
                     <div class="flex gap-2">
                         <input type="text" id="techStackInputField"
                                placeholder="Contoh: Laravel, React, Flutter, Docker, AWS"
-                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
+                               class="flex-1 min-w-0 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();addTechStack();}">
                         <button type="button" onclick="addTechStack()"
-                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0">
+                                class="h-11 px-4 sm:px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0 cursor-pointer">
                             Tambah
                         </button>
                     </div>
@@ -389,26 +399,26 @@
             </div>
 
             {{-- Card 5: Galeri Perusahaan --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
-                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px]">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center shrink-0">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
                                 <rect x="3" y="3" width="18" height="18" rx="3"/>
                                 <circle cx="8.5" cy="8.5" r="1.5"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
                             </svg>
                         </div>
-                        <div>
-                            <div class="flex items-center gap-2">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
                                 <span class="block leading-tight font-bold text-slate-900 text-[15px]">Galeri Perusahaan</span>
-                                <span id="galleryCountBadge" class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">0 / 4 Foto</span>
+                                <span id="galleryCountBadge" class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 shrink-0">0 / 4 Foto</span>
                             </div>
                             <span class="text-[12px] font-normal text-slate-400">Foto kantor, suasana kerja, kegiatan tim, dan fasilitas (Maksimal 4 foto)</span>
                         </div>
                     </div>
 
-                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                    <label for="galleryInput" id="galleryBtnTrigger" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer shrink-0">
                         <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                         </svg>
@@ -437,7 +447,7 @@
         <div class="lg:col-span-4 space-y-6">
 
             {{-- Card 1: Logo & Profil --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col items-center text-center">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm flex flex-col items-center text-center">
                 <div class="w-full flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                     <h2 class="text-[16px] font-bold text-slate-900">Logo Perusahaan</h2>
                     <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Format Gambar</span>
@@ -478,7 +488,7 @@
             </div>
 
             {{-- Card 2: Contact Information --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
@@ -520,7 +530,7 @@
             </div>
 
             {{-- Card 3: Interactive Real-time Map Location (Strictly Indonesia) --}}
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px]">
                         <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
@@ -541,7 +551,7 @@
                 </div>
 
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                         <label class="block text-[13.5px] font-semibold text-slate-800">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
@@ -569,15 +579,15 @@
                 <input type="hidden" name="longitude" id="longitudeInput" value="{{ old('longitude', '106.8456') }}">
                 <input type="hidden" name="map_link" id="mapLinkInput" value="{{ old('map_link') }}">
 
-                <div class="p-3 bg-slate-50 border border-slate-200/80 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-[11.5px] text-slate-600">
-                    <div class="flex items-center gap-1.5 min-w-0 max-w-full">
+                <div class="p-3 bg-slate-50 border border-slate-200/80 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11.5px] text-slate-600">
+                    <div class="flex items-center gap-1.5">
                         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-400 shrink-0">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
                         </svg>
-                        <span class="truncate">Koordinat: <b id="coordinateDisplay" class="font-mono text-slate-800 break-all">-6.20880, 106.84560</b></span>
+                        <span>Koordinat: <b id="coordinateDisplay" class="font-mono text-slate-800">-6.20880, 106.84560</b></span>
                     </div>
-                    <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                    <div class="flex items-center gap-2">
                         <button type="button" onclick="detectCurrentLocation()" class="text-blue-600 hover:text-blue-700 font-bold hover:underline cursor-pointer">
                             Deteksi Lokasi
                         </button>
@@ -588,27 +598,28 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
     </div>
 
     {{-- Bottom Action Bar --}}
-    <div class="pt-6 border-t border-slate-200/80 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4">
+    <div class="pt-6 border-t border-slate-200/80 flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-3 sm:gap-4">
         @if (auth()->user()->role === 'company')
-            <a href="{{ route('dashboard.company') }}" class="w-full sm:w-auto text-center px-6 py-2.5 rounded-xl border border-slate-200 text-[14px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <a href="{{ route('dashboard.company') }}" class="w-full sm:w-auto h-[44px] inline-flex items-center justify-center px-6 rounded-xl border border-slate-200 sm:border-transparent text-[14px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                 Batal
             </a>
         @else
-            <a href="{{ route('admin.company.index') }}" class="w-full sm:w-auto text-center px-6 py-2.5 rounded-xl border border-slate-200 text-[14px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <a href="{{ route('admin.company.index') }}" class="w-full sm:w-auto h-[44px] inline-flex items-center justify-center px-6 rounded-xl border border-slate-200 sm:border-transparent text-[14px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                 Batal
             </a>
         @endif
 
-        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <button type="submit" class="w-full sm:w-auto h-[44px] inline-flex items-center justify-center gap-2 px-6 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition cursor-pointer">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
-            Simpan Perusahaan
+            <span>Simpan Perusahaan</span>
         </button>
     </div>
 

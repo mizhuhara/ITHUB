@@ -42,10 +42,10 @@
             </p>
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto">
             <a href="{{ route('admin.events.create') }}" 
-               class="w-full sm:w-auto justify-center inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition">
-                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-[42px] px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
                 <span>Buat Event Baru</span>
@@ -54,14 +54,14 @@
     </div>
 
     {{-- Main Container Card --}}
-    <div class="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-6 lg:p-7 shadow-xs space-y-5 sm:space-y-6">
+    <div class="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-7 shadow-xs space-y-5 sm:space-y-6">
 
         {{-- Filter Toolbar: Segmented Pills + Search --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             
             @if(!$isClientRole)
                 {{-- Left: Filter By Pills (Admin only) --}}
-                <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+                <div class="flex items-center gap-3 overflow-x-auto pb-1 md:pb-0">
                     <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider shrink-0 select-none">
                         FILTER BY:
                     </span>
@@ -69,25 +69,25 @@
                     <div class="inline-flex items-center p-1 bg-slate-100/90 rounded-xl gap-1 shrink-0">
                         {{-- All Types --}}
                         <a href="{{ route('admin.events.index', array_filter(['type' => 'all', 'q' => request('q')])) }}" 
-                           class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'all' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                           class="px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'all' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                             All Types
                         </a>
 
                         {{-- School --}}
                         <a href="{{ route('admin.events.index', array_filter(['type' => 'school', 'q' => request('q')])) }}" 
-                           class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'school' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                           class="px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'school' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                             School
                         </a>
 
                         {{-- University --}}
                         <a href="{{ route('admin.events.index', array_filter(['type' => 'university', 'q' => request('q')])) }}" 
-                           class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'university' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                           class="px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'university' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                             University
                         </a>
 
                         {{-- Company --}}
                         <a href="{{ route('admin.events.index', array_filter(['type' => 'company', 'q' => request('q')])) }}" 
-                           class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'company' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+                           class="px-4 py-1.5 rounded-lg text-xs font-bold transition {{ $activeType === 'company' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
                             Company
                         </a>
                     </div>
@@ -135,135 +135,90 @@
 
         </div>
 
-        {{-- Mobile Card List (visible on small screens) --}}
-        <div class="block sm:hidden divide-y divide-slate-100 border-t border-slate-100">
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100 border-t border-slate-100">
             @forelse($events as $event)
                 <div class="py-4 space-y-3">
-                    {{-- Header: Event Title & Status --}}
-                    <div class="flex items-start justify-between gap-2.5">
-                        <span class="font-extrabold text-slate-900 text-sm leading-snug">
-                            {{ $event['title'] }}
-                        </span>
-                        <div class="shrink-0">
-                            @if($event['status'] === 'Pending')
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                    Pending
-                                </span>
-                            @elseif($event['status'] === 'Approved')
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                    Approved
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                                    Rejected
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- Meta details --}}
-                    <div class="space-y-1.5 text-xs text-slate-600 bg-slate-50/70 p-3 rounded-xl border border-slate-100">
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-slate-400 font-medium text-[11px]">Penyelenggara:</span>
-                            <span class="font-semibold text-slate-800 text-right truncate">{{ $event['organizer'] }}</span>
-                        </div>
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-slate-400 font-medium text-[11px]">Tipe:</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50/80 text-indigo-700 border border-indigo-100/90">
-                                {{ $event['type'] }}
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <span class="font-extrabold text-slate-900 text-[14px] block leading-snug">
+                                {{ $event['title'] }}
+                            </span>
+                            <span class="text-slate-500 font-medium text-[12px] block mt-0.5">
+                                {{ $event['organizer'] }}
                             </span>
                         </div>
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-slate-400 font-medium text-[11px]">Tanggal:</span>
-                            <span class="font-semibold text-slate-700 text-right">{{ $event['proposed_date'] }}</span>
-                        </div>
+
+                        @if($event['status'] === 'Pending')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                Pending
+                            </span>
+                        @elseif($event['status'] === 'Approved')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                Approved
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                Rejected
+                            </span>
+                        @endif
                     </div>
 
-                    {{-- Actions --}}
-                    <div class="flex items-center justify-end gap-2 pt-1">
-                        {{-- Eye Detail Link Button --}}
-                        <a href="{{ route('admin.events.show', $event['id']) }}" 
-                           title="Lihat Detail Event"
-                           class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs p-2 rounded-lg inline-flex items-center justify-center transition shadow-2xs">
-                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </a>
+                    <div class="flex flex-wrap items-center gap-2 text-[12px]">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-indigo-50/80 text-indigo-700 border border-indigo-100/90">
+                            {{ $event['type'] }}
+                        </span>
+                        <span class="text-slate-500 font-medium">{{ $event['proposed_date'] }}</span>
+                    </div>
 
-                        {{-- Edit Event Button --}}
-                        <a href="{{ route('admin.events.edit', $event['id']) }}" 
-                           title="Edit Event"
-                           class="bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 font-bold text-xs p-2 rounded-lg inline-flex items-center justify-center transition shadow-2xs">
-                            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                            </svg>
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                        <a href="{{ route('admin.events.show', $event['id']) }}"
+                           class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs transition">
+                            Lihat
                         </a>
-
+                        <a href="{{ route('admin.events.edit', $event['id']) }}"
+                           class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs transition">
+                            Edit
+                        </a>
                         @if(!$isClientRole)
-                            {{-- Approve Form (Admin only) --}}
-                            <form action="{{ route('admin.events.approve', $event['id']) }}" method="POST" data-async data-async-reload class="inline">
+                            <form action="{{ route('admin.events.approve', $event['id']) }}" method="POST" data-async data-async-reload class="flex-1">
                                 @csrf
-                                <button type="submit" 
-                                        class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition shadow-2xs">
-                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M20 6L9 17l-5-5"/>
-                                    </svg>
-                                    <span>Approve</span>
+                                <button type="submit"
+                                        class="w-full inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs transition cursor-pointer">
+                                    Approve
                                 </button>
                             </form>
-
-                            {{-- Reject Form (Admin only) --}}
-                            <form action="{{ route('admin.events.reject', $event['id']) }}" method="POST" data-async data-async-reload class="inline">
+                            <form action="{{ route('admin.events.reject', $event['id']) }}" method="POST" data-async data-async-reload class="flex-1">
                                 @csrf
-                                <button type="submit" 
-                                        class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/90 font-bold text-xs px-2.5 py-1.5 rounded-lg inline-flex items-center gap-1 transition shadow-2xs">
-                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M18 6L6 18M6 6l12 12"/>
-                                    </svg>
-                                    <span>Reject</span>
+                                <button type="submit"
+                                        class="w-full inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/90 font-bold text-xs transition cursor-pointer">
+                                    Reject
                                 </button>
                             </form>
                         @endif
-
-                        {{-- Delete Event Button --}}
-                        <form id="delete-form-mobile-{{ $event['id'] }}" method="POST" action="{{ route('admin.events.destroy', $event['id']) }}" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button"
-                                    onclick="openDeleteModal('{{ $event['id'] }}', '{{ addslashes($event['title']) }}', '{{ addslashes($event['organizer'] ?? '') }}')"
-                                    title="Hapus Event"
-                                    class="bg-slate-100 hover:bg-rose-50 text-rose-600 border border-slate-200 font-bold text-xs p-2 rounded-lg inline-flex items-center justify-center transition shadow-2xs">
-                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 6h18M5 6l1 14a2 2 0 002 2h10a2 2 0 002-2L19 6M10 11v6m4-6v6M8 6l1-3h6l1 3"/>
-                                </svg>
-                            </button>
-                        </form>
+                        <button type="button"
+                                onclick="openDeleteModal('{{ $event['id'] }}', '{{ addslashes($event['title']) }}', '{{ addslashes($event['organizer'] ?? '') }}')"
+                                title="Hapus Event"
+                                class="inline-flex items-center justify-center min-h-[38px] min-w-[38px] px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold text-xs transition cursor-pointer">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18M5 6l1 14a2 2 0 002 2h10a2 2 0 002-2L19 6M10 11v6m4-6v6M8 6l1-3h6l1 3"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             @empty
-                <div class="py-12 text-center text-slate-400">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 shadow-2xs">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-bold text-slate-700">Belum ada event</p>
-                    <p class="text-xs text-slate-400 mt-1">Tidak ada data event yang ditemukan.</p>
+                <div class="py-10 text-center text-slate-400 font-medium text-xs">
+                    Tidak ada data event yang ditemukan.
                 </div>
             @endforelse
         </div>
 
-        {{-- Desktop Table Component (hidden on mobile, visible on sm and up) --}}
-        <div class="hidden sm:block overflow-x-auto border-t border-slate-100 pt-4">
-            <table class="w-full min-w-[750px] text-left border-collapse">
+        {{-- Table Component (Desktop/Tablet) --}}
+        <div class="hidden md:block overflow-x-auto border-t border-slate-100 pt-4">
+            <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="text-slate-400 text-[11px] font-extrabold uppercase tracking-wider border-b border-slate-100">
                         <th class="pb-3.5 pr-4 font-extrabold">NAMA EVENT</th>
@@ -392,17 +347,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-12 text-center text-slate-400 font-medium">
-                                <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 shadow-2xs">
-                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                        <line x1="16" y1="2" x2="16" y2="6"/>
-                                        <line x1="8" y1="2" x2="8" y2="6"/>
-                                        <line x1="3" y1="10" x2="21" y2="10"/>
-                                    </svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-700">Belum ada event</p>
-                                <p class="text-xs text-slate-400 mt-1">Tidak ada data event yang ditemukan.</p>
+                            <td colspan="6" class="py-10 text-center text-slate-400 font-medium">
+                                Tidak ada data event yang ditemukan.
                             </td>
                         </tr>
                     @endforelse
@@ -411,16 +357,8 @@
         </div>
 
         {{-- Table Footer / Pagination --}}
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-500 text-center sm:text-left">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-500 text-center sm:text-left">
             <div>
-                Menampilkan {{ $events->firstItem() ?? 0 }} sampai {{ $events->lastItem() ?? 0 }} dari total {{ $events->total() }} event
-            </div>
-
-            {{-- Pagination Controls --}}
-            <div class="w-full sm:w-auto flex justify-center sm:justify-end">
-                {{ $events->appends(request()->query())->links('vendor.pagination.tailwind') }}
-            </div>
-        </div>
                 Menampilkan {{ $events->firstItem() ?? 0 }} sampai {{ $events->lastItem() ?? 0 }} dari total {{ $events->total() }} event
             </div>
 
@@ -438,7 +376,7 @@
 <script>
     function openDeleteModal(id, name, organizer) {
         let extra = organizer ? ` (${organizer})` : '';
-        window.confirmDelete(`{{ route('admin.events.destroy', ['id' => '__ID__']) }}`.replace('__ID__', id), `${name}${extra}`, {
+        window.confirmDelete(`{{ url('/admin/events') }}/${id}`, `${name}${extra}`, {
             title: 'Konfirmasi Hapus Event',
             warning: 'Peringatan: Tindakan ini permanen dan data event tidak dapat dikembalikan.'
         });

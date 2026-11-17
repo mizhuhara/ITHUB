@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdminSchoolController extends Controller
@@ -143,6 +144,18 @@ class AdminSchoolController extends Controller
             $data['status'] = 'Pending';
         }
 
+        if (in_array($user->role, ['school', 'university', 'company'], true)) {
+            unset($data['views']);
+        }
+
+        if (empty($data['npsn'])) {
+            do {
+                $generatedNpsn = 'SCH-'.strtoupper(Str::random(8));
+            } while (School::where('npsn', $generatedNpsn)->exists());
+
+            $data['npsn'] = $generatedNpsn;
+        }
+
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $path = ImageUploadService::storeAndOptimize($file, 'schools/logos');
@@ -218,6 +231,10 @@ class AdminSchoolController extends Controller
         if (in_array($user->role, ['school', 'university', 'company'], true)) {
             unset($data['status']);
             unset($data['views']);
+        }
+
+        if (empty($data['npsn'])) {
+            unset($data['npsn']);
         }
 
         if ($request->hasFile('logo')) {
@@ -375,6 +392,7 @@ class AdminSchoolController extends Controller
     private function validateSchool(Request $request): array
     {
         $validated = $request->validate([
+            'npsn' => ['nullable', 'string', 'max:20'],
             'name' => ['required', 'string', 'max:255'],
             'institution_type' => ['required', 'string', 'max:100', 'in:SMK IT,SMK,SMA IT,SMK Non-IT,Sekolah IT,Vokasi IT'],
             'city' => ['nullable', 'string', 'max:100'],
