@@ -16,7 +16,7 @@ class EducationDirectoryTest extends TestCase
 
     public function test_school_directory_uses_database_records(): void
     {
-        School::create([
+        $school = School::create([
             'npsn' => '12345678',
             'name' => 'SMK Test Nusantara',
             'institution_type' => 'SMK IT',
@@ -32,7 +32,7 @@ class EducationDirectoryTest extends TestCase
             ->assertOk()
             ->assertSee('SMK Test Nusantara');
 
-        $this->get(route('education.show', '12345678'))
+        $this->get(route('education.show', $school->id))
             ->assertOk()
             ->assertSee('SMK Test Nusantara')
             ->assertSee('RPL');
@@ -40,7 +40,7 @@ class EducationDirectoryTest extends TestCase
 
     public function test_campus_directory_uses_database_records(): void
     {
-        University::create([
+        $university = University::create([
             'npsn' => '87654321',
             'name' => 'Universitas Test',
             'type' => 'Negeri',
@@ -59,7 +59,7 @@ class EducationDirectoryTest extends TestCase
             ->assertSee('Universitas Test')
             ->assertSee('campusSearchInput');
 
-        $this->get(route('campus.show', '87654321'))
+        $this->get(route('campus.show', $university->id))
             ->assertOk()
             ->assertSee('Universitas Test')
             ->assertSee('Computer Science');
@@ -67,7 +67,7 @@ class EducationDirectoryTest extends TestCase
 
     public function test_inactive_institution_is_hidden(): void
     {
-        School::create([
+        $school = School::create([
             'npsn' => '99999999',
             'name' => 'SMK Inactive',
             'status' => 'Inactive',
@@ -77,7 +77,7 @@ class EducationDirectoryTest extends TestCase
             ->assertOk()
             ->assertDontSee('SMK Inactive');
 
-        $this->get(route('education.show', '99999999'))->assertNotFound();
+        $this->get(route('education.show', $school->id))->assertNotFound();
     }
 
     public function test_school_admin_can_update_school_with_logo_and_gallery(): void
@@ -126,7 +126,7 @@ class EducationDirectoryTest extends TestCase
         $this->assertEquals(-6.1753924, $school->latitude);
 
         // Verify public user-facing view reflects the updated data
-        $publicDetail = $this->get(route('education.show', $school->npsn));
+        $publicDetail = $this->get(route('education.show', $school->id));
         $publicDetail->assertOk()
             ->assertSee('SMK TI Bintang Masa Depan')
             ->assertSee('SMK TI unggulan dengan fokus AI dan Cyber Security.')

@@ -16,20 +16,20 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
             <a href="{{ route('admin.events.confirmations') }}"
-               class="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition">
+               class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                Konfirmasi Peserta
+                <span>Konfirmasi Peserta</span>
             </a>
             <a href="{{ route('admin.events.bank-account') }}"
-               class="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition">
+               class="flex-1 sm:flex-none justify-center inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition whitespace-nowrap">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                 </svg>
-                Kelola Rekening
+                <span>Kelola Rekening</span>
             </a>
         </div>
     </div>
@@ -103,9 +103,9 @@
 
     {{-- Bank Account Banner Alert --}}
     @if($bankAccount)
-        <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <span class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 font-extrabold text-sm">
+        <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+            <div class="flex items-start sm:items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 font-extrabold text-sm shadow-2xs">
                     {{ strtoupper(substr($bankAccount->bank_name, 0, 3)) }}
                 </span>
                 <div>
@@ -117,14 +117,14 @@
                     </p>
                 </div>
             </div>
-            <a href="{{ route('admin.events.bank-account') }}" class="px-3.5 py-1.5 rounded-xl border border-blue-300 bg-white hover:bg-blue-50 text-blue-700 text-xs font-bold transition whitespace-nowrap self-start md:self-auto">
+            <a href="{{ route('admin.events.bank-account') }}" class="w-full sm:w-auto text-center justify-center inline-flex px-3.5 py-2 rounded-xl border border-blue-300 bg-white hover:bg-blue-50 text-blue-700 text-xs font-bold transition whitespace-nowrap shadow-2xs">
                 Ubah Rekening &rarr;
             </a>
         </div>
     @else
-        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <span class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+            <div class="flex items-start sm:items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
                     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
@@ -138,7 +138,7 @@
                     </p>
                 </div>
             </div>
-            <a href="{{ route('admin.events.bank-account') }}" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap self-start md:self-auto">
+            <a href="{{ route('admin.events.bank-account') }}" class="w-full sm:w-auto text-center justify-center inline-flex px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
                 Atur Rekening Sekarang
             </a>
         </div>
@@ -146,18 +146,98 @@
 
     {{-- Per-Event Financial Breakdown --}}
     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div>
                 <h3 class="font-extrabold text-slate-900 text-sm">Rincian Penghasilan Per Event</h3>
                 <p class="text-[11px] text-slate-500 mt-0.5">Ringkasan tiket terjual dan total omzet untuk setiap event Anda.</p>
             </div>
-            <a href="{{ route('admin.events.index') }}" class="text-xs font-bold text-blue-600 hover:underline">
+            <a href="{{ route('admin.events.index') }}" class="text-xs font-bold text-blue-600 hover:underline shrink-0">
                 Kelola Semua Event &rarr;
             </a>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-600">
+        {{-- Mobile Card List (visible on small screens) --}}
+        <div class="block sm:hidden divide-y divide-slate-100">
+            @forelse($events as $evt)
+                @php
+                    $isPaid = $evt->isPaid();
+                    $confirmedCount = $evt->confirmed_registrations_count ?? 0;
+                    $pendingCount = $evt->pending_registrations_count ?? 0;
+                    $eventTotalRevenue = $isPaid ? ($confirmedCount * $evt->price_numeric) : 0;
+                @endphp
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <a href="{{ route('event.show', $evt->id) }}" target="_blank" class="font-bold text-slate-900 hover:text-blue-600 text-sm leading-snug line-clamp-2">
+                                {{ $evt->title }}
+                            </a>
+                            <div class="text-[11px] text-slate-400 mt-0.5">{{ $evt->date }} &bull; {{ $evt->category }}</div>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            @if($isPaid)
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    Berbayar
+                                </span>
+                                <div class="font-extrabold text-slate-900 text-xs mt-0.5">
+                                    {{ $evt->formatted_price }}
+                                </div>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-slate-100 text-slate-700">
+                                    Gratis
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Stats Box --}}
+                    <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-100 grid grid-cols-3 gap-2 text-center text-xs">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Kuota</span>
+                            <span class="font-extrabold text-slate-800 text-xs mt-0.5 block">
+                                {{ $confirmedCount }}<span class="text-slate-400 font-normal">/{{ $evt->total_quota > 0 ? $evt->total_quota : '∞' }}</span>
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Menunggu</span>
+                            <span class="font-bold text-xs mt-0.5 block {{ $pendingCount > 0 ? 'text-amber-600' : 'text-slate-400' }}">
+                                {{ $pendingCount > 0 ? $pendingCount . ' Verifikasi' : '-' }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Pendapatan</span>
+                            <span class="font-extrabold text-xs mt-0.5 block {{ $isPaid ? 'text-emerald-600' : 'text-slate-400 font-normal' }}">
+                                {{ $isPaid ? 'Rp ' . number_format($eventTotalRevenue, 0, ',', '.') : 'Rp 0' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {{-- Action Button --}}
+                    <div class="flex justify-end pt-0.5">
+                        <a href="{{ route('admin.events.confirmations', ['event_id' => $evt->id]) }}"
+                           class="w-full text-center justify-center inline-flex items-center gap-1 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition">
+                            Lihat Peserta
+                        </a>
+                    </div>
+                </div>
+            @empty
+                <div class="py-10 px-4 text-center text-slate-400">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2 shadow-2xs">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <p class="font-bold text-slate-600 text-sm">Belum ada event</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Anda belum memiliki event yang dibuat.</p>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Desktop Table (hidden on mobile, visible on sm and up) --}}
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full min-w-[700px] text-left text-xs text-slate-600">
                 <thead class="bg-slate-50/80 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
                     <tr>
                         <th class="py-3 px-4">Event</th>
@@ -248,8 +328,66 @@
             <p class="text-[11px] text-slate-500 mt-0.5">Daftar transaksi pembayaran tiket dari peserta event berbayar.</p>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-600">
+        {{-- Mobile Card List (visible on small screens) --}}
+        <div class="block sm:hidden divide-y divide-slate-100">
+            @forelse($recentTransactions as $tx)
+                <div class="p-4 space-y-2.5">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm leading-snug">{{ $tx->name }}</div>
+                            <div class="text-[11px] text-slate-400">{{ $tx->email }}</div>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            @if($tx->payment_status === 'pending')
+                                <span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-800">Menunggu</span>
+                            @elseif($tx->payment_status === 'confirmed')
+                                <span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-100 text-emerald-800">Dikonfirmasi</span>
+                            @elseif($tx->payment_status === 'rejected')
+                                <span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-red-100 text-red-800">Ditolak</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-100 space-y-1.5 text-xs">
+                        <div class="flex items-start justify-between gap-2">
+                            <span class="text-slate-400 font-medium text-[11px] shrink-0">Event:</span>
+                            <span class="font-bold text-slate-800 text-right line-clamp-1">{{ $tx->event?->title }}</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-slate-400 font-medium text-[11px]">Bank:</span>
+                            <span class="text-slate-600 font-medium">
+                                {{ $tx->sender_bank ?? 'Transfer Bank' }}
+                                @if($tx->sender_name)
+                                    <span class="text-slate-400">({{ $tx->sender_name }})</span>
+                                @endif
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                            <span class="text-slate-400 font-medium text-[11px]">Nominal:</span>
+                            <span class="font-extrabold text-slate-900 text-xs">Rp {{ number_format($tx->amount, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 text-[11px] text-slate-400 pt-0.5">
+                            <span>Waktu:</span>
+                            <span>{{ $tx->created_at->format('d M Y, H:i') }}</span>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="py-10 px-4 text-center text-slate-400">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-2 shadow-2xs">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <p class="font-bold text-slate-600 text-sm">Belum ada transaksi</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Belum ada riwayat pembayaran tiket.</p>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Desktop Table (hidden on mobile, visible on sm and up) --}}
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="w-full min-w-[700px] text-left text-xs text-slate-600">
                 <thead class="bg-slate-50/80 text-slate-700 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
                     <tr>
                         <th class="py-3 px-4">Waktu</th>

@@ -3,7 +3,7 @@
 @section('title', 'Edit Informasi Sekolah — IndoTech')
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Summernote Lite CSS -->
@@ -11,9 +11,10 @@
 <style>
     .leaflet-popup-content-wrapper {
         border-radius: 1rem;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         padding: 4px;
     }
+
     .leaflet-popup-content {
         margin: 10px 14px;
         font-family: inherit;
@@ -21,6 +22,7 @@
         line-height: 1.5;
         color: #1e293b;
     }
+
     /* Summernote styling adjustments for clean Tailwind admin integration */
     .note-editor.note-frame {
         border: 1px solid #cbd5e1 !important;
@@ -28,12 +30,14 @@
         box-shadow: none !important;
         overflow: hidden !important;
     }
+
     .note-toolbar {
         background: #f8fafc !important;
         border-bottom: 1px solid #e2e8f0 !important;
         border-radius: 0 !important;
         padding: 8px 10px !important;
     }
+
     /* Standard toolbar buttons (exclude color swatches and reset buttons) */
     .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset) {
         background: #ffffff !important;
@@ -42,9 +46,10 @@
         color: #334155 !important;
         padding: 5px 9px !important;
         font-size: 13px !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
         transition: all 0.15s ease !important;
     }
+
     .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset):hover,
     .note-toolbar .note-btn:not(.note-color-btn):not(.note-color-reset).active {
         background: #eff6ff !important;
@@ -56,6 +61,7 @@
     .note-toolbar .note-current-color-button {
         padding: 4px 6px !important;
     }
+
     .note-toolbar .note-current-color-button .note-recent-color {
         display: inline-flex !important;
         align-items: center !important;
@@ -70,12 +76,14 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
         font-style: normal !important;
     }
-    .note-btn-group.note-color > .note-current-color-button {
+
+    .note-btn-group.note-color>.note-current-color-button {
         border-top-right-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         border-right: none !important;
     }
-    .note-btn-group.note-color > .dropdown-toggle {
+
+    .note-btn-group.note-color>.dropdown-toggle {
         border-top-left-radius: 0 !important;
         border-bottom-left-radius: 0 !important;
         padding-left: 5px !important;
@@ -89,12 +97,14 @@
         background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
         border-radius: 10px !important;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12), 0 8px 10px -6px rgba(0,0,0,0.08) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
     }
-    .note-color .note-dropdown-menu > div {
+
+    .note-color .note-dropdown-menu>div {
         display: flex !important;
         gap: 16px !important;
     }
+
     .note-color .btn-background-color,
     .note-color .btn-foreground-color {
         flex: 1 !important;
@@ -102,6 +112,7 @@
         display: flex !important;
         flex-direction: column !important;
     }
+
     .note-color .note-palette-title {
         font-size: 11.5px !important;
         font-weight: 700 !important;
@@ -113,6 +124,7 @@
         border-bottom: 1px solid #f1f5f9 !important;
         text-align: left !important;
     }
+
     .note-color .note-color-reset {
         display: block !important;
         width: 100% !important;
@@ -129,6 +141,7 @@
         box-shadow: none !important;
         transition: all 0.15s ease !important;
     }
+
     .note-color .note-color-reset:hover {
         background: #eff6ff !important;
         border-color: #bfdbfe !important;
@@ -139,6 +152,7 @@
     .note-color-palette {
         line-height: 1 !important;
     }
+
     .note-color-palette .note-color-row {
         display: flex !important;
         flex-direction: row !important;
@@ -146,6 +160,7 @@
         margin-bottom: 2px !important;
         gap: 2px !important;
     }
+
     .note-color-palette .note-color-btn {
         width: 18px !important;
         height: 18px !important;
@@ -163,6 +178,7 @@
         cursor: pointer !important;
         transition: transform 0.12s ease, box-shadow 0.12s ease !important;
     }
+
     .note-color-palette .note-color-btn:hover {
         transform: scale(1.35) !important;
         z-index: 20 !important;
@@ -183,42 +199,51 @@
         margin-top: 6px !important;
         box-sizing: border-box !important;
     }
+
     .note-dropdown-menu {
         border: 1px solid #e2e8f0 !important;
         border-radius: 8px !important;
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
         padding: 6px !important;
         z-index: 1050 !important;
     }
+
     .note-dropdown-item {
         color: #334155 !important;
         padding: 6px 10px !important;
         border-radius: 6px !important;
         font-size: 13px !important;
     }
+
     .note-dropdown-item:hover {
         background: #eff6ff !important;
         color: #2563eb !important;
     }
+
     .note-modal {
         z-index: 1050 !important;
     }
+
     .note-modal-backdrop {
         z-index: 1040 !important;
     }
+
     .note-modal .modal-content {
         border-radius: 12px !important;
         border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
     }
+
     .note-modal .modal-header {
         border-bottom: 1px solid #e2e8f0 !important;
         padding: 16px 20px !important;
     }
+
     .note-modal .modal-footer {
         border-top: 1px solid #e2e8f0 !important;
         padding: 14px 20px !important;
     }
+
     .note-modal .btn-primary {
         background: #2563eb !important;
         border-color: #2563eb !important;
@@ -226,6 +251,7 @@
         font-weight: 600 !important;
         padding: 8px 16px !important;
     }
+
     .note-editable {
         font-family: inherit !important;
         font-size: 14px !important;
@@ -234,22 +260,64 @@
         padding: 18px !important;
         background-color: #ffffff !important;
     }
+
     .note-editable ul {
         list-style-type: disc !important;
         padding-left: 24px !important;
     }
+
     .note-editable ol {
         list-style-type: decimal !important;
         padding-left: 24px !important;
     }
-    .note-editable h1 { font-size: 2rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
-    .note-editable h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-bottom: 0.5rem !important; }
-    .note-editable h3 { font-size: 1.25rem !important; font-weight: 600 !important; margin-bottom: 0.5rem !important; }
-    .note-editable h4 { font-size: 1.125rem !important; font-weight: 600 !important; margin-bottom: 0.5rem !important; }
-    .note-editable p { margin-bottom: 0.75rem !important; }
-    .note-editable table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 1rem !important; }
-    .note-editable table td, .note-editable table th { border: 1px solid #cbd5e1 !important; padding: 6px 10px !important; }
-    .note-editable blockquote { border-left: 4px solid #2563eb !important; padding-left: 16px !important; color: #64748b !important; font-style: italic !important; }
+
+    .note-editable h1 {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable h3 {
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable h4 {
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .note-editable p {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .note-editable table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .note-editable table td,
+    .note-editable table th {
+        border: 1px solid #cbd5e1 !important;
+        padding: 6px 10px !important;
+    }
+
+    .note-editable blockquote {
+        border-left: 4px solid #2563eb !important;
+        padding-left: 16px !important;
+        color: #64748b !important;
+        font-style: italic !important;
+    }
+
     .note-statusbar {
         border-top: 1px solid #f1f5f9 !important;
         background: #f8fafc !important;
@@ -264,16 +332,20 @@
 
     {{-- Flash Messages --}}
     @if (session('info'))
-        <div class="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-[13.5px]">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-blue-500"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>{{ session('info') }}</span>
-        </div>
+    <div class="flex items-start gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-[13.5px]">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-blue-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ session('info') }}</span>
+    </div>
     @endif
     @if (session('success'))
-        <div class="flex items-start gap-3 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-[13.5px]">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <span>{{ session('success') }}</span>
-        </div>
+    <div class="flex items-start gap-3 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-[13.5px]">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-green-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <span>{{ session('success') }}</span>
+    </div>
     @endif
     @if ($errors->any())
         <div class="flex items-start gap-3 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[13.5px]">
@@ -292,19 +364,19 @@
     {{-- Top Back Link & Breadcrumb --}}
     <div>
         @if (auth()->user()->role === 'school')
-            <a href="{{ route('dashboard.school') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Dashboard
-            </a>
+        <a href="{{ route('dashboard.school') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Dashboard
+        </a>
         @else
-            <a href="{{ route('admin.schools.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                Kembali
-            </a>
+        <a href="{{ route('admin.schools.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Kembali
+        </a>
         @endif
     </div>
 
@@ -320,8 +392,8 @@
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
-                            <rect x="3" y="4" width="18" height="16" rx="3"/>
-                            <path stroke-linecap="round" d="M7 8h10M7 12h4m-4 4h7"/>
+                            <rect x="3" y="4" width="18" height="16" rx="3" />
+                            <path stroke-linecap="round" d="M7 8h10M7 12h4m-4 4h7" />
                         </svg>
                     </div>
                     <div>
@@ -335,15 +407,15 @@
                     {{-- Nama Sekolah --}}
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Nama Sekolah <span class="text-red-500">*</span></label>
-                        <input type="text" 
-                               name="name" 
-                               id="schoolNameInput"
-                               value="{{ old('name', $school['name']) }}" 
-                               required
-                               placeholder="SMK Telkom Jakarta"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="text"
+                            name="name"
+                            id="schoolNameInput"
+                            value="{{ old('name', $school['name']) }}"
+                            required
+                            placeholder="SMK Telkom Jakarta"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -351,15 +423,17 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Jenis Institusi</label>
                         <div class="relative">
-                            <select name="institution_type" 
-                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer appearance-none pr-10">
+                            <select name="institution_type"
+                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer appearance-none pr-10">
                                 <option value="SMK IT" {{ old('institution_type', $school['institution_type'] ?? '') == 'SMK IT' ? 'selected' : '' }}>SMK IT</option>
                                 <option value="SMK" {{ old('institution_type', $school['institution_type'] ?? '') == 'SMK' ? 'selected' : '' }}>SMK</option>
                                 <option value="SMA IT" {{ old('institution_type', $school['institution_type'] ?? '') == 'SMA IT' ? 'selected' : '' }}>SMA IT</option>
                                 <option value="Vokasi IT" {{ old('institution_type', $school['institution_type'] ?? '') == 'Vokasi IT' ? 'selected' : '' }}>Vokasi IT</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -367,15 +441,15 @@
                     {{-- Lokasi --}}
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Lokasi <span class="text-red-500">*</span></label>
-                        <input type="text" 
-                               name="location" 
-                               id="schoolLocationInput"
-                               value="{{ old('location', $school['location']) }}" 
-                               required
-                               placeholder="Jakarta Barat, DKI Jakarta"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="text"
+                            name="location"
+                            id="schoolLocationInput"
+                            value="{{ old('location', $school['location']) }}"
+                            required
+                            placeholder="Jakarta Barat, DKI Jakarta"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('location')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -383,15 +457,17 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Akreditasi</label>
                         <div class="relative">
-                            <select name="accreditation" 
-                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer appearance-none pr-10">
+                            <select name="accreditation"
+                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer appearance-none pr-10">
                                 <option value="A" {{ old('accreditation', $school['accreditation'] ?? '') == 'A' ? 'selected' : '' }}>A (Unggul)</option>
                                 <option value="B" {{ old('accreditation', $school['accreditation'] ?? '') == 'B' ? 'selected' : '' }}>B (Baik)</option>
                                 <option value="C" {{ old('accreditation', $school['accreditation'] ?? '') == 'C' ? 'selected' : '' }}>C (Cukup)</option>
                                 <option value="Belum Terakreditasi" {{ old('accreditation', $school['accreditation'] ?? '') == 'Belum Terakreditasi' ? 'selected' : '' }}>Belum Terakreditasi</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -399,13 +475,13 @@
                     {{-- Website --}}
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Website</label>
-                        <input type="url" 
-                               name="website" 
-                               value="{{ old('website', $school['website'] ?? '') }}" 
-                               placeholder="https://smk.sch.id"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="url"
+                            name="website"
+                            value="{{ old('website', $school['website'] ?? '') }}"
+                            placeholder="https://smk.sch.id"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('website')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -413,12 +489,12 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Email</label>
                         <input type="email"
-                               name="email"
-                               value="{{ old('email', $school['email'] ?? '') }}"
-                               placeholder="info@smk.sch.id"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="email"
+                            value="{{ old('email', $school['email'] ?? '') }}"
+                            placeholder="info@smk.sch.id"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('email')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -426,12 +502,12 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Nomor Telepon</label>
                         <input type="text"
-                               name="phone"
-                               value="{{ old('phone', $school['phone'] ?? '') }}"
-                               placeholder="(021) 1234567"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="phone"
+                            value="{{ old('phone', $school['phone'] ?? '') }}"
+                            placeholder="(021) 1234567"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('phone')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -439,12 +515,12 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tingkat Penyerapan Kerja</label>
                         <input type="text"
-                               name="placement_rate"
-                               value="{{ old('placement_rate', $school['placement_rate'] ?? '') }}"
-                               placeholder="Contoh: 95%"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="placement_rate"
+                            value="{{ old('placement_rate', $school['placement_rate'] ?? '') }}"
+                            placeholder="Contoh: 95%"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('placement_rate')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -452,13 +528,13 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Mitra Industri (Jumlah)</label>
                         <input type="number"
-                               name="industry_partners"
-                               value="{{ old('industry_partners', $school['industry_partners'] ?? '') }}"
-                               placeholder="Contoh: 25"
-                               min="0"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="industry_partners"
+                            value="{{ old('industry_partners', $school['industry_partners'] ?? '') }}"
+                            placeholder="Contoh: 25"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('industry_partners')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -466,13 +542,13 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Siswa Aktif (Jumlah)</label>
                         <input type="number"
-                               name="total_students"
-                               value="{{ old('total_students', $school['total_students'] ?? '') }}"
-                               placeholder="Contoh: 1200"
-                               min="0"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="total_students"
+                            value="{{ old('total_students', $school['total_students'] ?? '') }}"
+                            placeholder="Contoh: 1200"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('total_students')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -480,13 +556,13 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Lab IT Modern (Jumlah Lab)</label>
                         <input type="number"
-                               name="modern_labs"
-                               value="{{ old('modern_labs', $school['modern_labs'] ?? '') }}"
-                               placeholder="Contoh: 6"
-                               min="0"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="modern_labs"
+                            value="{{ old('modern_labs', $school['modern_labs'] ?? '') }}"
+                            placeholder="Contoh: 6"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('modern_labs')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -511,14 +587,14 @@
                     <div>
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Tahun Berdiri</label>
                         <input type="number"
-                               name="founded"
-                               value="{{ old('founded', $school['founded'] ?? '') }}"
-                               placeholder="1995"
-                               min="1900"
-                               max="{{ date('Y') }}"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            name="founded"
+                            value="{{ old('founded', $school['founded'] ?? '') }}"
+                            placeholder="1995"
+                            min="1900"
+                            max="{{ date('Y') }}"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('founded')
-                            <p class="form-error">{{ $message }}</p>
+                        <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -530,7 +606,7 @@
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z" />
                         </svg>
                     </div>
                     <div>
@@ -541,10 +617,10 @@
 
                 <div>
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Profil & Detail Kurikulum</label>
-                    <textarea name="description" 
-                              id="schoolDescription">{{ old('description', $school['description'] ?? '') }}</textarea>
+                    <textarea name="description"
+                        id="schoolDescription">{{ old('description', $school['description'] ?? '') }}</textarea>
                     @error('description')
-                        <p class="form-error">{{ $message }}</p>
+                    <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
@@ -554,7 +630,7 @@
                 <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px] pb-3 border-b border-slate-100">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
                         </svg>
                     </div>
                     <div>
@@ -568,26 +644,28 @@
                     <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Daftar Kompetensi Keahlian</label>
                     <div class="flex gap-2">
                         <input type="text" id="competencyInputField"
-                               placeholder="Contoh: Teknik Komputer & Jaringan"
-                               class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
-                               onkeydown="if(event.key==='Enter'){event.preventDefault();addCompetency();}">
+                            placeholder="Contoh: Teknik Komputer & Jaringan"
+                            class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();addCompetency();}">
                         <button type="button" onclick="addCompetency()"
-                                class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0">
+                            class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold rounded-lg transition shrink-0">
                             Tambah
                         </button>
                     </div>
                     <div id="competencyTags" class="flex flex-wrap gap-2 mt-3 min-h-[32px]">
                         @php
-                            $existingCompetencies = is_array($school['competencies'] ?? null) ? $school['competencies'] : [];
+                        $existingCompetencies = is_array($school['competencies'] ?? null) ? $school['competencies'] : [];
                         @endphp
                         @foreach($existingCompetencies as $comp)
-                            <span class="competency-tag inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl">
-                                {{ $comp }}
-                                <input type="hidden" name="competencies[]" value="{{ $comp }}">
-                                <button type="button" onclick="removeCompetencyTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none">
-                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
-                                </button>
-                            </span>
+                        <span class="competency-tag inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl">
+                            {{ $comp }}
+                            <input type="hidden" name="competencies[]" value="{{ $comp }}">
+                            <button type="button" onclick="removeCompetencyTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none">
+                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </span>
                         @endforeach
                     </div>
                     <p class="text-[12px] text-slate-400 mt-2">Tekan Enter atau klik tombol Tambah untuk menambahkan kompetensi. Klik × untuk menghapus.</p>
@@ -597,13 +675,13 @@
             {{-- Card 4: Galeri Sekolah --}}
             <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
                 {{-- Card Header with Action --}}
-                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
-                    <div class="flex items-center gap-3 text-slate-900 font-bold text-[16px]">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
+                    <div class="flex items-start sm:items-center gap-3 text-slate-900 font-bold text-[16px]">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center shrink-0">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
-                                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                                <rect x="3" y="3" width="18" height="18" rx="3" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21" />
                             </svg>
                         </div>
                         <div>
@@ -616,9 +694,9 @@
                     </div>
 
                     {{-- Upload Button Trigger --}}
-                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
+                    <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer shrink-0 self-start sm:self-center">
                         <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                         Tambah Foto
                     </label>
@@ -628,28 +706,28 @@
                 {{-- Gallery Grid Container --}}
                 <div id="galleryContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
                     @php
-                        $existingPhotos = is_array($school['gallery'] ?? null) ? $school['gallery'] : [];
+                    $existingPhotos = is_array($school['gallery'] ?? null) ? $school['gallery'] : [];
                     @endphp
 
                     @foreach($existingPhotos as $index => $photoUrl)
-                        <div class="gallery-item relative aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group shadow-xs" data-type="existing">
-                            <img src="{{ $photoUrl }}" alt="Galeri Sekolah" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                            <input type="hidden" name="existing_gallery[]" value="{{ $photoUrl }}">
-                            <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                                <button type="button" onclick="removeGalleryItem(this)" class="p-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white shadow-md transition cursor-pointer" title="Hapus foto ini">
-                                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                    </svg>
-                                </button>
-                            </div>
+                    <div class="gallery-item relative aspect-square rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group shadow-xs" data-type="existing">
+                        <img src="{{ $photoUrl }}" alt="Galeri Sekolah" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <input type="hidden" name="existing_gallery[]" value="{{ $photoUrl }}">
+                        <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                            <button type="button" onclick="removeGalleryItem(this)" class="p-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white shadow-md transition cursor-pointer" title="Hapus foto ini">
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </button>
                         </div>
+                    </div>
                     @endforeach
 
                     {{-- Add Photo Slot Card --}}
                     <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
                         </div>
                         <span class="text-[12px] font-bold">Tambah Foto</span>
@@ -669,7 +747,7 @@
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
                         <h2 class="text-[16px] font-bold text-slate-900">Logo & Profil</h2>
@@ -680,14 +758,14 @@
                 {{-- Logo Preview Box --}}
                 <div class="w-full aspect-square max-w-[200px] rounded-2xl bg-[#f0f4f9] border border-slate-200/80 flex items-center justify-center p-4 mb-4 relative overflow-hidden group shadow-inner">
                     @php
-                        $hasLogo = !empty($school['logo_url']);
+                    $hasLogo = !empty($school['logo_url']);
                     @endphp
 
                     {{-- Actual Image Preview --}}
-                    <img id="logoPreviewImg" 
-                         src="{{ $hasLogo ? $school['logo_url'] : '' }}" 
-                         alt="{{ $school['name'] }}" 
-                         class="{{ $hasLogo ? '' : 'hidden' }} w-full h-full object-contain rounded-xl transition duration-300">
+                    <img id="logoPreviewImg"
+                        src="{{ $hasLogo ? $school['logo_url'] : '' }}"
+                        alt="{{ $school['name'] }}"
+                        class="{{ $hasLogo ? '' : 'hidden' }} w-full h-full object-contain rounded-xl transition duration-300">
 
                     {{-- Default Icon Placeholder when no image --}}
                     <div id="logoDefaultPlaceholder" class="{{ $hasLogo ? 'hidden' : 'flex' }} flex-col items-center justify-center text-slate-400">
@@ -700,7 +778,7 @@
                     {{-- Hover Overlay to Change --}}
                     <label for="logoInput" class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white cursor-pointer gap-1.5 backdrop-blur-xs">
                         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                         </svg>
                         <span class="text-xs font-bold">Ganti Foto</span>
                     </label>
@@ -716,7 +794,7 @@
                 {{-- Upload Button --}}
                 <label for="logoInput" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-brand-600 font-bold text-[13.5px] cursor-pointer transition">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                     </svg>
                     Pilih Logo Baru
                 </label>
@@ -729,8 +807,8 @@
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                         </div>
                         <h2 class="text-[16px] font-bold text-slate-900">Peta Lokasi Sekolah</h2>
@@ -747,12 +825,12 @@
                         <label class="block text-[13px] font-semibold text-slate-700">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
-                    <textarea name="address" 
-                              id="schoolAddressInput"
-                              rows="2"
-                              autocomplete="off"
-                              placeholder="Ketik alamat jalan di Indonesia..."
-                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address', $school['address'] ?? '') }}</textarea>
+                    <textarea name="address"
+                        id="schoolAddressInput"
+                        rows="2"
+                        autocomplete="off"
+                        placeholder="Ketik alamat jalan di Indonesia..."
+                        class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address', $school['address'] ?? '') }}</textarea>
 
                     {{-- Autocomplete Suggestions Dropdown for Address --}}
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
@@ -778,14 +856,14 @@
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-[12px] flex items-center justify-between text-slate-600">
                     <div class="flex items-center gap-1.5 truncate max-w-[70%]">
                         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2.2" class="shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                         </svg>
                         <span id="coordinateDisplay" class="font-mono font-medium truncate">
                             @if(!empty($school['latitude']) && !empty($school['longitude']))
-                                {{ number_format((float)$school['latitude'], 5) }}, {{ number_format((float)$school['longitude'], 5) }}
+                            {{ number_format((float)$school['latitude'], 5) }}, {{ number_format((float)$school['longitude'], 5) }}
                             @else
-                                Titik peta akan otomatis muncul
+                            Titik peta akan otomatis muncul
                             @endif
                         </span>
                     </div>
@@ -794,7 +872,9 @@
                         <span class="text-slate-300">•</span>
                         <button type="button" onclick="openInGoogleMaps()" class="text-slate-600 hover:text-blue-600 font-bold text-[11.5px] flex items-center gap-0.5 cursor-pointer">
                             Maps
-                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -806,16 +886,16 @@
 
     {{-- Bottom Action Bar --}}
     <div class="pt-6 border-t border-slate-200/80 flex items-center justify-end gap-4">
-        <a href="{{ route('admin.schools.index') }}" 
-           class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
+        <a href="{{ route('admin.schools.index') }}"
+            class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
             Batal
         </a>
 
-        <button type="submit" 
-                class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
+        <button type="submit"
+            class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-8H7v8M7 3v5h8"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-8H7v8M7 3v5h8" />
             </svg>
             Simpan Perubahan
         </button>
@@ -866,9 +946,9 @@
                             $('#schoolDescription').summernote('insertImage', data.url);
                         },
                         error: function(xhr) {
-                            var msg = xhr.responseJSON && xhr.responseJSON.message 
-                                ? xhr.responseJSON.message 
-                                : 'Gagal mengunggah gambar. Pastikan format berkas JPG, PNG, atau WebP (maksimal 25MB).';
+                            var msg = xhr.responseJSON && xhr.responseJSON.message ?
+                                xhr.responseJSON.message :
+                                'Gagal mengunggah gambar. Pastikan format berkas JPG, PNG, atau WebP (maksimal 25MB).';
                             alert(msg);
                         }
                     });
@@ -882,7 +962,10 @@
             var $btn = $el.closest('.note-current-color-button');
             var bg = $btn.attr('data-backcolor') || '#FFFF00';
             var fg = $btn.attr('data-forecolor') || '#000000';
-            $el.css({ 'background-color': bg, 'color': fg });
+            $el.css({
+                'background-color': bg,
+                'color': fg
+            });
         });
 
         // Listen for color changes in the palette to update the recent color preview
@@ -1096,7 +1179,7 @@
     // Indonesia Geographical Bounds (Sabang to Merauke)
     const INDONESIA_BOUNDS = L.latLngBounds(
         L.latLng(-11.5, 94.5), // Southwest
-        L.latLng(6.5, 141.5)   // Northeast
+        L.latLng(6.5, 141.5) // Northeast
     );
 
     const initialLat = parseFloat("{{ $school['latitude'] ?? '-6.2088' }}") || -6.2088;
@@ -1286,7 +1369,7 @@
                             const [lon, lat] = f.geometry.coordinates;
                             const country = f.properties.country || '';
                             return (country.toLowerCase() === 'indonesia' || country === '') &&
-                                   lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
+                                lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
                         })
                         .map(f => ({
                             lat: f.geometry.coordinates[1],
@@ -1305,7 +1388,9 @@
             const lon = parseFloat(top.lon);
 
             if (map && marker) {
-                map.flyTo([lat, lon], 14, { duration: 0.9 });
+                map.flyTo([lat, lon], 14, {
+                    duration: 0.9
+                });
                 marker.setLatLng([lat, lon]);
                 updateCoordinates(lat, lon);
                 const title = nameInput?.value || locationInput?.value || 'Lokasi Sekolah';
@@ -1346,7 +1431,9 @@
                 const lat = parseFloat(item.lat);
                 const lon = parseFloat(item.lon);
                 if (map && marker) {
-                    map.flyTo([lat, lon], 16, { duration: 0.9 });
+                    map.flyTo([lat, lon], 16, {
+                        duration: 0.9
+                    });
                     marker.setLatLng([lat, lon]);
                     updateCoordinates(lat, lon);
                     marker.bindPopup(`<b>${nameInput?.value || 'Lokasi Sekolah'}</b><br>${item.display_name}`).openPopup();
@@ -1414,7 +1501,9 @@
 
                 if (INDONESIA_BOUNDS.contains([lat, lng])) {
                     if (map && marker) {
-                        map.flyTo([lat, lng], 16, { duration: 1.0 });
+                        map.flyTo([lat, lng], 16, {
+                            duration: 1.0
+                        });
                         marker.setLatLng([lat, lng]);
                         updateCoordinates(lat, lng);
                         reverseGeocode(lat, lng);
@@ -1432,8 +1521,10 @@
             function(error) {
                 alert('Gagal mendeteksi lokasi: ' + error.message);
                 if (locationStatus) locationStatus.classList.add('hidden');
-            },
-            { enableHighAccuracy: true, timeout: 10000 }
+            }, {
+                enableHighAccuracy: true,
+                timeout: 10000
+            }
         );
     }
 

@@ -40,7 +40,6 @@ class AdminSchoolTest extends TestCase
 
         $this->assertDatabaseHas('schools', [
             'name' => 'SMK Telkom Jakarta',
-            'npsn' => '20109988',
         ]);
     }
 

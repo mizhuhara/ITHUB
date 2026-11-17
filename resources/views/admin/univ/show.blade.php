@@ -55,8 +55,6 @@
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">{{ $univ['name'] }}</h2>
                         <div class="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-slate-500">
-                            <span class="font-semibold text-slate-700">NPSN: {{ $univ['npsn'] ?? '-' }}</span>
-                            <span>•</span>
                             <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-brand-600 font-semibold">{{ $univ['type'] }}</span>
                             <span>•</span>
                             <span>{{ $univ['location'] }}</span>

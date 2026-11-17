@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminCompanyController extends Controller
@@ -42,7 +41,6 @@ class AdminCompanyController extends Controller
             $search = strtolower(trim($request->input('search')));
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                    ->orWhereRaw('LOWER(npsn) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(city) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(province) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(industry) LIKE ?', ["%{$search}%"])
@@ -147,7 +145,6 @@ class AdminCompanyController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'npsn' => ['nullable', 'string', 'max:50', 'unique:companies,npsn'],
             'type' => ['required', 'string'],
             'industry' => ['required', 'string', 'max:100'],
             'city' => ['nullable', 'string', 'max:100'],
@@ -223,7 +220,6 @@ class AdminCompanyController extends Controller
 
         $company = Company::create([
             'name' => $validated['name'],
-            'npsn' => $validated['npsn'] ?? null,
             'type' => $validated['type'],
             'industry' => $validated['industry'],
             'city' => $validated['city'] ?? null,
@@ -304,7 +300,6 @@ class AdminCompanyController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'npsn' => ['nullable', 'string', 'max:50', Rule::unique('companies', 'npsn')->ignore($company->id)],
             'type' => ['required', 'string'],
             'industry' => ['required', 'string', 'max:100'],
             'city' => ['nullable', 'string', 'max:100'],
@@ -360,7 +355,6 @@ class AdminCompanyController extends Controller
 
         $payload = [
             'name' => $validated['name'],
-            'npsn' => $validated['npsn'] ?? null,
             'type' => $validated['type'],
             'industry' => $validated['industry'],
             'city' => $validated['city'] ?? null,

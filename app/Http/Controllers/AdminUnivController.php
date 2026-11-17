@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminUnivController extends Controller
@@ -40,7 +39,6 @@ class AdminUnivController extends Controller
             $search = strtolower($request->input('search'));
             $query->where(function ($q) use ($search) {
                 $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
-                    ->orWhereRaw('LOWER(npsn) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(city) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(province) LIKE ?', ["%{$search}%"])
                     ->orWhereRaw('LOWER(location) LIKE ?', ["%{$search}%"]);
@@ -142,7 +140,6 @@ class AdminUnivController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'npsn' => ['required', 'string', 'max:20', 'unique:universities,npsn'],
             'type' => ['required', 'string'],
             'location' => ['required', 'string', 'max:150'],
             'accreditation' => ['nullable', 'string'],
@@ -173,7 +170,6 @@ class AdminUnivController extends Controller
 
         $data = [
             'name' => $validated['name'],
-            'npsn' => $validated['npsn'],
             'type' => $validated['type'],
             'location' => $validated['location'],
             'city' => $city,
@@ -277,7 +273,6 @@ class AdminUnivController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'npsn' => ['required', 'string', 'max:20', Rule::unique('universities', 'npsn')->ignore($id)],
             'type' => ['required', 'string'],
             'location' => ['required', 'string', 'max:150'],
             'accreditation' => ['nullable', 'string'],
@@ -312,7 +307,6 @@ class AdminUnivController extends Controller
 
         $data = [
             'name' => $validated['name'],
-            'npsn' => $validated['npsn'],
             'type' => $validated['type'],
             'location' => $validated['location'],
             'city' => $city,

@@ -26,13 +26,7 @@ class CampusController extends Controller
     public function show(string $id): View
     {
         $university = University::publiclyVisible()
-            ->where(function ($query) use ($id) {
-                $query->where('npsn', $id);
-
-                if (ctype_digit($id)) {
-                    $query->orWhere('id', (int) $id);
-                }
-            })
+            ->where('id', $id)
             ->firstOrFail();
 
         $university->increment('views');
@@ -58,7 +52,7 @@ class CampusController extends Controller
         $bannerImage = ! empty($gallery) ? $gallery[0] : 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=80';
 
         return [
-            'id' => $university->npsn ?: (string) $university->id,
+            'id' => (string) $university->id,
             'name' => $university->name,
             'verified' => in_array(strtolower($university->status ?? ''), ['active', 'verified'], true) || empty($university->status),
             'views' => (int) ($university->views ?? 0),

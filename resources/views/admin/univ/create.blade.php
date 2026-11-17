@@ -20,7 +20,7 @@
     <div>
         <a href="{{ route('admin.univ.index') }}" class="inline-flex items-center gap-2 text-[14px] font-semibold text-slate-700 hover:text-blue-600 mb-2 transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
             Kembali
         </a>
@@ -38,7 +38,7 @@
                 <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
                     <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4" />
                         </svg>
                     </div>
                     <div>
@@ -52,29 +52,15 @@
                     {{-- University Name --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nama Universitas</label>
-                        <input type="text" 
-                               name="name" 
-                               id="univNameInput"
-                               value="{{ old('name') }}" 
-                               required
-                               placeholder="Contoh: Universitas Indonesia"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="text"
+                            name="name"
+                            id="univNameInput"
+                            value="{{ old('name') }}"
+                            required
+                            placeholder="Contoh: Universitas Indonesia"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('name')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- NPSN --}}
-                    <div>
-                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
-                        <input type="text" 
-                               name="npsn" 
-                               value="{{ old('npsn') }}" 
-                               required
-                               placeholder="Contoh: 20109988"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        @error('npsn')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -83,12 +69,14 @@
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tipe Institusi</label>
                         <div class="relative">
                             <select name="type"
-                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
+                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="Negeri" {{ old('type') == 'Negeri' ? 'selected' : '' }}>Negeri (PTN)</option>
                                 <option value="Swasta" {{ old('type') == 'Swasta' ? 'selected' : '' }}>Swasta (PTS)</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -99,20 +87,20 @@
                             <label class="block text-[13px] font-semibold text-slate-700">Kota / Wilayah (Indonesia)</label>
                             <span class="text-[10.5px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">🇮🇩 Hanya Indonesia</span>
                         </div>
-                        <input type="text" 
-                               name="location" 
-                               id="univLocationInput"
-                               value="{{ old('location') }}" 
-                               required
-                               autocomplete="off"
-                               placeholder="Contoh: Depok, Jawa Barat"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        
+                        <input type="text"
+                            name="location"
+                            id="univLocationInput"
+                            value="{{ old('location') }}"
+                            required
+                            autocomplete="off"
+                            placeholder="Contoh: Depok, Jawa Barat"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+
                         {{-- Location suggestions dropdown --}}
                         <div id="locationSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
 
                         @error('location')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -120,15 +108,17 @@
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Akreditasi</label>
                         <div class="relative">
-                            <select name="accreditation" 
-                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
+                            <select name="accreditation"
+                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer pr-10">
                                 <option value="A" {{ old('accreditation') == 'A' ? 'selected' : '' }}>A (Unggul)</option>
                                 <option value="B" {{ old('accreditation') == 'B' ? 'selected' : '' }}>B (Baik)</option>
                                 <option value="C" {{ old('accreditation') == 'C' ? 'selected' : '' }}>C (Cukup)</option>
                                 <option value="Belum Terakreditasi" {{ old('accreditation') == 'Belum Terakreditasi' ? 'selected' : '' }}>Belum Terakreditasi</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
-                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -136,13 +126,13 @@
                     {{-- Website --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Website</label>
-                        <input type="url" 
-                               name="website" 
-                               value="{{ old('website') }}" 
-                               placeholder="https://www.ui.ac.id"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <input type="url"
+                            name="website"
+                            value="{{ old('website') }}"
+                            placeholder="https://www.ui.ac.id"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                         @error('website')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -153,7 +143,7 @@
                 <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
                     <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9z" />
                         </svg>
                     </div>
                     <div>
@@ -164,14 +154,14 @@
 
                 <div>
                     <label class="block text-[13px] font-semibold text-slate-700 mb-2">Profil, Fakultas & Keunggulan</label>
-                    <textarea name="description" 
-                              id="univDescription"
-                              rows="5"
-                              maxlength="1000"
-                              oninput="document.getElementById('charCount').textContent = this.value.length + ' / 1000 characters'"
-                              placeholder="Tuliskan deskripsi profil, fakultas unggulan, dan keunggulan universitas..."
-                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('description') }}</textarea>
-                    
+                    <textarea name="description"
+                        id="univDescription"
+                        rows="5"
+                        maxlength="1000"
+                        oninput="document.getElementById('charCount').textContent = this.value.length + ' / 1000 characters'"
+                        placeholder="Tuliskan deskripsi profil, fakultas unggulan, dan keunggulan universitas..."
+                        class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('description') }}</textarea>
+
                     <div class="flex justify-end mt-1.5">
                         <span id="charCount" class="text-[12px] font-medium text-slate-400">
                             0 / 1000 characters
@@ -186,9 +176,9 @@
                     <div class="flex items-center gap-2.5 text-slate-900">
                         <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21"/>
+                                <rect x="3" y="3" width="18" height="18" rx="3" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 15-5-5L5 21" />
                             </svg>
                         </div>
                         <div>
@@ -203,7 +193,7 @@
                     {{-- Upload Button Trigger --}}
                     <label for="galleryInput" id="galleryBtnTrigger" class="inline-flex items-center gap-1.5 text-[13px] font-bold text-brand-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-lg transition cursor-pointer">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                         Tambah Foto
                     </label>
@@ -216,7 +206,7 @@
                     <label for="galleryInput" id="addPhotoSlot" class="aspect-square rounded-2xl bg-slate-50 hover:bg-blue-50/40 border-2 border-dashed border-slate-300 hover:border-blue-400 flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 cursor-pointer transition group p-3 text-center">
                         <div class="w-10 h-10 rounded-full bg-white group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 shadow-xs mb-1.5 transition">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
                         </div>
                         <span class="text-[12px] font-bold">Tambah Foto</span>
@@ -234,7 +224,9 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col items-center text-center">
                 <div class="w-full flex items-center gap-3 mb-5">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shadow-xs border border-blue-100/60 shrink-0">
-                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M13.5 12h.008v.008H13.5V12zm0 0H12m1.5 0h1.5m-1.5 0v1.5m0-1.5V10.5"/></svg>
+                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M13.5 12h.008v.008H13.5V12zm0 0H12m1.5 0h1.5m-1.5 0v1.5m0-1.5V10.5" />
+                        </svg>
                     </div>
                     <div>
                         <h2 class="text-[14px] font-bold text-slate-900 leading-tight">Logo & Profil</h2>
@@ -244,15 +236,15 @@
 
                 {{-- Logo Preview Box --}}
                 <div class="w-full aspect-square max-w-[200px] rounded-2xl bg-[#f0f4f9] border border-slate-200/80 flex items-center justify-center p-4 mb-4 relative overflow-hidden group shadow-inner">
-                    <img id="logoPreviewImg" 
-                         src="" 
-                         alt="Logo Universitas" 
-                         class="hidden w-full h-full object-contain rounded-xl transition duration-300">
+                    <img id="logoPreviewImg"
+                        src=""
+                        alt="Logo Universitas"
+                        class="hidden w-full h-full object-contain rounded-xl transition duration-300">
 
                     <div id="logoDefaultPlaceholder" class="flex flex-col items-center justify-center text-slate-400">
                         <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-brand-600 font-extrabold text-lg mb-2 shadow-xs border border-blue-100/60">
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4" />
                             </svg>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-500">Logo Universitas</span>
@@ -261,7 +253,7 @@
                     {{-- Hover Overlay to Change --}}
                     <label for="logoInput" class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white cursor-pointer gap-1.5 backdrop-blur-xs">
                         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                         </svg>
                         <span class="text-xs font-bold">Pilih Foto</span>
                     </label>
@@ -277,7 +269,7 @@
                 {{-- Upload Button --}}
                 <label for="logoInput" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-brand-600 font-bold text-[13.5px] cursor-pointer transition">
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                     </svg>
                     Pilih Logo Universitas
                 </label>
@@ -288,7 +280,10 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
                 <div class="flex items-center gap-3 mb-1">
                     <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-xs border border-emerald-100/60 shrink-0">
-                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
                     </div>
                     <div class="flex-1 flex items-center justify-between">
                         <div>
@@ -308,12 +303,12 @@
                         <label class="block text-[12.5px] font-semibold text-slate-700">Alamat Lengkap</label>
                         <span class="text-[11px] text-slate-400">Peta otomatis mencari wilayah Indonesia</span>
                     </div>
-                    <textarea name="address" 
-                              id="univAddressInput"
-                              rows="2"
-                              autocomplete="off"
-                              placeholder="Ketik alamat jalan di Indonesia..."
-                              class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address') }}</textarea>
+                    <textarea name="address"
+                        id="univAddressInput"
+                        rows="2"
+                        autocomplete="off"
+                        placeholder="Ketik alamat jalan di Indonesia..."
+                        class="w-full p-3.5 rounded-lg border border-slate-300 text-[13.5px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 leading-relaxed resize-none">{{ old('address') }}</textarea>
 
                     {{-- Autocomplete Suggestions Dropdown for Address --}}
                     <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl mt-1.5 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
@@ -339,8 +334,8 @@
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-[12px] flex items-center justify-between text-slate-600">
                     <div class="flex items-center gap-1.5 truncate max-w-[70%]">
                         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="2.2" class="shrink-0">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                         </svg>
                         <span id="coordinateDisplay" class="font-mono font-medium truncate">
                             Titik peta akan otomatis muncul
@@ -351,7 +346,9 @@
                         <span class="text-slate-300">•</span>
                         <button type="button" onclick="openInGoogleMaps()" class="text-slate-600 hover:text-blue-600 font-bold text-[11.5px] flex items-center gap-0.5">
                             Maps
-                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -363,15 +360,15 @@
 
     {{-- Bottom Action Bar --}}
     <div class="pt-6 border-t border-slate-200/80 flex items-center justify-end gap-4">
-        <a href="{{ route('admin.univ.index') }}" 
-           class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
+        <a href="{{ route('admin.univ.index') }}"
+            class="px-6 py-2.5 text-[14px] font-semibold text-slate-600 hover:text-slate-900 transition">
             Batal
         </a>
 
-        <button type="submit" 
-                class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
+        <button type="submit"
+            class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[14px] shadow-sm transition">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             Simpan Universitas
         </button>
@@ -533,7 +530,7 @@
     // Indonesia Geographical Bounds (Sabang to Merauke)
     const INDONESIA_BOUNDS = L.latLngBounds(
         L.latLng(-11.5, 94.5), // Southwest
-        L.latLng(6.5, 141.5)   // Northeast
+        L.latLng(6.5, 141.5) // Northeast
     );
 
     const defaultLat = -6.2088;
@@ -687,7 +684,7 @@
                             const [lon, lat] = f.geometry.coordinates;
                             const country = f.properties.country || '';
                             return (country.toLowerCase() === 'indonesia' || country === '') &&
-                                   lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
+                                lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
                         })
                         .map(f => ({
                             lat: f.geometry.coordinates[1],
@@ -706,7 +703,9 @@
             const lon = parseFloat(top.lon);
 
             if (map && marker) {
-                map.flyTo([lat, lon], 14, { duration: 0.9 });
+                map.flyTo([lat, lon], 14, {
+                    duration: 0.9
+                });
                 marker.setLatLng([lat, lon]);
                 updateCoordinates(lat, lon);
                 const title = nameInput?.value || locationInput?.value || 'Lokasi Kampus';
@@ -752,7 +751,9 @@
                 const lat = parseFloat(item.lat);
                 const lon = parseFloat(item.lon);
                 if (map && marker) {
-                    map.flyTo([lat, lon], 16, { duration: 0.9 });
+                    map.flyTo([lat, lon], 16, {
+                        duration: 0.9
+                    });
                     marker.setLatLng([lat, lon]);
                     updateCoordinates(lat, lon);
                     marker.bindPopup(`<b>${nameInput?.value || 'Lokasi Kampus'}</b><br>${item.display_name}`).openPopup();
@@ -846,7 +847,9 @@
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
                     if (INDONESIA_BOUNDS.contains([lat, lng])) {
-                        map.flyTo([lat, lng], 16, { duration: 0.9 });
+                        map.flyTo([lat, lng], 16, {
+                            duration: 0.9
+                        });
                         marker.setLatLng([lat, lng]);
                         updateCoordinates(lat, lng);
                         reverseGeocode(lat, lng);

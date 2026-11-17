@@ -41,7 +41,6 @@ class AdminSchoolController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
-                ->orWhere('npsn', 'like', "%{$search}%")
                 ->orWhere('city', 'like', "%{$search}%")
                 ->orWhere('province', 'like', "%{$search}%")
                 ->orWhere('location', 'like', "%{$search}%"));

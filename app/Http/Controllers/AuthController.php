@@ -106,7 +106,6 @@ class AuthController extends Controller
             if ($role === 'school') {
                 School::create([
                     'user_id' => $user->id,
-                    'npsn' => 'BF-'.$user->id,
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'phone' => $data['org_phone'] ?? null,

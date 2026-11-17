@@ -58,7 +58,7 @@
             </div>
 
             {{-- Action Buttons --}}
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 <a href="{{ route('admin.events.edit', $event['id']) }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs inline-flex items-center gap-1.5 transition">
                     <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
