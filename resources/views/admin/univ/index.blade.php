@@ -196,7 +196,7 @@
                         </a>
                         @if (!empty($canManage))
                             <button type="button"
-                                    onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ $univ['npsn'] ?? '' }}', '{{ addslashes($univ['city'] ?? '') }}')"
+                                                onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ addslashes($univ['city'] ?? '') }}')"
                                     class="inline-flex items-center justify-center min-h-[38px] min-w-[38px] px-2.5 rounded-xl text-red-600 bg-red-50 hover:bg-red-100 transition cursor-pointer"
                                     title="Hapus Universitas">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -235,7 +235,7 @@
                 <tbody class="divide-y divide-slate-100 text-[13.5px]">
                     @forelse ($univs as $univ)
                         <tr class="hover:bg-slate-50/70 transition group">
-                            {{-- University Name & NPSN & Logo --}}
+                            {{-- University Name & Logo --}}
                             <td class="cell">
                                 <div class="flex items-center gap-3.5">
                                     {{-- Logo Avatar --}}
@@ -250,9 +250,6 @@
                                         <a href="{{ route('admin.univ.show', $univ['id']) }}" class="font-bold text-slate-900 hover:text-blue-600 transition block leading-snug">
                                             {{ $univ['name'] }}
                                         </a>
-                                        <div class="text-[12px] text-slate-400 mt-0.5">
-                                            NPSN: {{ $univ['npsn'] }}
-                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -313,7 +310,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" 
-                                                onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ $univ['npsn'] ?? '' }}', '{{ addslashes($univ['city'] ?? '') }}')"
+                                    onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ addslashes($univ['city'] ?? '') }}')"
                                                 class="hover:text-red-600 transition" 
                                                 title="Hapus Universitas">
                                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -382,8 +379,8 @@
 
 @push('scripts')
 <script>
-    function openDeleteModal(id, name, npsn, city) {
-        let extra = npsn && city ? ` (${npsn} - ${city})` : (npsn ? ` (${npsn})` : (city ? ` (${city})` : ''));
+    function openDeleteModal(id, name, city) {
+        let extra = city ? ` (${city})` : '';
         window.confirmDelete(`{{ url('/admin/univ') }}/${id}`, `${name}${extra}`, {
             title: 'Konfirmasi Hapus Universitas',
             warning: 'Peringatan: Tindakan ini permanen dan data universitas tidak dapat dikembalikan.'

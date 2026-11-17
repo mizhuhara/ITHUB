@@ -208,7 +208,7 @@
                         </a>
                         @if (!empty($canManage))
                             <button type="button"
-                                    onclick="openDeleteModal('{{ $school['id'] }}', {{ json_encode($school['name']) }}, {{ json_encode($school['npsn'] ?? '') }}, {{ json_encode($school['city'] ?? '') }})"
+                                            onclick="openDeleteModal('{{ $school['id'] }}', {{ json_encode($school['name']) }}, {{ json_encode($school['city'] ?? '') }})"
                                     class="inline-flex items-center justify-center min-h-[38px] min-w-[38px] px-2.5 rounded-xl text-red-600 bg-red-50 hover:bg-red-100 transition cursor-pointer"
                                     title="Hapus Sekolah">
                                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -247,7 +247,7 @@
                 <tbody class="divide-y divide-slate-100 text-[13.5px]">
                     @forelse ($schools as $school)
                         <tr class="hover:bg-slate-50/70 transition group">
-                            {{-- School Name & NPSN & Logo --}}
+                            {{-- School Name & Logo --}}
                             <td class="cell">
                                 <div class="flex items-center gap-3.5">
                                     {{-- Logo Avatar --}}
@@ -262,9 +262,6 @@
                                         <a href="{{ route('admin.schools.show', $school['id']) }}" class="font-bold text-slate-900 hover:text-blue-600 transition block leading-snug">
                                             {{ $school['name'] }}
                                         </a>
-                                        <div class="text-[12px] text-slate-400 mt-0.5">
-                                            NPSN: {{ $school['npsn'] }}
-                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -329,7 +326,7 @@
                                     {{-- Delete Button (hanya admin) --}}
                                     @if (!empty($canManage))
                                     <button type="button" 
-                                            onclick="openDeleteModal('{{ $school['id'] }}', {{ json_encode($school['name']) }}, {{ json_encode($school['npsn'] ?? '') }}, {{ json_encode($school['city'] ?? '') }})"
+                                    onclick="openDeleteModal('{{ $school['id'] }}', {{ json_encode($school['name']) }}, {{ json_encode($school['city'] ?? '') }})"
                                             class="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer" 
                                             title="Hapus Sekolah">
                                         <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -397,8 +394,8 @@
 
 @push('scripts')
 <script>
-    function openDeleteModal(id, name, npsn, city) {
-        let extra = npsn && city ? ` (${npsn} - ${city})` : (npsn ? ` (${npsn})` : (city ? ` (${city})` : ''));
+    function openDeleteModal(id, name, city) {
+        let extra = city ? ` (${city})` : '';
         window.confirmDelete(`{{ url('/admin/schools') }}/${id}`, `${name}${extra}`, {
             title: 'Konfirmasi Hapus Sekolah',
             warning: 'Peringatan: Tindakan ini permanen dan data sekolah tidak dapat dikembalikan.'

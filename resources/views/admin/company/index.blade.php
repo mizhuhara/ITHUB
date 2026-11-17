@@ -297,7 +297,7 @@
                                             {{ $company->name }}
                                         </a>
                                         <div class="text-[12px] text-slate-400 mt-0.5 truncate">
-                                            Kode: {{ $company->npsn ?? '-' }}
+                                            {{ $company->city ?? $company->industry ?? '-' }}
                                         </div>
                                     </div>
                                 </div>
