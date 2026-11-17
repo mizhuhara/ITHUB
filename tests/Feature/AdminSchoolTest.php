@@ -137,7 +137,7 @@ class AdminSchoolTest extends TestCase
 
         $school = School::where('name', 'SMK Tanpa NPSN')->first();
         $this->assertNotNull($school);
-        $this->assertNotEmpty($school->npsn);
+        $this->assertNull($school->npsn);
         $this->assertSame(250, $school->views);
     }
 }
