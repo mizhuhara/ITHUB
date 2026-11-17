@@ -23,13 +23,7 @@ class EducationController extends Controller
     {
         $school = School::where('status', 'Active')
             ->publiclyVisible()
-            ->where(function ($query) use ($id) {
-                $query->where('npsn', $id);
-
-                if (ctype_digit($id)) {
-                    $query->orWhere('id', (int) $id);
-                }
-            })
+            ->where('id', $id)
             ->firstOrFail();
 
         $school->increment('views');
@@ -59,7 +53,7 @@ class EducationController extends Controller
             : 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1000&q=80';
 
         return [
-            'id' => $school->npsn ?: (string) $school->id,
+            'id' => (string) $school->id,
             'name' => $school->name,
             'verified' => $school->status === 'Active',
             'views' => (int) ($school->views ?? 0),

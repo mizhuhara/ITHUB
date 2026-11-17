@@ -60,11 +60,6 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-5">
                     <div>
-                        <div class="text-[13px] font-semibold text-slate-500 mb-1">Kode Perusahaan / NIB</div>
-                        <div class="text-[15px] font-bold text-slate-900">{{ $company['npsn'] ?? '-' }}</div>
-                    </div>
-                    
-                    <div>
                         <div class="text-[13px] font-semibold text-slate-500 mb-1">Tipe Perusahaan</div>
                         <div class="text-[15px] font-bold text-slate-900">
                             @if(($company['type'] ?? '') === 'BUMN')

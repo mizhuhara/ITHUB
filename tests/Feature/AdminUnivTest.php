@@ -70,7 +70,6 @@ class AdminUnivTest extends TestCase
         $response->assertRedirect(route('admin.univ.index'));
         $this->assertDatabaseHas('universities', [
             'name' => 'Universitas Brawijaya',
-            'npsn' => '20202020',
             'city' => 'Malang',
         ]);
     }
@@ -105,7 +104,7 @@ class AdminUnivTest extends TestCase
 
         $response = $this->actingAs($this->admin)->put(route('admin.univ.update', $univ->id), $payload);
 
-        $response->assertRedirect(route('admin.univ.index'));
+        $response->assertRedirect(route('admin.univ.edit', $univ->id));
         $this->assertDatabaseHas('universities', [
             'id' => $univ->id,
             'name' => 'Universitas Baru',

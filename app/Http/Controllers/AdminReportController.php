@@ -433,10 +433,9 @@ class AdminReportController extends Controller
             'Students' => (int) (clone $query)->sum('total_students'),
         ];
 
-        $rows = $query->latest()->get(['name', 'npsn', 'city', 'province', 'status', 'created_at'])
+        $rows = $query->latest()->get(['name', 'city', 'province', 'status', 'created_at'])
             ->map(fn (School $school) => [
                 'name' => $school->name,
-                'npsn' => $school->npsn,
                 'city' => $school->city ?? '-',
                 'province' => $school->province ?? '-',
                 'status' => $school->status,
@@ -445,7 +444,6 @@ class AdminReportController extends Controller
 
         return [$stats, [
             'name' => 'Name',
-            'npsn' => 'NPSN',
             'city' => 'City',
             'province' => 'Province',
             'status' => 'Status',

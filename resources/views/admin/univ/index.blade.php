@@ -53,7 +53,7 @@
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Search Keyword</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama / NPSN / kota..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama universitas / kota..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 outline-none focus:border-blue-500">
             </div>
             <div class="flex items-end gap-2">
                 <button type="submit" class="flex-1 bg-brand-600 text-white py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition">Terapkan Filter</button>
@@ -159,7 +159,7 @@
                                         {{ $univ['name'] }}
                                     </a>
                                     <div class="text-[12px] text-slate-400 mt-0.5">
-                                        NPSN: {{ $univ['npsn'] }}
+                                        {{ $univ['city'] ?? $univ['location'] ?? '-' }}
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +221,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="button"
-                                        onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ $univ['npsn'] ?? '' }}', '{{ addslashes($univ['city'] ?? '') }}')"
+                                        onclick="openDeleteModal('{{ $univ['id'] }}', '{{ addslashes($univ['name']) }}', '{{ addslashes($univ['city'] ?? '') }}')"
                                         class="hover:text-red-600 transition"
                                         title="Hapus Universitas">
                                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -293,8 +293,8 @@
 
 @push('scripts')
 <script>
-    function openDeleteModal(id, name, npsn, city) {
-        let extra = npsn && city ? ` (${npsn} - ${city})` : (npsn ? ` (${npsn})` : (city ? ` (${city})` : ''));
+    function openDeleteModal(id, name, city) {
+        let extra = city ? ` (${city})` : '';
         window.confirmDelete(`{{ route('admin.univ.destroy', ['id' => '__ID__']) }}`.replace('__ID__', id), `${name}${extra}`, {
             title: 'Konfirmasi Hapus Universitas',
             warning: 'Peringatan: Tindakan ini permanen dan data universitas tidak dapat dikembalikan.'

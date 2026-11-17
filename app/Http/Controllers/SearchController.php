@@ -184,7 +184,7 @@ class SearchController extends Controller
                     'type' => 'Kampus',
                     'title' => $c->name,
                     'subtitle' => $c->city ? $c->city.($c->province ? ', '.$c->province : '') : ($c->location ?: 'Indonesia'),
-                    'url' => route('campus.show', $c->npsn ?: $c->id),
+                    'url' => route('campus.show', $c->id),
                     'icon' => '🏫',
                 ]);
                 $liveResults = $liveResults->concat($campuses);
@@ -194,7 +194,7 @@ class SearchController extends Controller
                     'type' => 'SMK / Vokasi',
                     'title' => $s->name,
                     'subtitle' => $s->city ? $s->city.($s->province ? ', '.$s->province : '') : ($s->location ?: 'Indonesia'),
-                    'url' => route('education.show', $s->npsn ?: $s->id),
+                    'url' => route('education.show', $s->id),
                     'icon' => '🖥️',
                 ]);
                 $liveResults = $liveResults->concat($schools);
