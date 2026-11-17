@@ -333,20 +333,6 @@
                         @enderror
                     </div>
 
-                    {{-- NPSN --}}
-                    <div>
-                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">NPSN</label>
-                        <input type="text" 
-                               name="npsn" 
-                               value="{{ old('npsn') }}" 
-                               required
-                               placeholder="Contoh: 20109988"
-                               class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                        @error('npsn')
-                            <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     {{-- Jenis Institusi --}}
                     <div>
                         <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Jenis Institusi</label>
@@ -378,6 +364,22 @@
                             <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
+                    @if (in_array(auth()->user()->role, ['super_admin', 'admin'], true))
+                        {{-- Jumlah Views / Klik Sekolah (Marketing) --}}
+                        <div>
+                            <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Jumlah Klik / Dilihat Sekolah (Marketing)</label>
+                            <input type="number"
+                                   name="views"
+                                   value="{{ old('views', 0) }}"
+                                   placeholder="Contoh: 500"
+                                   min="0"
+                                   class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            <p class="text-xs text-slate-400 mt-1">Atur jumlah orang yang klik/melihat sekolah ini di halaman publik.</p>
+                            @error('views')
+                                <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endif
                 </div>
             </div>
 

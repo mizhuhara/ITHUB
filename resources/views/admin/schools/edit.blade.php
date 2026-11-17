@@ -275,6 +275,19 @@
             <span>{{ session('success') }}</span>
         </div>
     @endif
+    @if ($errors->any())
+        <div class="flex items-start gap-3 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[13.5px]">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0 mt-0.5 text-rose-500"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+            <div>
+                <p class="font-semibold mb-1">Periksa kembali data yang diinput:</p>
+                <ul class="list-disc list-inside space-y-0.5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
 
     {{-- Top Back Link & Breadcrumb --}}
     <div>
@@ -478,16 +491,16 @@
                     </div>
 
                     @if (in_array(auth()->user()->role, ['super_admin', 'admin'], true))
-                        {{-- Jumlah Views (Marketing) --}}
+                        {{-- Jumlah Views / Klik Sekolah (Marketing) --}}
                         <div>
-                            <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Jumlah Dilihat (Marketing)</label>
+                            <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Jumlah Klik / Dilihat Sekolah (Marketing)</label>
                             <input type="number"
                                    name="views"
                                    value="{{ old('views', $school['views'] ?? 0) }}"
                                    placeholder="Contoh: 500"
                                    min="0"
                                    class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
-                            <p class="text-xs text-slate-400 mt-1">Angka tampil di badge mata pada halaman publik.</p>
+                            <p class="text-xs text-slate-400 mt-1">Atur jumlah orang yang klik/melihat sekolah ini di halaman publik.</p>
                             @error('views')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror

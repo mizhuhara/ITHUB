@@ -33,39 +33,39 @@
 
     {{-- Action Button --}}
     <div class="flex items-center justify-end">
-        <a href="{{ route('admin.jobs.create') }}" class="inline-flex items-center justify-center gap-2 bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-lg shadow-xs transition">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.8"><path d="M12 5v14M5 12h14"/></svg>
+        <a href="{{ route('admin.jobs.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-[42px] bg-brand-600 hover:bg-blue-700 text-white font-semibold text-[13px] sm:text-[13.5px] px-5 rounded-xl shadow-xs transition whitespace-nowrap">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.8" class="shrink-0"><path d="M12 5v14M5 12h14"/></svg>
             <span>TAMBAH LOWONGAN BARU</span>
         </a>
     </div>
 
     {{-- Stats Cards (3 Columns) --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
         {{-- Total Postings --}}
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs">
-            <div class="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider">TOTAL LOWONGAN</div>
-            <div class="text-[32px] font-extrabold text-slate-900 tracking-tight leading-tight mt-2.5">{{ $totalPostings }}</div>
-            <div class="mt-2.5 flex items-center gap-1.5 text-[12.5px] font-semibold text-emerald-600">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-2xs">
+            <div class="text-[11px] sm:text-[11.5px] font-bold text-slate-400 uppercase tracking-wider">TOTAL LOWONGAN</div>
+            <div class="text-2xl sm:text-[32px] font-extrabold text-slate-900 tracking-tight leading-tight mt-1.5 sm:mt-2.5">{{ $totalPostings }}</div>
+            <div class="mt-2 sm:mt-2.5 flex items-center gap-1.5 text-[12px] sm:text-[12.5px] font-semibold text-emerald-600">
                 <span class="font-bold">+12%</span>
                 <span class="text-slate-400 font-normal">dari bulan lalu</span>
             </div>
         </div>
 
         {{-- Active Jobs --}}
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs">
-            <div class="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider">LOWONGAN AKTIF</div>
-            <div class="text-[32px] font-extrabold text-slate-900 tracking-tight leading-tight mt-2.5">{{ $activeJobs }}</div>
-            <div class="mt-2.5 flex items-center gap-1.5 text-[12.5px] font-semibold text-emerald-600">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-2xs">
+            <div class="text-[11px] sm:text-[11.5px] font-bold text-slate-400 uppercase tracking-wider">LOWONGAN AKTIF</div>
+            <div class="text-2xl sm:text-[32px] font-extrabold text-slate-900 tracking-tight leading-tight mt-1.5 sm:mt-2.5">{{ $activeJobs }}</div>
+            <div class="mt-2 sm:mt-2.5 flex items-center gap-1.5 text-[12px] sm:text-[12.5px] font-semibold text-emerald-600">
                 <span class="font-bold">+5%</span>
                 <span class="text-slate-400 font-normal">dari bulan lalu</span>
             </div>
         </div>
 
         {{-- Applications --}}
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-2xs">
-            <div class="text-[11.5px] font-bold text-slate-400 uppercase tracking-wider">TOTAL PELAMAR</div>
-            <div class="text-[32px] font-extrabold text-slate-900 tracking-tight leading-tight mt-2.5">{{ $applicationsCount }}</div>
-            <div class="mt-2.5 flex items-center gap-1.5 text-[12.5px] font-semibold text-emerald-600">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-2xs">
+            <div class="text-[11px] sm:text-[11.5px] font-bold text-slate-400 uppercase tracking-wider">TOTAL PELAMAR</div>
+            <div class="text-2xl sm:text-[32px] font-extrabold text-slate-900 tracking-tight leading-tight mt-1.5 sm:mt-2.5">{{ $applicationsCount }}</div>
+            <div class="mt-2 sm:mt-2.5 flex items-center gap-1.5 text-[12px] sm:text-[12.5px] font-semibold text-emerald-600">
                 <span class="font-bold">+24%</span>
                 <span class="text-slate-400 font-normal">dari bulan lalu</span>
             </div>
@@ -75,29 +75,29 @@
     {{-- Main Table Container --}}
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
         {{-- Filter Tabs and Actions Header --}}
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between px-6 border-b border-slate-200/80 gap-4 pt-2">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 border-b border-slate-200/80 gap-2 sm:gap-4 pt-2">
             {{-- Nav Tabs --}}
-            <div class="flex items-center gap-6 text-[13px] font-bold">
+            <div class="flex items-center gap-4 sm:gap-6 text-[12.5px] sm:text-[13px] font-bold overflow-x-auto whitespace-nowrap border-b sm:border-b-0 border-slate-100">
                 <a href="{{ route('admin.jobs.index', ['tab' => 'all']) }}" 
-                   class="py-3.5 border-b-2 transition relative {{ $currentTab === 'all' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                   class="py-3 sm:py-3.5 border-b-2 transition relative shrink-0 {{ $currentTab === 'all' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                     SEMUA LOWONGAN
                 </a>
                 <a href="{{ route('admin.jobs.index', ['tab' => 'active']) }}" 
-                   class="py-3.5 border-b-2 transition relative {{ $currentTab === 'active' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                   class="py-3 sm:py-3.5 border-b-2 transition relative shrink-0 {{ $currentTab === 'active' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                     AKTIF
                 </a>
                 <a href="{{ route('admin.jobs.index', ['tab' => 'drafts']) }}" 
-                   class="py-3.5 border-b-2 transition relative {{ $currentTab === 'drafts' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                   class="py-3 sm:py-3.5 border-b-2 transition relative shrink-0 {{ $currentTab === 'drafts' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                     DRAF
                 </a>
                 <a href="{{ route('admin.jobs.index', ['tab' => 'closed']) }}" 
-                   class="py-3.5 border-b-2 transition relative {{ $currentTab === 'closed' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
+                   class="py-3 sm:py-3.5 border-b-2 transition relative shrink-0 {{ $currentTab === 'closed' ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-500 hover:text-slate-800' }}">
                     DITUTUP
                 </a>
             </div>
 
             {{-- Right Actions (Filter & Export) --}}
-            <div class="flex items-center gap-4 py-3 text-[12.5px] font-bold text-slate-500">
+            <div class="flex items-center justify-between sm:justify-end gap-4 py-2.5 sm:py-3 text-[12.5px] font-bold text-slate-500 shrink-0">
                 <button type="button" onclick="openFilterModal()" class="flex items-center gap-1.5 {{ $hasActiveFilter ? 'text-blue-600 font-extrabold' : 'text-slate-500 hover:text-slate-800' }} transition cursor-pointer">
                     <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h18m-15 5h12m-9 5h6m-3 5h0"/></svg>
                     <span>FILTER</span>
@@ -114,7 +114,7 @@
 
         {{-- Active Filters Info Bar --}}
         @if($hasActiveFilter)
-        <div class="px-6 py-2.5 bg-blue-50/60 border-b border-blue-100/80 flex items-center justify-between text-xs">
+        <div class="px-4 sm:px-6 py-2.5 bg-blue-50/60 border-b border-blue-100/80 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-slate-500 font-medium">Filter Aktif:</span>
                 @if(request('status') && request('status') !== 'all')
@@ -140,8 +140,72 @@
         </div>
         @endif
 
-        {{-- Table --}}
-        <div class="overflow-x-auto">
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($jobs as $job)
+                @php
+                    $appCount = $job->applications_count ?? ($job->applications ? $job->applications->count() : 0);
+                @endphp
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <a href="{{ route('admin.jobs.show', $job['id']) }}" class="font-bold text-[14px] text-slate-900 hover:text-brand-600 transition block leading-snug">
+                                {{ $job['title'] }}
+                            </a>
+                            <div class="text-[12px] text-slate-500 mt-0.5">
+                                {{ $job['company'] }} · <span class="text-slate-400">ID: {{ $job['code'] }}</span>
+                            </div>
+                        </div>
+
+                        @if ($job['status'] === 'Active')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[11.5px] shrink-0">Aktif</span>
+                        @elseif ($job['status'] === 'Paused')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-600 font-bold text-[11.5px] shrink-0">Dijeda</span>
+                        @elseif ($job['status'] === 'Draft')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11.5px] shrink-0">Draf</span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 font-bold text-[11.5px] shrink-0">Ditutup</span>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 text-[12px]">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-medium">{{ $job['type'] }}</span>
+                        <span class="text-slate-400">{{ $job['date_posted'] }}</span>
+                        @if ($appCount > 0)
+                            <a href="{{ route('admin.jobs.show', $job['id']) }}#daftar-pelamar" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                {{ $appCount }} Pelamar
+                            </a>
+                        @else
+                            <span class="text-slate-400 font-medium">0 Pelamar</span>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <a href="{{ route('admin.jobs.show', $job['id']) }}" class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-[12.5px] font-semibold transition">
+                            Lihat
+                        </a>
+                        <a href="{{ route('admin.jobs.edit', $job['id']) }}" class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 text-[12.5px] font-semibold transition">
+                            Edit
+                        </a>
+                        <button type="button"
+                                onclick="openDeleteModal('{{ $job['id'] }}', '{{ addslashes($job['title']) }}', '{{ addslashes($job['company']) }}')"
+                                class="inline-flex items-center justify-center min-h-[38px] min-w-[38px] px-2.5 rounded-xl text-red-600 bg-red-50 hover:bg-red-100 transition cursor-pointer"
+                                title="Hapus Lowongan">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="py-8 px-4 text-center text-slate-400 text-[13.5px]">
+                    Tidak ada data lowongan pekerjaan yang ditemukan.
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Table (Desktop/Tablet) --}}
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50/50">
@@ -241,7 +305,7 @@
         </div>
 
         {{-- Footer Pagination --}}
-        <div class="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-slate-500">
+        <div class="px-4 sm:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-[13px] text-slate-500 text-center sm:text-left">
             <div>
                 Menampilkan <span class="font-semibold text-slate-800">{{ $jobs->firstItem() ?? 0 }}</span> sampai <span class="font-semibold text-slate-800">{{ $jobs->lastItem() ?? 0 }}</span> dari total <span class="font-semibold text-slate-800">{{ $jobs->total() }}</span> lowongan
             </div>

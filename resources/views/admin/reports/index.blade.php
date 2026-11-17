@@ -11,23 +11,23 @@
             <h1 class="text-[22px] font-extrabold text-slate-900 tracking-tight leading-tight">Report Management</h1>
             <p class="text-[13.5px] text-slate-500 mt-0.5">Monitor and resolve system, content, and user reports.</p>
         </div>
-        <div class="flex items-center gap-2.5 shrink-0">
+        <div class="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
             {{-- Filter Button --}}
             <button type="button" id="toggle-filter"
-                class="inline-flex items-center gap-2 h-9 px-4 rounded-xl border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition">
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                class="shrink-0 inline-flex items-center justify-center gap-2 h-10 sm:h-9 px-4 rounded-xl border border-slate-200 bg-white text-[13px] font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition cursor-pointer whitespace-nowrap">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
-                Filter
+                <span>Filter</span>
             </button>
             {{-- Export Data Button --}}
             <button type="button" id="generate-report"
-                class="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-brand-600 text-white text-[13px] font-semibold hover:bg-blue-700 shadow-xs transition">
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 h-10 sm:h-9 px-4 rounded-xl bg-brand-600 text-white text-[13px] font-semibold hover:bg-blue-700 shadow-xs transition cursor-pointer whitespace-nowrap">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" class="shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16" />
                 </svg>
-                Export Data
+                <span>Export Data</span>
             </button>
         </div>
     </div>
@@ -121,26 +121,105 @@
 
     {{-- Recent Reports Table --}}
     <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-slate-100">
             <div>
                 <h2 class="text-[15px] font-bold text-slate-900">Laporan dari Pengguna</h2>
                 <p class="text-[12px] text-slate-500 mt-0.5">Bug, masalah konten, atau teknis yang dilaporkan pengguna.</p>
             </div>
             {{-- Filter status --}}
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap pb-1 lg:pb-0">
                 @foreach(['', 'pending', 'investigating', 'resolved', 'closed'] as $s)
                     @php
                         $labelMap = ['' => 'Semua', 'pending' => 'Menunggu', 'investigating' => 'Ditinjau', 'resolved' => 'Selesai', 'closed' => 'Ditutup'];
                         $isActive = request('report_status', '') === $s;
                     @endphp
                     <a href="{{ route('admin.reports.index', array_merge(request()->query(), ['report_status' => $s, 'ur_page' => 1])) }}"
-                       class="text-[12px] font-semibold px-3 py-1 rounded-full transition {{ $isActive ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                       class="text-[12px] font-semibold px-3 py-1.5 rounded-full transition shrink-0 {{ $isActive ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                         {{ $labelMap[$s] }}
                     </a>
                 @endforeach
             </div>
         </div>
-        <div class="overflow-x-auto">
+        @php
+            $statusClasses = [
+                'investigating' => 'bg-blue-100 text-blue-600',
+                'pending'       => 'bg-slate-100 text-slate-600',
+                'resolved'      => 'bg-emerald-100 text-emerald-700',
+                'closed'        => 'bg-slate-100 text-slate-500',
+            ];
+            $priorityConfig = [
+                'high'   => ['bg' => 'bg-rose-50',   'text' => 'text-rose-600',   'dot' => 'bg-rose-500',   'label' => 'Tinggi'],
+                'medium' => ['bg' => 'bg-blue-50',   'text' => 'text-blue-700',   'dot' => 'bg-blue-500',   'label' => 'Sedang'],
+                'low'    => ['bg' => 'bg-indigo-50', 'text' => 'text-indigo-600', 'dot' => 'bg-indigo-400', 'label' => 'Rendah'],
+            ];
+            $statusLabels = [
+                'pending'       => 'Menunggu',
+                'investigating' => 'Sedang Ditinjau',
+                'resolved'      => 'Selesai',
+                'closed'        => 'Ditutup',
+            ];
+            $roleLabels = [
+                'super_admin' => 'Super Admin',
+                'admin'       => 'Admin',
+                'school'      => 'Sekolah',
+                'university'  => 'Kampus',
+                'company'     => 'Perusahaan',
+                'user'        => 'User',
+            ];
+        @endphp
+
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($userReports as $report)
+                @php
+                    $p = $priorityConfig[$report->priority] ?? ['bg' => 'bg-slate-50', 'text' => 'text-slate-600', 'dot' => 'bg-slate-400', 'label' => $report->priority];
+                    $sClass = $statusClasses[$report->status] ?? 'bg-slate-100 text-slate-600';
+                    $roleLabel = $roleLabels[$report->user?->role] ?? ($report->user?->role ?? '—');
+                @endphp
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-bold text-[14px] text-slate-900 leading-snug">{{ $report->subject }}</div>
+                            @if($report->description)
+                                <p class="text-[12px] text-slate-500 line-clamp-2 mt-0.5">{{ $report->description }}</p>
+                            @endif
+                        </div>
+                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold shrink-0 {{ $sClass }}">
+                            {{ $statusLabels[$report->status] ?? $report->status }}
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 text-[11.5px]">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold {{ $p['bg'] }} {{ $p['text'] }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ $p['dot'] }}"></span>
+                            {{ $p['label'] }}
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">{{ $report->category }}</span>
+                        <span class="text-slate-400">{{ $report->created_at->format('d M Y H:i') }}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 text-[12px] text-slate-500">
+                        <span class="truncate">Pelapor: <strong class="text-slate-800">{{ $report->user?->name ?? '—' }}</strong></span>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">{{ $roleLabel }}</span>
+                    </div>
+
+                    <button type="button"
+                            onclick="openReportModal({{ $report->id }}, '{{ addslashes($report->subject) }}', '{{ addslashes($report->description) }}', '{{ $report->status }}', '{{ addslashes($report->admin_notes ?? '') }}')"
+                            class="w-full inline-flex items-center justify-center gap-1.5 min-h-[38px] px-3 rounded-xl bg-[#edf4ff] border border-[#d3e4ff] text-[12.5px] font-semibold text-[#2563eb] hover:bg-blue-100 transition shadow-2xs cursor-pointer">
+                        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Tindak Lanjut
+                    </button>
+                </div>
+            @empty
+                <div class="px-6 py-12 text-center text-slate-400">
+                    <p class="text-[13.5px] font-medium">Belum ada laporan dari pengguna</p>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
                     <tr class="border-b border-slate-100 text-[11.5px] uppercase tracking-wider text-slate-400">
@@ -280,11 +359,11 @@
                               placeholder="Tambahkan catatan penanganan..."
                               class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm resize-none focus:outline-none focus:border-blue-500"></textarea>
                 </div>
-                <div class="flex gap-2 justify-end pt-1">
+                <div class="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-1">
                     <button type="button" onclick="closeReportModal()"
-                            class="px-4 py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Batal</button>
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Batal</button>
                     <button type="submit"
-                            class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-blue-700 text-sm font-semibold text-white transition">Simpan</button>
+                            class="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-brand-600 hover:bg-blue-700 text-sm font-semibold text-white transition cursor-pointer">Simpan</button>
                 </div>
             </form>
         </div>
@@ -292,14 +371,55 @@
 
     {{-- Export History --}}
     <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-4 border-b border-slate-100">
             <div>
                 <h2 class="text-[15px] font-bold text-slate-900">Export History</h2>
                 <p class="text-[12px] text-slate-500">Archive of previously exported reports.</p>
             </div>
-            <span class="inline-flex px-2.5 py-1 rounded-full text-[12px] font-semibold bg-slate-100 text-slate-600">{{ number_format($exports->total()) }} total</span>
+            <span class="inline-flex px-2.5 py-1 rounded-full text-[12px] font-semibold bg-slate-100 text-slate-600 shrink-0">{{ number_format($exports->total()) }} total</span>
         </div>
-        <div class="overflow-x-auto">
+
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($exports as $export)
+                @php
+                    $definition = collect($reports)->firstWhere('slug', $export->type);
+                    $formatClass = match ($export->format) {
+                        'pdf'   => 'bg-rose-50 text-rose-600',
+                        'xlsx'  => 'bg-emerald-50 text-emerald-600',
+                        default => 'bg-blue-50 text-blue-600',
+                    };
+                    $exportQuery = array_filter([
+                        'type' => $export->type,
+                        'from' => $export->period_from?->toDateString(),
+                        'to'   => $export->period_to?->toDateString(),
+                    ]);
+                @endphp
+                <div class="p-4 space-y-2.5">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="font-bold text-[13.5px] text-slate-900">{{ $definition['title'] ?? strtoupper($export->type) }}</div>
+                            <div class="text-[11.5px] text-slate-400 truncate">{{ $export->file_name }}</div>
+                        </div>
+                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase shrink-0 {{ $formatClass }}">{{ $export->format }}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-slate-500">
+                        <span>{{ $export->period_from?->format('d M Y') ?? 'Beginning' }} - {{ $export->period_to?->format('d M Y') ?? 'Now' }}</span>
+                        <span>· {{ number_format($export->rows_count) }} baris</span>
+                        <span>· {{ $export->user?->name ?? 'System' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[11.5px] text-slate-400">{{ $export->created_at->format('d M Y H:i') }}</span>
+                        <a href="{{ route('admin.reports.show', $exportQuery) }}"
+                           class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-blue-50 text-brand-600 text-xs font-semibold hover:bg-blue-100 transition">Buka</a>
+                    </div>
+                </div>
+            @empty
+                <div class="px-6 py-10 text-center text-slate-400 text-[13.5px]">Belum ada riwayat export.</div>
+            @endforelse
+        </div>
+
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-slate-50 text-[11.5px] uppercase tracking-wider text-slate-400">

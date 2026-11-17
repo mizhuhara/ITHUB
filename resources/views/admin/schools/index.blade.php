@@ -11,29 +11,29 @@
     <div class="space-y-6">
 
     {{-- Action Buttons --}}
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex items-center justify-between sm:justify-end gap-2.5 sm:gap-3">
             {{-- Filter Button --}}
             <button type="button" 
                     onclick="toggleFilter()" 
                     id="filterBtn"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13.5px] font-semibold shadow-xs transition">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500">
+                    class="shrink-0 inline-flex items-center justify-center gap-2 h-[42px] px-4 rounded-xl border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 text-[13px] sm:text-[13.5px] font-semibold shadow-xs transition cursor-pointer whitespace-nowrap">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-slate-500 shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
                 <span>Filter</span>
                 @if((request('status') && request('status') !== 'all') || (request('type') && request('type') !== 'all'))
-                    <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                    <span class="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
                 @endif
             </button>
 
             {{-- Add New School Button (hanya admin) --}}
             @if (!empty($canManage))
             <a href="{{ route('admin.schools.create') }}" 
-               class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white text-[13.5px] font-semibold shadow-sm transition">
-                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+               class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 h-[42px] px-4 sm:px-5 rounded-xl bg-brand-600 hover:bg-blue-700 text-white text-[13px] sm:text-[13.5px] font-semibold shadow-sm transition whitespace-nowrap">
+                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="shrink-0">
                     <path d="M12 5v14M5 12h14"/>
                 </svg>
-                Add New School
+                <span>Add New School</span>
             </a>
             @endif
     </div>
@@ -55,11 +55,11 @@
             </button>
         </div>
 
-        <form method="GET" action="{{ route('admin.schools.index') }}" class="flex flex-wrap items-end gap-3.5">
+        <form method="GET" action="{{ route('admin.schools.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-end gap-3.5">
             @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
             @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
 
-            <div class="flex-1 min-w-[200px]">
+            <div class="lg:flex-1 lg:min-w-[200px]">
                 <label class="block text-xs font-bold text-slate-600 mb-1.5">Status Sekolah</label>
                 <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-[13px] text-slate-800 outline-none focus:border-blue-600 focus:bg-white transition">
                     <option value="all" {{ (!request('status') || request('status') === 'all') ? 'selected' : '' }}>Semua Status</option>
@@ -68,7 +68,7 @@
                 </select>
             </div>
 
-            <div class="flex-1 min-w-[200px]">
+            <div class="lg:flex-1 lg:min-w-[200px]">
                 <label class="block text-xs font-bold text-slate-600 mb-1.5">Tipe Sekolah</label>
                 <select name="type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-[13px] text-slate-800 outline-none focus:border-blue-600 focus:bg-white transition">
                     <option value="all" {{ (!request('type') || request('type') === 'all') ? 'selected' : '' }}>Semua Tipe</option>
@@ -79,31 +79,31 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0">
-                <a href="{{ route('admin.schools.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] hover:bg-slate-50 transition">Reset</a>
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13px] shadow-sm transition">Terapkan Filter</button>
+            <div class="grid grid-cols-2 sm:col-span-2 lg:flex items-center gap-2 shrink-0">
+                <a href="{{ route('admin.schools.index') }}" class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-[13px] hover:bg-slate-50 transition">Reset</a>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13px] shadow-sm transition cursor-pointer">Terapkan Filter</button>
             </div>
         </form>
     </div>
 
     {{-- 3 Top Stat Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
         {{-- Card 1: SCHOOLS --}}
         <div class="card relative overflow-hidden flex flex-col justify-between">
-            <div class="text-[12px] font-bold tracking-wider text-slate-400 uppercase">SCHOOLS</div>
-            <div class="text-[34px] font-extrabold text-slate-900 leading-tight mt-2">{{ $totalSchools }}</div>
+            <div class="text-[11px] sm:text-[12px] font-bold tracking-wider text-slate-400 uppercase">SCHOOLS</div>
+            <div class="text-2xl sm:text-[34px] font-extrabold text-slate-900 leading-tight mt-1.5 sm:mt-2">{{ $totalSchools }}</div>
         </div>
 
         {{-- Card 2: ACTIVE PARTNERS --}}
         <div class="card relative overflow-hidden flex flex-col justify-between">
-            <div class="text-[12px] font-bold tracking-wider text-slate-400 uppercase">ACTIVE PARTNERS</div>
-            <div class="text-[34px] font-extrabold text-slate-900 leading-tight mt-2">{{ $activePartners }}</div>
+            <div class="text-[11px] sm:text-[12px] font-bold tracking-wider text-slate-400 uppercase">ACTIVE PARTNERS</div>
+            <div class="text-2xl sm:text-[34px] font-extrabold text-slate-900 leading-tight mt-1.5 sm:mt-2">{{ $activePartners }}</div>
         </div>
 
         {{-- Card 3: NEW SUBMISSIONS --}}
         <div class="card relative overflow-hidden flex flex-col justify-between">
-            <div class="text-[12px] font-bold tracking-wider text-slate-400 uppercase">NEW SUBMISSIONS</div>
-            <div class="text-[34px] font-extrabold text-slate-900 leading-tight mt-2">{{ $newSubmissions }}</div>
+            <div class="text-[11px] sm:text-[12px] font-bold tracking-wider text-slate-400 uppercase">NEW SUBMISSIONS</div>
+            <div class="text-2xl sm:text-[34px] font-extrabold text-slate-900 leading-tight mt-1.5 sm:mt-2">{{ $newSubmissions }}</div>
         </div>
     </div>
 
@@ -152,8 +152,88 @@
             </div>
         </div>
 
-        {{-- Schools Table --}}
-        <div class="overflow-x-auto">
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($schools as $school)
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-brand-600 font-bold text-xs shrink-0 overflow-hidden shadow-2xs">
+                                @if(!empty($school['logo_url']))
+                                    <img src="{{ $school['logo_url'] }}" alt="{{ $school['name'] }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="font-extrabold">{{ $school['logo_text'] ?? 'SMK' }}</span>
+                                @endif
+                            </div>
+                            <div class="min-w-0">
+                                <a href="{{ route('admin.schools.show', $school['id']) }}" class="font-bold text-[14px] text-slate-900 hover:text-blue-600 transition block leading-snug truncate">
+                                    {{ $school['name'] }}
+                                </a>
+                                <div class="text-[12px] text-slate-500 mt-0.5 truncate">
+                                    {{ $school['city'] }}@if(!empty($school['province'])), {{ $school['province'] }}@endif
+                                </div>
+                            </div>
+                        </div>
+
+                        @if(strtolower($school['status']) === 'active')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11.5px] font-semibold shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                Active
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[11.5px] font-semibold shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                Inactive
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-medium bg-[#eef4ff] text-brand-600">
+                            {{ $school['institution_type'] ?? 'SMK (IT)' }}
+                        </span>
+                        @if (!empty($school['tags']))
+                            @foreach ($school['tags'] as $tag)
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800">{{ $tag }}</span>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <a href="{{ route('admin.schools.show', $school['id']) }}" class="flex-1 inline-flex items-center justify-center gap-1.5 min-h-[38px] px-3 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-[12.5px] font-semibold transition">
+                            Lihat
+                        </a>
+                        <a href="{{ route('admin.schools.edit', $school['id']) }}" class="flex-1 inline-flex items-center justify-center gap-1.5 min-h-[38px] px-3 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 text-[12.5px] font-semibold transition">
+                            Edit
+                        </a>
+                        @if (!empty($canManage))
+                            <button type="button"
+                                    onclick="openDeleteModal('{{ $school['id'] }}', {{ json_encode($school['name']) }}, {{ json_encode($school['npsn'] ?? '') }}, {{ json_encode($school['city'] ?? '') }})"
+                                    class="inline-flex items-center justify-center min-h-[38px] min-w-[38px] px-2.5 rounded-xl text-red-600 bg-red-50 hover:bg-red-100 transition cursor-pointer"
+                                    title="Hapus Sekolah">
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="px-6 py-12 text-center text-slate-500">
+                    <div class="max-w-sm mx-auto space-y-3">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+                        </div>
+                        <div class="font-bold text-slate-800">Tidak ada data sekolah ditemukan</div>
+                        <p class="text-xs text-slate-400">Coba ubah kata kunci pencarian atau filter status Anda.</p>
+                        <a href="{{ route('admin.schools.index') }}" class="inline-block text-xs font-semibold text-blue-600 hover:underline">Reset Pencarian</a>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Schools Table (Desktop/Tablet) --}}
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50/75 text-[11.5px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-100">
@@ -285,7 +365,7 @@
             </div>
 
             {{-- Pagination Navigation --}}
-            <div class="flex items-center gap-1.5 text-[13.5px]">
+            <div class="flex flex-wrap items-center justify-center gap-1.5 text-[13.5px]">
                 {{-- Previous Link --}}
                 @if ($schools->onFirstPage())
                     <span class="w-8 h-8 rounded-lg flex items-center justify-center border border-slate-100 text-slate-300 cursor-not-allowed select-none">‹</span>

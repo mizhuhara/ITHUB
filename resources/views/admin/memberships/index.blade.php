@@ -52,8 +52,8 @@
                 </p>
             </div>
 
-            <div class="shrink-0">
-                <button type="button" onclick="openToggleGlobalModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13.5px] font-bold shadow-md transition cursor-pointer {{ $isGlobalPremiumEnabled ? 'bg-amber-500 hover:bg-amber-600 text-slate-950' : 'bg-emerald-500 hover:bg-emerald-600 text-slate-950' }}">
+            <div class="w-full md:w-auto shrink-0">
+                <button type="button" onclick="openToggleGlobalModal()" class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[13px] sm:text-[13.5px] font-bold shadow-md transition cursor-pointer {{ $isGlobalPremiumEnabled ? 'bg-amber-500 hover:bg-amber-600 text-slate-950' : 'bg-emerald-500 hover:bg-emerald-600 text-slate-950' }}">
                     @if ($isGlobalPremiumEnabled)
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>Matikan Sementara Fitur Premium</span>
@@ -67,7 +67,7 @@
     </div>
 
     {{-- Stats Cards --}}
-    <div class="grid grid-cols-2 sm:grid-cols-6 gap-3 sm:gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         <a href="{{ route('admin.memberships.index') }}" class="p-4 rounded-xl bg-white border border-slate-200/90 shadow-xs hover:border-blue-400 transition block">
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Total Institusi</span>
             <div class="mt-1 text-[22px] font-extrabold text-slate-900 leading-tight">{{ $totalCount }}</div>
@@ -177,15 +177,80 @@
             </div>
 
             {{-- Filter Status Pembayaran --}}
-            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-[12px]">
-                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => ''])) }}#paymentsSection" class="px-3 py-1 rounded-lg font-bold transition {{ !request('payment_status') ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Semua</a>
-                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => 'pending'])) }}#paymentsSection" class="px-3 py-1 rounded-lg font-bold transition {{ request('payment_status') === 'pending' ? 'bg-white text-amber-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Pending</a>
-                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => 'approved'])) }}#paymentsSection" class="px-3 py-1 rounded-lg font-bold transition {{ request('payment_status') === 'approved' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Disetujui</a>
-                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => 'rejected'])) }}#paymentsSection" class="px-3 py-1 rounded-lg font-bold transition {{ request('payment_status') === 'rejected' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Ditolak</a>
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-[12px] overflow-x-auto whitespace-nowrap">
+                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => ''])) }}#paymentsSection" class="px-3 py-1.5 rounded-lg font-bold transition shrink-0 {{ !request('payment_status') ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Semua</a>
+                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => 'pending'])) }}#paymentsSection" class="px-3 py-1.5 rounded-lg font-bold transition shrink-0 {{ request('payment_status') === 'pending' ? 'bg-white text-amber-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Pending</a>
+                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => 'approved'])) }}#paymentsSection" class="px-3 py-1.5 rounded-lg font-bold transition shrink-0 {{ request('payment_status') === 'approved' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Disetujui</a>
+                <a href="{{ route('admin.memberships.index', array_merge(request()->except('payment_status'), ['payment_status' => 'rejected'])) }}#paymentsSection" class="px-3 py-1.5 rounded-lg font-bold transition shrink-0 {{ request('payment_status') === 'rejected' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">Ditolak</a>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        {{-- Mobile Card List (Payments) --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($payments as $pay)
+                @php
+                    $userInst = $pay->user->school ?? $pay->user->university ?? $pay->user->company ?? null;
+                    $instName = $userInst->name ?? $pay->user->name ?? 'Institusi';
+                @endphp
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-900 text-[14px]">{{ $instName }}</div>
+                            <div class="text-[12px] text-slate-500 truncate">{{ $pay->user->email ?? '-' }}</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">{{ $pay->created_at->format('d/m/Y H:i') }} WIB</div>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 {{ $pay->status_badge_class }}">
+                            {{ $pay->status_label }}
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 rounded-xl p-3 text-[12px]">
+                        <div>
+                            <div class="font-bold text-slate-900">{{ $pay->plan_label }}</div>
+                            <div class="text-[13px] font-extrabold text-brand-700">Rp {{ number_format($pay->amount, 0, ',', '.') }}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-semibold text-slate-800">{{ $pay->sender_bank }}</div>
+                            <div class="text-[11.5px] text-slate-500">a.n. {{ $pay->sender_name }}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ $pay->proof_url }}" target="_blank" rel="noopener" class="flex-1 inline-flex items-center justify-center gap-1 min-h-[38px] px-3 rounded-xl bg-blue-50 text-brand-700 hover:bg-blue-100 text-xs font-bold border border-blue-200 transition">
+                            Cek Bukti
+                        </a>
+                        @if($pay->status === 'pending')
+                            <button type="button"
+                                    onclick="openReviewModal(
+                                        {{ $pay->id }},
+                                        '{{ addslashes($instName) }}',
+                                        '{{ addslashes($pay->user->email ?? '') }}',
+                                        '{{ addslashes($pay->plan_label) }}',
+                                        'Rp {{ number_format($pay->amount, 0, ',', '.') }}',
+                                        '{{ addslashes($pay->sender_bank) }}',
+                                        '{{ addslashes($pay->sender_name) }}',
+                                        '{{ addslashes($pay->sender_account_number ?? '-') }}',
+                                        '{{ $pay->created_at->format('d/m/Y H:i') }} WIB',
+                                        '{{ addslashes($pay->notes ?? '') }}',
+                                        '{{ $pay->proof_url }}'
+                                    )"
+                                    class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl text-xs font-bold bg-brand-600 text-white hover:bg-blue-700 transition cursor-pointer">
+                                Cek &amp; Validasi
+                            </button>
+                            <button type="button" onclick="openRejectModal({{ $pay->id }}, '{{ addslashes($instName) }}')" class="inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition cursor-pointer">
+                                Tolak
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="p-6 text-center text-slate-400 text-[13px]">
+                    Belum ada permohonan pembayaran yang masuk.
+                </div>
+            @endforelse
+        </div>
+
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-[13px] border-collapse">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-400 font-bold text-[11px] uppercase tracking-wider">
@@ -338,15 +403,84 @@
 
     {{-- Table of All Institutions --}}
     <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-2">
             <div>
                 <h2 class="text-[16px] font-black text-slate-900">Daftar Seluruh Akun Institusi</h2>
                 <p class="text-[12.5px] text-slate-500">Kelola izin tampil di website publik dan durasi keanggotaan institusi.</p>
             </div>
-            <span class="text-[12.5px] text-slate-500 font-medium">Menampilkan {{ $users->total() }} akun</span>
+            <span class="text-[12.5px] text-slate-500 font-medium shrink-0">Menampilkan {{ $users->total() }} akun</span>
         </div>
 
-        <div class="overflow-x-auto">
+        {{-- Mobile Card List (Institutions) --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($users as $u)
+                @php
+                    $inst = match ($u->role) {
+                        'school', 'school_admin' => $u->school,
+                        'university', 'univ_rep' => $u->university,
+                        'company', 'company_hr' => $u->company,
+                        default => null,
+                    };
+                    $roleLabel = match ($u->role) {
+                        'school', 'school_admin' => 'Sekolah',
+                        'university', 'univ_rep' => 'Universitas',
+                        'company', 'company_hr' => 'Perusahaan',
+                        default => $u->role,
+                    };
+                    $roleBg = match ($u->role) {
+                        'school', 'school_admin' => 'bg-amber-50 text-amber-700 border-amber-200',
+                        'university', 'univ_rep' => 'bg-purple-50 text-purple-700 border-purple-200',
+                        'company', 'company_hr' => 'bg-blue-50 text-blue-700 border-blue-200',
+                        default => 'bg-slate-50 text-slate-700 border-slate-200',
+                    };
+                    $isActuallyVisible = $u->hasActiveMembership();
+                @endphp
+                <div class="p-4 space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-900 text-[14px]">{{ $inst->name ?? $u->name }}</div>
+                            <div class="text-[12px] text-slate-500 truncate">{{ $u->email }}</div>
+                        </div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold border shrink-0 {{ $roleBg }}">
+                            {{ $roleLabel }}
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 text-[11.5px]">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-semibold {{ $u->membership_badge_class }}">
+                            {{ $u->membership_status_label }}
+                        </span>
+                        @if ($isActuallyVisible)
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Tayang</span>
+                        @else
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-bold border border-rose-200">Tersembunyi</span>
+                        @endif
+                        @if ($u->membership_expires_at)
+                            <span class="text-slate-500">Exp: {{ $u->membership_expires_at->format('d M Y') }}</span>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <button type="button"
+                                onclick="openToggleUserPremiumModal({{ $u->id }}, '{{ addslashes($inst->name ?? $u->name) }}', {{ $u->is_premium_active ? 'true' : 'false' }})"
+                                class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl text-xs font-bold border transition cursor-pointer {{ $u->is_premium_active ? 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-rose-50 hover:text-rose-700' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' }}">
+                            {{ $u->is_premium_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                        </button>
+                        <button type="button"
+                                onclick="openExtendModal({{ $u->id }}, '{{ addslashes($inst->name ?? $u->name) }}', '{{ $u->membership_status ?? 'trial' }}', '{{ $u->membership_expires_at ? $u->membership_expires_at->format('Y-m-d') : '' }}')"
+                                class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl text-xs font-bold bg-brand-600 text-white hover:bg-blue-700 transition cursor-pointer">
+                            Perpanjang
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="p-8 text-center text-slate-400 text-[13px]">
+                    Tidak ada data akun institusi ditemukan.
+                </div>
+            @endforelse
+        </div>
+
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-[13px] border-collapse">
                 <thead>
                     <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-400 font-bold text-[11px] uppercase tracking-wider">

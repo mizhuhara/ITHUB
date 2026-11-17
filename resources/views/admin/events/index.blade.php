@@ -42,10 +42,10 @@
             </p>
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto">
             <a href="{{ route('admin.events.create') }}" 
-               class="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition">
-                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-[42px] px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
                 <span>Buat Event Baru</span>
@@ -54,7 +54,7 @@
     </div>
 
     {{-- Main Container Card --}}
-    <div class="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-7 shadow-xs space-y-6">
+    <div class="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-7 shadow-xs space-y-5 sm:space-y-6">
 
         {{-- Filter Toolbar: Segmented Pills + Search --}}
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -135,8 +135,89 @@
 
         </div>
 
-        {{-- Table Component --}}
-        <div class="overflow-x-auto border-t border-slate-100 pt-4">
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100 border-t border-slate-100">
+            @forelse($events as $event)
+                <div class="py-4 space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <span class="font-extrabold text-slate-900 text-[14px] block leading-snug">
+                                {{ $event['title'] }}
+                            </span>
+                            <span class="text-slate-500 font-medium text-[12px] block mt-0.5">
+                                {{ $event['organizer'] }}
+                            </span>
+                        </div>
+
+                        @if($event['status'] === 'Pending')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                Pending
+                            </span>
+                        @elseif($event['status'] === 'Approved')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                Approved
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                Rejected
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 text-[12px]">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-semibold bg-indigo-50/80 text-indigo-700 border border-indigo-100/90">
+                            {{ $event['type'] }}
+                        </span>
+                        <span class="text-slate-500 font-medium">{{ $event['proposed_date'] }}</span>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                        <a href="{{ route('admin.events.show', $event['id']) }}"
+                           class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-xs transition">
+                            Lihat
+                        </a>
+                        <a href="{{ route('admin.events.edit', $event['id']) }}"
+                           class="flex-1 inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-xs transition">
+                            Edit
+                        </a>
+                        @if(!$isClientRole)
+                            <form action="{{ route('admin.events.approve', $event['id']) }}" method="POST" data-async data-async-reload class="flex-1">
+                                @csrf
+                                <button type="submit"
+                                        class="w-full inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/90 font-bold text-xs transition cursor-pointer">
+                                    Approve
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.events.reject', $event['id']) }}" method="POST" data-async data-async-reload class="flex-1">
+                                @csrf
+                                <button type="submit"
+                                        class="w-full inline-flex items-center justify-center min-h-[38px] px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/90 font-bold text-xs transition cursor-pointer">
+                                    Reject
+                                </button>
+                            </form>
+                        @endif
+                        <button type="button"
+                                onclick="openDeleteModal('{{ $event['id'] }}', '{{ addslashes($event['title']) }}', '{{ addslashes($event['organizer'] ?? '') }}')"
+                                title="Hapus Event"
+                                class="inline-flex items-center justify-center min-h-[38px] min-w-[38px] px-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold text-xs transition cursor-pointer">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18M5 6l1 14a2 2 0 002 2h10a2 2 0 002-2L19 6M10 11v6m4-6v6M8 6l1-3h6l1 3"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            @empty
+                <div class="py-10 text-center text-slate-400 font-medium text-xs">
+                    Tidak ada data event yang ditemukan.
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Table Component (Desktop/Tablet) --}}
+        <div class="hidden md:block overflow-x-auto border-t border-slate-100 pt-4">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="text-slate-400 text-[11px] font-extrabold uppercase tracking-wider border-b border-slate-100">
@@ -276,7 +357,7 @@
         </div>
 
         {{-- Table Footer / Pagination --}}
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-500 text-center sm:text-left">
             <div>
                 Menampilkan {{ $events->firstItem() ?? 0 }} sampai {{ $events->lastItem() ?? 0 }} dari total {{ $events->total() }} event
             </div>
