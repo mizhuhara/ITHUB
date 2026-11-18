@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdminSchoolController extends Controller
@@ -145,6 +146,14 @@ class AdminSchoolController extends Controller
 
         if (in_array($user->role, ['school', 'university', 'company'], true)) {
             unset($data['views']);
+        }
+
+        if (empty($data['npsn'])) {
+            do {
+                $generatedNpsn = 'SCH-'.strtoupper(Str::random(8));
+            } while (School::where('npsn', $generatedNpsn)->exists());
+
+            $data['npsn'] = $generatedNpsn;
         }
 
         if ($request->hasFile('logo')) {
