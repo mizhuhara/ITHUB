@@ -139,6 +139,7 @@ class AppSetting extends Model
             'nav_events' => (string) static::get('nav_events', 'Acara'),
             'nav_community' => (string) static::get('nav_community', 'Komunitas'),
             'nav_knowledge' => (string) static::get('nav_knowledge', 'Pusat Pengetahuan'),
+            'nav_ai_info' => (string) static::get('nav_ai_info', 'AI Info'),
         ];
     }
 

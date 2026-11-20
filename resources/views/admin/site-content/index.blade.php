@@ -80,9 +80,15 @@
                            class="w-full h-11 px-3.5 rounded-xl border border-slate-300 text-[13.5px] text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
                 </div>
 
-                <div class="sm:col-span-2 lg:col-span-3">
+                <div>
                     <label class="block text-[12.5px] font-bold text-slate-700 mb-1.5">Menu 7 (Pusat Pengetahuan)</label>
                     <input type="text" name="nav_knowledge" value="{{ old('nav_knowledge', $settings['nav_knowledge']) }}" required
+                           class="w-full h-11 px-3.5 rounded-xl border border-slate-300 text-[13.5px] text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-[12.5px] font-bold text-slate-700 mb-1.5">Menu 8 (AI Info)</label>
+                    <input type="text" name="nav_ai_info" value="{{ old('nav_ai_info', $settings['nav_ai_info']) }}" required
                            class="w-full h-11 px-3.5 rounded-xl border border-slate-300 text-[13.5px] text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition">
                 </div>
             </div>

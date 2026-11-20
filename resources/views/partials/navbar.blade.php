@@ -16,7 +16,8 @@
             <a href="/career" class="{{ request()->is('career*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_career', 'Karir') }}</a>
             <a href="/events" class="{{ request()->is('events*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_events', 'Acara') }}</a>
             <a href="/community" class="{{ request()->is('community*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_community', 'Komunitas') }}</a>
-            <a href="/knowledge-hub" class="{{ request()->is('knowledge-hub*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_knowledge', 'Pusat Pengetahuan') }}</a>
+            <a href="/knowledge-hub" class="{{ (request()->is('knowledge-hub*') && !request()->is('knowledge-hub/ai*')) ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_knowledge', 'Pusat Pengetahuan') }}</a>
+            <a href="/ai-info" class="{{ request()->is('ai-info*') || request()->is('knowledge-hub/ai*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_ai_info', 'AI Info') }}</a>
         </nav>
 
         {{-- Actions --}}
@@ -474,8 +475,12 @@
                     @endif
                 </a>
             @endauth
-            <a href="/knowledge-hub" class="{{ request()->is('knowledge-hub*') ? 'it-active' : '' }}">
+            <a href="/knowledge-hub" class="{{ (request()->is('knowledge-hub*') && !request()->is('knowledge-hub/ai*')) ? 'it-active' : '' }}">
                 <span>{{ \App\Models\AppSetting::get('nav_knowledge', 'Pusat Pengetahuan') }}</span>
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <a href="/ai-info" class="{{ request()->is('ai-info*') || request()->is('knowledge-hub/ai*') ? 'it-active' : '' }}">
+                <span>{{ \App\Models\AppSetting::get('nav_ai_info', 'AI Info') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
         </nav>
