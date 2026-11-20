@@ -68,7 +68,7 @@
 @endpush
 
 @section('content')
-<form method="POST" action="{{ route('admin.company.store') }}" enctype="multipart/form-data" data-async data-async-reset class="space-y-6 max-w-7xl mx-auto">
+<form method="POST" action="{{ route('admin.company.store') }}" enctype="multipart/form-data" data-async data-async-follow class="space-y-6 max-w-7xl mx-auto">
     @csrf
 
     {{-- Error Banner --}}
@@ -242,6 +242,22 @@
                                placeholder="Contoh: 2018"
                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
                     </div>
+
+                    @if (in_array(auth()->user()->role, ['super_admin', 'admin'], true))
+                        <div>
+                            <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Jumlah Dilihat (Marketing)</label>
+                            <input type="number"
+                                   name="views"
+                                   value="{{ old('views', 0) }}"
+                                   placeholder="Contoh: 500"
+                                   min="0"
+                                   class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                            <p class="text-[12px] text-slate-400 mt-1">Angka tampil di badge mata pada halaman publik.</p>
+                            @error('views')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endif
 
                     <div class="sm:col-span-2">
                         <label class="block text-[13.5px] font-semibold text-slate-800 mb-1.5">Portofolio / Proyek Selesai</label>
