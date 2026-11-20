@@ -297,7 +297,7 @@ class AdminUnivController extends Controller
     /**
      * Update the specified university in database.
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse|JsonResponse
     {
         $univ = $this->findVisibleUniv($id);
 
@@ -387,7 +387,23 @@ class AdminUnivController extends Controller
 
         $univ->update($data);
 
-        return redirect()->route('admin.univ.edit', $univ->id)
+        if ($request->wantsJson()) {
+            $redirectUrl = in_array($request->user()->role, ['university'], true)
+                ? route('admin.univ.edit', $univ->id)
+                : route('admin.univ.index');
+
+            return response()->json([
+                'message' => "Data universitas \"{$validated['name']}\" berhasil diperbarui.",
+                'redirect' => $redirectUrl,
+            ]);
+        }
+
+        if (in_array($request->user()->role, ['university'], true)) {
+            return redirect()->route('admin.univ.edit', $univ->id)
+                ->with('success', "Data universitas \"{$validated['name']}\" berhasil diperbarui.");
+        }
+
+        return redirect()->route('admin.univ.index')
             ->with('success', "Data universitas \"{$validated['name']}\" berhasil diperbarui.");
     }
 

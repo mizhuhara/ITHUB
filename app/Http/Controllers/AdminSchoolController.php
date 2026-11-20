@@ -291,8 +291,13 @@ class AdminSchoolController extends Controller
         $school->update($data);
 
         if ($request->wantsJson()) {
+            $redirectUrl = in_array($user->role, ['school', 'university', 'company'], true)
+                ? route('admin.schools.edit', $school->id)
+                : route('admin.schools.index');
+
             return response()->json([
                 'message' => "Data sekolah \"{$data['name']}\" berhasil diperbarui.",
+                'redirect' => $redirectUrl,
             ]);
         }
 
