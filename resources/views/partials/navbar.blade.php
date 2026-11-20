@@ -10,13 +10,13 @@
 
         {{-- Desktop Nav --}}
         <nav id="it-nav">
-            <a href="/" class="{{ request()->is('/') ? 'it-active' : '' }}">Beranda</a>
-            <a href="/education" class="{{ request()->is('education*') || request()->is('campus*') ? 'it-active' : '' }}">Pendidikan</a>
-            <a href="/industry" class="{{ request()->is('industry*') ? 'it-active' : '' }}">Industri</a>
-            <a href="/career" class="{{ request()->is('career*') ? 'it-active' : '' }}">Karir</a>
-            <a href="/events" class="{{ request()->is('events*') ? 'it-active' : '' }}">Acara</a>
-            <a href="/community" class="{{ request()->is('community*') ? 'it-active' : '' }}">Komunitas</a>
-            <a href="/knowledge-hub" class="{{ request()->is('knowledge-hub*') ? 'it-active' : '' }}">Pusat Pengetahuan</a>
+            <a href="/" class="{{ request()->is('/') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_home', 'Beranda') }}</a>
+            <a href="/education" class="{{ request()->is('education*') || request()->is('campus*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_education', 'Pendidikan') }}</a>
+            <a href="/industry" class="{{ request()->is('industry*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_industry', 'Industri') }}</a>
+            <a href="/career" class="{{ request()->is('career*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_career', 'Karir') }}</a>
+            <a href="/events" class="{{ request()->is('events*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_events', 'Acara') }}</a>
+            <a href="/community" class="{{ request()->is('community*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_community', 'Komunitas') }}</a>
+            <a href="/knowledge-hub" class="{{ request()->is('knowledge-hub*') ? 'it-active' : '' }}">{{ \App\Models\AppSetting::get('nav_knowledge', 'Pusat Pengetahuan') }}</a>
         </nav>
 
         {{-- Actions --}}
@@ -434,27 +434,27 @@
 
         <nav class="it-mobile-links">
             <a href="/" class="{{ request()->is('/') ? 'it-active' : '' }}">
-                <span>Beranda</span>
+                <span>{{ \App\Models\AppSetting::get('nav_home', 'Beranda') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="/education" class="{{ request()->is('education*') || request()->is('campus*') ? 'it-active' : '' }}">
-                <span>Pendidikan</span>
+                <span>{{ \App\Models\AppSetting::get('nav_education', 'Pendidikan') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="/industry" class="{{ request()->is('industry*') ? 'it-active' : '' }}">
-                <span>Industri</span>
+                <span>{{ \App\Models\AppSetting::get('nav_industry', 'Industri') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="/career" class="{{ request()->is('career*') ? 'it-active' : '' }}">
-                <span>Karir</span>
+                <span>{{ \App\Models\AppSetting::get('nav_career', 'Karir') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="/events" class="{{ request()->is('events*') ? 'it-active' : '' }}">
-                <span>Acara</span>
+                <span>{{ \App\Models\AppSetting::get('nav_events', 'Acara') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             <a href="/community" class="{{ (request()->is('community') || request()->is('community/create') || (request()->is('community/*') && !request()->routeIs('community.my*') && !request()->is('community/*/manage*'))) ? 'it-active' : '' }}">
-                <span>Komunitas</span>
+                <span>{{ \App\Models\AppSetting::get('nav_community', 'Komunitas') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
             @auth
@@ -475,7 +475,7 @@
                 </a>
             @endauth
             <a href="/knowledge-hub" class="{{ request()->is('knowledge-hub*') ? 'it-active' : '' }}">
-                <span>Pusat Pengetahuan</span>
+                <span>{{ \App\Models\AppSetting::get('nav_knowledge', 'Pusat Pengetahuan') }}</span>
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
         </nav>

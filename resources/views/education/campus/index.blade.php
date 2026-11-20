@@ -7,10 +7,10 @@
 {{-- Hero Section --}}
 <section class="py-12 sm:py-16 px-4 text-center max-w-4xl mx-auto">
     <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
-        University (Kampus) Directory
+        {{ \App\Models\AppSetting::get('campus_title', 'University (Kampus) Directory') }}
     </h1>
     <p class="text-slate-500 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-        Discover and connect with top universities across Indonesia that offer Information Technology (IT) study programs — Computer Science, Information Systems, Informatics Engineering, and more.
+        {{ \App\Models\AppSetting::get('campus_subtitle', 'Discover and connect with top universities across Indonesia that offer Information Technology (IT) study programs — Computer Science, Information Systems, Informatics Engineering, and more.') }}
     </p>
 </section>
 

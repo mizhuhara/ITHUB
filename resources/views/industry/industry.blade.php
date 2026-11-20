@@ -7,10 +7,10 @@
 {{-- Hero Header Section --}}
 <section class="py-12 sm:py-16 px-4 text-center max-w-4xl mx-auto">
     <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
-        Ekosistem IT di Bali
+        {{ \App\Models\AppSetting::get('industry_title', 'Ekosistem IT di Bali') }}
     </h1>
     <p class="text-slate-500 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-        Jelajahi lanskap teknologi yang sedang berkembang di Bali. Temukan perusahaan inovatif, agensi kreatif, dan startup yang membangun masa depan digital dari Pulau Dewata.
+        {{ \App\Models\AppSetting::get('industry_subtitle', 'Jelajahi lanskap teknologi yang sedang berkembang di Bali. Temukan perusahaan inovatif, agensi kreatif, dan startup yang membangun masa depan digital dari Pulau Dewata.') }}
     </p>
 </section>
 

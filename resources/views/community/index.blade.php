@@ -7,9 +7,9 @@
 {{-- ===== HERO SECTION ===== --}}
 <div class="cmty-hero">
     <div class="cmty-hero-inner">
-        <h1 class="cmty-hero-title">Komunitas Tech Indonesia</h1>
+        <h1 class="cmty-hero-title">{{ \App\Models\AppSetting::get('community_title', 'Komunitas Tech Indonesia') }}</h1>
         <p class="cmty-hero-sub">
-            Terhubung, berbagi ilmu, dan berkolaborasi bersama ribuan talenta teknologi di seluruh Nusantara. Temukan ruang yang tumbuh yang relevan dengan kariermu.
+            {{ \App\Models\AppSetting::get('community_subtitle', 'Terhubung, berbagi ilmu, dan berkolaborasi bersama ribuan talenta teknologi di seluruh Nusantara. Temukan ruang yang tumbuh yang relevan dengan kariermu.') }}
         </p>
 
         {{-- Search --}}

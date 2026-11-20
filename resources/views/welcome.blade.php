@@ -16,11 +16,10 @@
         {{-- Content --}}
         <div class="relative mx-auto w-full max-w-5xl px-4 sm:px-6 text-center">
             <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
-                IT EKOSISTEM
+                {{ \App\Models\AppSetting::get('home_hero_title', 'IT EKOSISTEM') }}
             </h1>
             <p class="mx-auto mt-3 sm:mt-5 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base md:text-lg px-2">
-                Platform terdepan untuk menjelajahi institusi pendidikan unggulan, perusahaan teknologi ternama,
-                komunitas aktif, dan peluang karir digital di Indonesia.
+                {{ \App\Models\AppSetting::get('home_hero_subtitle', 'Platform terdepan untuk menjelajahi institusi pendidikan unggulan, perusahaan teknologi ternama, komunitas aktif, dan peluang karir digital di Indonesia.') }}
             </p>
 
             {{-- Search Bar with Live Autocomplete --}}
