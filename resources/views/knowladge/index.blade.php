@@ -33,10 +33,7 @@
                 @foreach($categories as $cat)
                     @php
                         $isActive = strtolower($activeCategory) === strtolower($cat);
-                        // Special link for AI pill to showcase AI Recommendations page directly or filter
-                        $linkUrl = (strtolower($cat) === 'ai') 
-                            ? route('knowledge.ai') 
-                            : route('knowledge.index', ['category' => strtolower($cat) === 'all' ? 'All' : $cat]);
+                        $linkUrl = route('knowledge.index', ['category' => strtolower($cat) === 'all' ? 'All' : $cat]);
                     @endphp
                     <a href="{{ $linkUrl }}" 
                        class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap shrink-0 transition-all duration-150 {{ $isActive ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200/70 hover:bg-slate-200 text-slate-600' }}">

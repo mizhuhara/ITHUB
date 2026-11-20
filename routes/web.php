@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminAiToolController;
 use App\Http\Controllers\AdminApplicationController;
 use App\Http\Controllers\AdminArticleController;
 use App\Http\Controllers\AdminBannerController;
@@ -335,6 +336,14 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
     Route::get('/admin/site-content', [AdminSiteContentController::class, 'index'])->name('admin.site-content.index');
     Route::put('/admin/site-content', [AdminSiteContentController::class, 'update'])->name('admin.site-content.update');
 
+    // Admin AI Info Management (super_admin)
+    Route::get('/admin/ai-tools', [AdminAiToolController::class, 'index'])->name('admin.ai-tools.index');
+    Route::get('/admin/ai-tools/create', [AdminAiToolController::class, 'create'])->name('admin.ai-tools.create');
+    Route::post('/admin/ai-tools', [AdminAiToolController::class, 'store'])->name('admin.ai-tools.store');
+    Route::get('/admin/ai-tools/{id}/edit', [AdminAiToolController::class, 'edit'])->name('admin.ai-tools.edit');
+    Route::put('/admin/ai-tools/{id}', [AdminAiToolController::class, 'update'])->name('admin.ai-tools.update');
+    Route::delete('/admin/ai-tools/{id}', [AdminAiToolController::class, 'destroy'])->name('admin.ai-tools.destroy');
+
     // Admin Memberships & Premium Management (super_admin)
     Route::get('/admin/memberships', [AdminMembershipController::class, 'index'])->name('admin.memberships.index');
     Route::post('/admin/memberships/toggle-global', [AdminMembershipController::class, 'toggleGlobal'])->name('admin.memberships.toggle_global');
@@ -395,6 +404,10 @@ Route::get('/knowledge-hub', [KnowledgeController::class, 'index'])->name('knowl
 Route::get('/knowledge-hub/ai', [KnowledgeController::class, 'ai'])->name('knowledge.ai');
 Route::get('/knowledge-hub/ai/{id}', [KnowledgeController::class, 'aiDetail'])->name('knowledge.ai.detail');
 Route::get('/knowledge-hub/article/{id}', [KnowledgeController::class, 'show'])->name('knowledge.show');
+
+// AI Info Public Routes
+Route::get('/ai-info', [KnowledgeController::class, 'ai'])->name('ai.index');
+Route::get('/ai-info/{id}', [KnowledgeController::class, 'aiDetail'])->name('ai.show');
 
 // Support /knowladge legacy/typo URL as alias
 Route::get('/knowladge', function () {

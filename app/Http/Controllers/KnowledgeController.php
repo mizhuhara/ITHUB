@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AiTool;
 use App\Models\Article;
 use App\Models\Company;
 use App\Models\School;
@@ -47,7 +48,7 @@ class KnowledgeController extends Controller
 
         $categories = [
             'All', 'Articles', 'Technology', 'Programming', 'Web Development',
-            'Mobile Development', 'AI', 'Cybersecurity', 'Networking',
+            'Mobile Development', 'Cybersecurity', 'Networking',
             'Cloud', 'Database', 'UI/UX', 'Career', 'Education',
         ];
 
@@ -89,7 +90,8 @@ class KnowledgeController extends Controller
             });
         }
 
-        $categories = ['Semua', 'Pemrograman', 'Kesehatan', 'Pertanian'];
+        $dbCategories = AiTool::query()->distinct()->pluck('category')->filter()->values()->all();
+        $categories = ['Semua', ...($dbCategories ?: ['Pemrograman', 'Kesehatan', 'Pertanian'])];
 
         return view('knowladge.ai', [
             'aiTools' => $aiTools->values()->all(),
@@ -393,6 +395,30 @@ class KnowledgeController extends Controller
 
     private function getAiTools(): array
     {
+        $tools = AiTool::all();
+        if ($tools->isNotEmpty()) {
+            return $tools->map(function ($tool) {
+                return [
+                    'id' => $tool->id,
+                    'name' => $tool->name,
+                    'category' => $tool->category,
+                    'logo_url' => $tool->logo_url,
+                    'icon_type' => $tool->icon_type ?? 'code',
+                    'icon_bg' => $tool->icon_bg ?? 'bg-blue-50 text-blue-600',
+                    'tagline' => $tool->tagline,
+                    'description' => $tool->description,
+                    'overview' => $tool->overview ?? $tool->description,
+                    'what_it_does' => $tool->what_it_does,
+                    'capabilities' => $tool->capabilities ?? [],
+                    'use_cases' => $tool->use_cases ?? [],
+                    'target_audience' => $tool->target_audience,
+                    'url' => $tool->url,
+                    'action_type' => $tool->action_type ?? 'detail',
+                    'pricing' => $tool->pricing,
+                ];
+            })->all();
+        }
+
         return [
             [
                 'id' => 1,

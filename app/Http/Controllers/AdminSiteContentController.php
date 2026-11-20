@@ -61,6 +61,7 @@ class AdminSiteContentController extends Controller
             'nav_events' => ['required', 'string', 'max:100'],
             'nav_community' => ['required', 'string', 'max:100'],
             'nav_knowledge' => ['required', 'string', 'max:100'],
+            'nav_ai_info' => ['required', 'string', 'max:100'],
         ]);
 
         AppSetting::setSiteContentSettings($validated);
