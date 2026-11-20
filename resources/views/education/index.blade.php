@@ -7,10 +7,10 @@
 {{-- Hero Section --}}
 <section class="py-12 sm:py-16 px-4 text-center max-w-4xl mx-auto">
     <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
-        Direktori SMK (Sekolah Menengah Kejuruan)
+        {{ \App\Models\AppSetting::get('education_smk_title', 'Direktori SMK (Sekolah Menengah Kejuruan)') }}
     </h1>
     <p class="text-slate-500 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-        Temukan dan terhubung dengan SMK Jurusan IT terbaik di seluruh Indonesia, dengan spesialisasi Rekayasa Perangkat Lunak, Infrastruktur Jaringan, Keamanan Siber, dan Teknologi Kreatif.
+        {{ \App\Models\AppSetting::get('education_smk_subtitle', 'Temukan dan terhubung dengan SMK Jurusan IT terbaik di seluruh Indonesia, dengan spesialisasi Rekayasa Perangkat Lunak, Infrastruktur Jaringan, Keamanan Siber, dan Teknologi Kreatif.') }}
     </p>
 </section>
 

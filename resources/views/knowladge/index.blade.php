@@ -9,10 +9,10 @@
         {{-- Page Header --}}
         <div class="mb-8">
             <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-3">
-                Knowledge Hub
+                {{ \App\Models\AppSetting::get('knowledge_title', 'Knowledge Hub') }}
             </h1>
             <p class="text-slate-600 text-base sm:text-lg max-w-3xl leading-relaxed">
-                Stay at the forefront of the digital world. Curated insights, industry trends, and in-depth technical analysis bridging Indonesian talent with global IT excellence.
+                {{ \App\Models\AppSetting::get('knowledge_subtitle', 'Stay at the forefront of the digital world. Curated insights, industry trends, and in-depth technical analysis bridging Indonesian talent with global IT excellence.') }}
             </p>
         </div>
 

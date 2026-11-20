@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminMembershipController;
 use App\Http\Controllers\AdminPromoPopupController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminSchoolController;
+use App\Http\Controllers\AdminSiteContentController;
 use App\Http\Controllers\AdminUnivController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminVerificationController;
@@ -329,6 +330,10 @@ Route::middleware(['admin', 'verified', 'throttle:120,1'])->group(function () {
 
     Route::get('/admin/promo-popup', [AdminPromoPopupController::class, 'edit'])->name('admin.promo-popup.edit');
     Route::put('/admin/promo-popup', [AdminPromoPopupController::class, 'update'])->name('admin.promo-popup.update');
+
+    // Admin Site Content / Text Management (super_admin)
+    Route::get('/admin/site-content', [AdminSiteContentController::class, 'index'])->name('admin.site-content.index');
+    Route::put('/admin/site-content', [AdminSiteContentController::class, 'update'])->name('admin.site-content.update');
 
     // Admin Memberships & Premium Management (super_admin)
     Route::get('/admin/memberships', [AdminMembershipController::class, 'index'])->name('admin.memberships.index');
