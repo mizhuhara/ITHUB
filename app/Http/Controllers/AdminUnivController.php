@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\University;
 use App\Models\UserReport;
 use App\Services\ImageUploadService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -123,7 +124,7 @@ class AdminUnivController extends Controller
     /**
      * Store a newly created university in database.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $user = $request->user();
 
@@ -144,6 +145,12 @@ class AdminUnivController extends Controller
             'location' => ['required', 'string', 'max:150'],
             'accreditation' => ['nullable', 'string'],
             'website' => ['nullable', 'url', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'total_students' => ['nullable', 'integer', 'min:0'],
+            'views' => ['nullable', 'integer', 'min:0', 'max:100000000'],
+            'total_faculties' => ['nullable', 'integer', 'min:0'],
+            'founded' => ['nullable', 'integer', 'min:1900', 'max:'.date('Y')],
             'description' => ['nullable', 'string', 'max:1000'],
             'address' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
@@ -152,6 +159,8 @@ class AdminUnivController extends Controller
             'logo' => ['nullable', 'image', 'max:2048'],
             'gallery' => ['nullable', 'array'],
             'gallery.*' => ['image', 'max:2048'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:100'],
         ]);
 
         $locations = array_map('trim', explode(',', $validated['location']));
@@ -176,6 +185,11 @@ class AdminUnivController extends Controller
             'province' => $province,
             'accreditation' => $validated['accreditation'] ?? 'A',
             'website' => $validated['website'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'total_students' => $validated['total_students'] ?? 0,
+            'total_faculties' => $validated['total_faculties'] ?? 0,
+            'founded' => $validated['founded'] ?? null,
             'description' => $validated['description'] ?? null,
             'address' => $validated['address'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
@@ -185,7 +199,12 @@ class AdminUnivController extends Controller
             'logo_text' => $logoText,
             'logo_bg' => 'bg-blue-700',
             'gallery' => [],
+            'tags' => array_values(array_filter($validated['tags'] ?? [], fn ($t) => ! empty(trim((string) $t)))),
         ];
+
+        if (in_array($request->user()->role, ['super_admin', 'admin'], true)) {
+            $data['views'] = $validated['views'] ?? 0;
+        }
         if ($isInstitution) {
             $data['user_id'] = $user->id;
         }
@@ -207,6 +226,17 @@ class AdminUnivController extends Controller
         }
 
         $univ = University::create($data);
+
+        if ($request->wantsJson()) {
+            $redirectUrl = $user->role === 'university'
+                ? route('admin.univ.edit', $univ->id)
+                : route('admin.univ.index');
+
+            return response()->json([
+                'message' => "Universitas \"{$validated['name']}\" berhasil ditambahkan.",
+                'redirect' => $redirectUrl,
+            ], 201);
+        }
 
         if ($user->role === 'university') {
             return redirect()->route('admin.univ.edit', $univ->id)
@@ -267,7 +297,7 @@ class AdminUnivController extends Controller
     /**
      * Update the specified university in database.
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse|JsonResponse
     {
         $univ = $this->findVisibleUniv($id);
 
@@ -357,7 +387,23 @@ class AdminUnivController extends Controller
 
         $univ->update($data);
 
-        return redirect()->route('admin.univ.edit', $univ->id)
+        if ($request->wantsJson()) {
+            $redirectUrl = in_array($request->user()->role, ['university'], true)
+                ? route('admin.univ.edit', $univ->id)
+                : route('admin.univ.index');
+
+            return response()->json([
+                'message' => "Data universitas \"{$validated['name']}\" berhasil diperbarui.",
+                'redirect' => $redirectUrl,
+            ]);
+        }
+
+        if (in_array($request->user()->role, ['university'], true)) {
+            return redirect()->route('admin.univ.edit', $univ->id)
+                ->with('success', "Data universitas \"{$validated['name']}\" berhasil diperbarui.");
+        }
+
+        return redirect()->route('admin.univ.index')
             ->with('success', "Data universitas \"{$validated['name']}\" berhasil diperbarui.");
     }
 

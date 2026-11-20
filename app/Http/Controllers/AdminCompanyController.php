@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\UserReport;
 use App\Services\ImageUploadService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,7 +129,7 @@ class AdminCompanyController extends Controller
     /**
      * Store a newly created company in database.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $user = $request->user();
 
@@ -158,6 +159,7 @@ class AdminCompanyController extends Controller
             'phone' => ['nullable', 'string', 'max:30'],
             'description' => ['nullable', 'string'],
             'total_employees' => ['nullable', 'integer', 'min:0'],
+            'views' => ['nullable', 'integer', 'min:0', 'max:100000000'],
             'founded' => ['nullable', 'integer', 'min:1800', 'max:2030'],
             'projects_completed' => ['nullable', 'string', 'max:100'],
             'specialties' => ['nullable', 'array'],
@@ -218,6 +220,11 @@ class AdminCompanyController extends Controller
 
         $status = $isInstitution ? 'Pending' : (strtolower($validated['status'] ?? 'active') === 'inactive' ? 'Inactive' : 'Active');
 
+        $views = 0;
+        if (in_array($user->role, ['super_admin', 'admin'], true)) {
+            $views = $validated['views'] ?? 0;
+        }
+
         $company = Company::create([
             'name' => $validated['name'],
             'type' => $validated['type'],
@@ -233,6 +240,7 @@ class AdminCompanyController extends Controller
             'phone' => $validated['phone'] ?? null,
             'description' => $validated['description'] ?? null,
             'total_employees' => $validated['total_employees'] ?? null,
+            'views' => $views,
             'founded' => $validated['founded'] ?? null,
             'projects_completed' => $validated['projects_completed'] ?? null,
             'specialties' => ! empty($validated['specialties']) ? array_values(array_filter($validated['specialties'])) : null,
@@ -243,6 +251,17 @@ class AdminCompanyController extends Controller
             'map_link' => $mapLink,
             'user_id' => $isInstitution ? $user->id : null,
         ]);
+
+        if ($request->wantsJson()) {
+            $redirectUrl = $user->role === 'company'
+                ? route('admin.company.edit', $company->id)
+                : route('admin.company.index');
+
+            return response()->json([
+                'message' => "Perusahaan \"{$company->name}\" berhasil ditambahkan.",
+                'redirect' => $redirectUrl,
+            ], 201);
+        }
 
         if ($user->role === 'company') {
             return redirect()->route('admin.company.edit', $company->id)
@@ -294,7 +313,7 @@ class AdminCompanyController extends Controller
     /**
      * Update the specified company in database.
      */
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse|JsonResponse
     {
         $company = $this->findVisibleCompany($id);
 
@@ -412,6 +431,17 @@ class AdminCompanyController extends Controller
         $payload['gallery'] = array_values(array_slice($gallery, 0, 4));
 
         $company->update($payload);
+
+        if ($request->wantsJson()) {
+            $redirectUrl = $user->role === 'company'
+                ? route('admin.company.edit', $company->id)
+                : route('admin.company.index');
+
+            return response()->json([
+                'message' => "Data perusahaan \"{$company->name}\" berhasil diperbarui.",
+                'redirect' => $redirectUrl,
+            ]);
+        }
 
         if ($user->role === 'company') {
             return redirect()->route('admin.company.edit', $company->id)

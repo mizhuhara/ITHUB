@@ -142,6 +142,14 @@ class AdminSchoolController extends Controller
         // Status default Pending untuk akun sekolah (menunggu verifikasi admin)
         if ($user->role === 'school') {
             $data['status'] = 'Pending';
+        } else {
+            $data['status'] = ! empty($data['status']) ? $data['status'] : 'Active';
+        }
+
+        if ($request->has('competencies')) {
+            $competenciesClean = array_values(array_filter($request->input('competencies', []), fn ($c) => ! empty(trim((string) $c))));
+            $data['competencies'] = $competenciesClean;
+            $data['tags'] = $competenciesClean;
         }
 
         if (in_array($user->role, ['school', 'university', 'company'], true)) {
@@ -183,8 +191,13 @@ class AdminSchoolController extends Controller
         $school = School::create($data);
 
         if ($request->wantsJson()) {
+            $redirectUrl = $user->role === 'school'
+                ? route('admin.schools.edit', $school->id)
+                : route('admin.schools.index');
+
             return response()->json([
                 'message' => "Sekolah \"{$data['name']}\" berhasil ditambahkan.",
+                'redirect' => $redirectUrl,
             ], 201);
         }
 
@@ -278,8 +291,13 @@ class AdminSchoolController extends Controller
         $school->update($data);
 
         if ($request->wantsJson()) {
+            $redirectUrl = in_array($user->role, ['school', 'university', 'company'], true)
+                ? route('admin.schools.edit', $school->id)
+                : route('admin.schools.index');
+
             return response()->json([
                 'message' => "Data sekolah \"{$data['name']}\" berhasil diperbarui.",
+                'redirect' => $redirectUrl,
             ]);
         }
 

@@ -248,7 +248,7 @@
 @endpush
 
 @section('content')
-<form method="POST" action="{{ route('admin.company.update', $company['id']) }}" enctype="multipart/form-data" data-async class="space-y-6 max-w-7xl mx-auto">
+<form method="POST" action="{{ route('admin.company.update', $company['id']) }}" enctype="multipart/form-data" data-async data-async-follow class="space-y-6 max-w-7xl mx-auto">
     @csrf
     @method('PUT')
 

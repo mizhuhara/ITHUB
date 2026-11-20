@@ -327,7 +327,7 @@
 @endpush
 
 @section('content')
-<form id="school-create-form" method="POST" action="{{ route('admin.schools.store') }}" enctype="multipart/form-data" data-async data-async-reset class="space-y-6 max-w-7xl mx-auto">
+<form id="school-create-form" method="POST" action="{{ route('admin.schools.store') }}" enctype="multipart/form-data" data-async data-async-follow class="space-y-6 max-w-7xl mx-auto">
     @csrf
 
     {{-- Flash Messages --}}
@@ -427,7 +427,7 @@
 
                     {{-- Lokasi --}}
                     <div>
-                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Lokasi</label>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Lokasi <span class="text-red-500">*</span></label>
                         <input type="text"
                             name="location"
                             id="schoolLocationInput"
@@ -439,6 +439,120 @@
                         <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Akreditasi --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Akreditasi</label>
+                        <div class="relative">
+                            <select name="accreditation"
+                                class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20 cursor-pointer appearance-none pr-10">
+                                <option value="A" {{ old('accreditation') == 'A' ? 'selected' : '' }}>A (Unggul)</option>
+                                <option value="B" {{ old('accreditation') == 'B' ? 'selected' : '' }}>B (Baik)</option>
+                                <option value="C" {{ old('accreditation') == 'C' ? 'selected' : '' }}>C (Cukup)</option>
+                                <option value="Belum Terakreditasi" {{ old('accreditation') == 'Belum Terakreditasi' ? 'selected' : '' }}>Belum Terakreditasi</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
+                                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Website --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Website</label>
+                        <input type="url"
+                            name="website"
+                            value="{{ old('website') }}"
+                            placeholder="https://smk.sch.id"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('website')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Email</label>
+                        <input type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            placeholder="info@smk.sch.id"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('email')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Telepon --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nomor Telepon</label>
+                        <input type="text"
+                            name="phone"
+                            value="{{ old('phone') }}"
+                            placeholder="(021) 1234567"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('phone')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tingkat Penyerapan Kerja --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tingkat Penyerapan Kerja</label>
+                        <input type="text"
+                            name="placement_rate"
+                            value="{{ old('placement_rate') }}"
+                            placeholder="Contoh: 95%"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('placement_rate')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Mitra Industri --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Mitra Industri (Jumlah)</label>
+                        <input type="number"
+                            name="industry_partners"
+                            value="{{ old('industry_partners') }}"
+                            placeholder="Contoh: 25"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('industry_partners')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Siswa Aktif --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Siswa Aktif (Jumlah)</label>
+                        <input type="number"
+                            name="total_students"
+                            value="{{ old('total_students') }}"
+                            placeholder="Contoh: 1200"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('total_students')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Lab IT Modern --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Lab IT Modern (Jumlah Lab)</label>
+                        <input type="number"
+                            name="modern_labs"
+                            value="{{ old('modern_labs') }}"
+                            placeholder="Contoh: 6"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('modern_labs')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     @if (in_array(auth()->user()->role, ['super_admin', 'admin'], true))
                         {{-- Jumlah Views / Klik Sekolah (Marketing) --}}
                         <div>
@@ -455,6 +569,21 @@
                             @enderror
                         </div>
                     @endif
+
+                    {{-- Tahun Berdiri --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tahun Berdiri</label>
+                        <input type="number"
+                            name="founded"
+                            value="{{ old('founded') }}"
+                            placeholder="1995"
+                            min="1900"
+                            max="{{ date('Y') }}"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('founded')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 

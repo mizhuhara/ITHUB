@@ -13,7 +13,7 @@
 @endpush
 
 @section('content')
-<form method="POST" action="{{ route('admin.univ.store') }}" enctype="multipart/form-data" data-async data-async-reset class="space-y-6 max-w-7xl mx-auto" id="univForm">
+<form method="POST" action="{{ route('admin.univ.store') }}" enctype="multipart/form-data" data-async data-async-follow class="space-y-6 max-w-7xl mx-auto" id="univForm">
     @csrf
 
     {{-- Top Back Link & Breadcrumb --}}
@@ -135,6 +135,92 @@
                         <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Email</label>
+                        <input type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            placeholder="info@universitas.ac.id"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('email')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Telepon --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Nomor Telepon</label>
+                        <input type="text"
+                            name="phone"
+                            value="{{ old('phone') }}"
+                            placeholder="(021) 1234567"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('phone')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Total Mahasiswa --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Total Mahasiswa</label>
+                        <input type="number"
+                            name="total_students"
+                            value="{{ old('total_students') }}"
+                            placeholder="12000"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('total_students')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Total Fakultas --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Total Fakultas / Prodi</label>
+                        <input type="number"
+                            name="total_faculties"
+                            value="{{ old('total_faculties') }}"
+                            placeholder="10"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('total_faculties')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    @if (in_array(auth()->user()->role, ['super_admin', 'admin'], true))
+                    {{-- Jumlah Dilihat (Marketing) --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Jumlah Dilihat (Marketing)</label>
+                        <input type="number"
+                            name="views"
+                            value="{{ old('views', 0) }}"
+                            placeholder="500"
+                            min="0"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        <p class="mt-1 text-xs text-slate-400">Angka tampil di badge mata pada halaman publik.</p>
+                        @error('views')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    @endif
+
+                    {{-- Tahun Berdiri --}}
+                    <div>
+                        <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Tahun Berdiri</label>
+                        <input type="number"
+                            name="founded"
+                            value="{{ old('founded') }}"
+                            placeholder="1950"
+                            min="1900"
+                            max="{{ date('Y') }}"
+                            class="w-full h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20">
+                        @error('founded')
+                        <p class="mt-1 text-xs text-rose-500 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
@@ -170,7 +256,41 @@
                 </div>
             </div>
 
-            {{-- Card 3: Campus Gallery --}}
+            {{-- Card 3: IT Study Programs / Tags --}}
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-[16px] font-bold text-slate-900">Program Studi IT</h2>
+                        <p class="text-[12px] text-slate-500">Tambahkan program studi / jurusan IT yang tersedia di universitas ini</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-[13px] font-semibold text-slate-700">Daftar Program Studi</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="tagInputField"
+                            placeholder="Contoh: Teknik Informatika"
+                            class="flex-1 h-11 px-3.5 rounded-lg border border-slate-300 text-[14px] text-slate-900 placeholder-slate-400 bg-white outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-blue-500/20"
+                            onkeydown="if(event.key==='Enter'){event.preventDefault();addTag();}">
+                        <button type="button" onclick="addTag()"
+                            class="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-bold rounded-lg transition shrink-0 shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Tambah
+                        </button>
+                    </div>
+                    <div id="tagContainer" class="flex flex-wrap gap-2 min-h-[40px] pt-1"></div>
+                    <p class="text-[11.5px] text-slate-400">Tekan Enter atau klik tombol Tambah untuk menambahkan program studi. Klik × untuk menghapus.</p>
+                </div>
+            </div>
+
+            {{-- Card 4: Campus Gallery --}}
             <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-2.5 text-slate-900">
@@ -380,6 +500,28 @@
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+    // -------------------------------------------------------------
+    // 0. TAG / PROGRAM STUDI
+    // -------------------------------------------------------------
+    function addTag() {
+        const input = document.getElementById('tagInputField');
+        const container = document.getElementById('tagContainer');
+        if (!input || !container) return;
+        const val = input.value.trim();
+        if (!val) return;
+
+        const span = document.createElement('span');
+        span.className = 'tag-item inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-[12.5px] font-semibold rounded-xl';
+        span.innerHTML = `${val}<input type="hidden" name="tags[]" value="${val}"><button type="button" onclick="removeTag(this)" class="text-blue-400 hover:text-red-500 transition ml-0.5 leading-none"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg></button>`;
+        container.appendChild(span);
+        input.value = '';
+        input.focus();
+    }
+
+    function removeTag(btn) {
+        btn.closest('.tag-item').remove();
+    }
+
     // -------------------------------------------------------------
     // 1. LOGO PREVIEW & UPLOAD
     // -------------------------------------------------------------
